@@ -149,3 +149,59 @@ export function fileOffset(off: Offsets, tensor: string, r: number, c: number | 
   const idx = shape.length === 1 ? r : r * shape[1] + (c ?? 0);
   return { shard: off.shards[si], byte: 8 + off.headerBytes[si] + start + idx * bytes, dtype, shape };
 }
+
+// ---------------------------------------------------------------------------
+// Measured trace of Qwen3-0.6B (scripts/record_traces.py)
+// ---------------------------------------------------------------------------
+const num2 = z.array(z.array(z.number()));
+export const TraceSchema = z.object({
+  evidence: z.literal('measured-trace'),
+  model: z.literal('Qwen/Qwen3-0.6B'),
+  revision: z.string().regex(/^[0-9a-f]{40}$/),
+  fileSha256: z.record(z.string(), z.string().regex(/^[0-9a-f]{64}$/)),
+  checkpointHeader: z.object({ tensors: z.number(), elements: z.number(), dtypes: z.array(z.string()), has_lm_head: z.boolean() }),
+  config: z.object({ num_hidden_layers: z.number(), hidden_size: z.number(), num_attention_heads: z.number(), num_key_value_heads: z.number(), head_dim: z.number(), intermediate_size: z.number(), vocab_size: z.number(), tie_word_embeddings: z.boolean(), rms_norm_eps: z.number(), rope_theta: z.number() }),
+  runtime: z.object({ torch: z.string(), transformers: z.string(), python: z.string(), platform: z.string(), processor: z.string(), threads: z.number(), precision: z.string(), attnImplementation: z.string(), useCache: z.boolean(), loadSeconds: z.number(), forwardSeconds: z.number() }),
+  hooks: z.record(z.string(), z.string()),
+  rounding: z.string(),
+  recorded: z.string(),
+  license: z.string(),
+  note: z.string(),
+  prompts: z.array(z.object({
+    id: z.string(),
+    kind: z.enum(['raw', 'chat']),
+    text: z.string().optional(),
+    messages: z.array(z.object({ role: z.string(), content: z.string() })).optional(),
+    enable_thinking: z.boolean().optional(),
+    renderedText: z.string(),
+    ids: z.array(z.number().int()),
+    pieces: z.array(z.string()),
+    residualRms: z.object({ embedding: z.array(z.number()), blocks: num2, finalNorm: z.array(z.number()) }),
+    residualFeaturesLastPos: z.object({ features: z.array(z.number()), embedding: z.array(z.number()), blocks: num2 }),
+    attention: z.array(z.object({ block: z.number(), head: z.number(), kvHead: z.number(), probs: num2 })),
+    gateLastPos: z.array(z.object({ block: z.number(), channels: z.array(z.number()), silu: z.array(z.number()) })),
+    topNext: z.array(z.object({ id: z.number(), piece: z.string(), p: z.number(), logit: z.number() })),
+  })),
+});
+export type Trace = z.infer<typeof TraceSchema>;
+export const useTrace = () => useJson('trace-qwen3-0.6b.json', TraceSchema);
+
+// A real, recorded chat turn of Qwen3-0.6B (scripts/record_journey.py) for the message-journey simulation.
+export const JourneySchema = z.object({
+  model: z.string(),
+  revision: z.string(),
+  modelSha256: z.string(),
+  library: z.string(),
+  dtype: z.string(),
+  decoding: z.string(),
+  recorded: z.string(),
+  messages: z.array(z.object({ role: z.string(), content: z.string() })),
+  renderedPrompt: z.string(),
+  promptIds: z.array(z.number().int()),
+  promptPieces: z.array(z.string()),
+  steps: z.array(z.object({ id: z.number().int(), piece: z.string(), p: z.number(), top: z.array(z.object({ piece: z.string(), p: z.number() })) })),
+  stoppedOnEnd: z.boolean(),
+  answer: z.string(),
+});
+export type Journey = z.infer<typeof JourneySchema>;
+export const useJourney = () => useJson('journey-qwen3-0.6b.json', JourneySchema);

@@ -30,15 +30,15 @@
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
     --bg: #f5f7fc; --bg-2: #eef2fa; --panel: #ffffff; --panel-2: #f0f4fb; --line: #c9d3e6; --line-soft: #dde4f1;
-    --text: #0f1a33; --text-2: #3c4b6b; --text-3: #5a6a8c; --accent: #0b7f91; --attn: #0b7f91; --ffn: #6b3fd1; --weight: #6b3fd1;
-    --act: #17834b; --state: #0f7a64; --norm: #8a6500; --resid: #8a6500; --router: #b2501b; --danger: #b3263a; --ok: #17834b; --focus: #b07d00;
+    --text: #0f1a33; --text-2: #3c4b6b; --text-3: #5a6a8c; --accent: #086a79; --attn: #086a79; --ffn: #6b3fd1; --weight: #6b3fd1; --on-accent: #ffffff; --on-router: #ffffff;
+    --act: #11703f; --state: #0f7a64; --norm: #745400; --resid: #745400; --router: #b2501b; --danger: #b3263a; --ok: #11703f; --focus: #b07d00;
     --shadow: 0 4px 18px rgba(15, 26, 51, 0.12); color-scheme: light;
   }
 }
 :root[data-theme='light'] {
   --bg: #f5f7fc; --bg-2: #eef2fa; --panel: #ffffff; --panel-2: #f0f4fb; --line: #c9d3e6; --line-soft: #dde4f1;
-  --text: #0f1a33; --text-2: #3c4b6b; --text-3: #5a6a8c; --accent: #0b7f91; --attn: #0b7f91; --ffn: #6b3fd1; --weight: #6b3fd1;
-  --act: #17834b; --state: #0f7a64; --norm: #8a6500; --resid: #8a6500; --router: #b2501b; --danger: #b3263a; --ok: #17834b; --focus: #b07d00;
+  --text: #0f1a33; --text-2: #3c4b6b; --text-3: #5a6a8c; --accent: #086a79; --attn: #086a79; --ffn: #6b3fd1; --weight: #6b3fd1; --on-accent: #ffffff; --on-router: #ffffff;
+  --act: #11703f; --state: #0f7a64; --norm: #745400; --resid: #745400; --router: #b2501b; --danger: #b3263a; --ok: #11703f; --focus: #b07d00;
   --shadow: 0 4px 18px rgba(15, 26, 51, 0.12); color-scheme: light;
 }
 
@@ -89,7 +89,7 @@ footer.foot { border-top: 1px solid var(--line-soft); padding: 14px 16px; color:
 button, .btn { font: inherit; color: var(--text); background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px; cursor: pointer; min-height: 36px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
 button:hover:not(:disabled), .btn:hover { border-color: var(--accent); }
 button:disabled { opacity: 0.5; cursor: not-allowed; }
-button.primary, .btn.primary { background: var(--accent); color: #04121a; border-color: var(--accent); font-weight: 650; }
+button.primary, .btn.primary { background: var(--accent); color: var(--on-accent, #04121a); border-color: var(--accent); font-weight: 650; }
 button.ghost { background: transparent; }
 button.small { min-height: 30px; padding: 3px 9px; font-size: 0.88rem; }
 button[aria-pressed='true'] { background: color-mix(in srgb, var(--accent) 22%, var(--panel-2)); border-color: var(--accent); }
@@ -218,7 +218,7 @@ table.t td.num, table.t th.num { text-align: right; font-variant-numeric: tabula
 .chip.sel { border-color: var(--focus); outline: 1px solid var(--focus); }
 .expert-grid { display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: 3px; max-width: 520px; }
 .expert-grid button { aspect-ratio: 1; min-height: 0; padding: 0; font-size: 8px; justify-content: center; border-radius: 3px; background: var(--bg-2); }
-.expert-grid button.sel { background: var(--router); color: #1a0d05; border-color: var(--router); font-weight: 700; }
+.expert-grid button.sel { background: var(--router); color: var(--on-router, #1a0d05); border-color: var(--router); font-weight: 700; }
 .expert-grid button.focus { outline: 2px solid var(--focus); }
 .hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: center; padding: 18px 0 8px; }
 @media (max-width: 900px) { .hero { grid-template-columns: minmax(0, 1fr); } }
@@ -235,9 +235,18 @@ table.t td.num, table.t th.num { text-align: right; font-variant-numeric: tabula
 .timeline .step.done { border-color: var(--act); }
 .treemap { position: relative; width: 100%; aspect-ratio: 16 / 9; min-height: 260px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
 .treemap button { position: absolute; border-radius: 0; border: 1px solid var(--bg); padding: 4px; font-size: 11px; display: block; text-align: left; overflow: hidden; color: #0a1328; min-height: 0; line-height: 1.2; }
-.treemap button .tl { display: inline-block; background: rgba(8, 14, 30, 0.78); color: #f2f6ff; padding: 2px 5px; border-radius: 4px; }
+.treemap button .tl { display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: rgba(8, 14, 30, 0.78); color: #f2f6ff; padding: 2px 5px; border-radius: 4px; }
 .treemap button.sel { outline: 3px solid var(--focus); outline-offset: -3px; z-index: 2; }
-.katex-display { overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+.seg-list { list-style: none; padding: 0; margin: 10px 0 6px; display: grid; gap: 4px; }
+.seg-list button { width: 100%; display: grid; grid-template-columns: 14px minmax(0, 1.4fr) minmax(40px, 1fr) auto; gap: 8px; align-items: center; text-align: left; padding: 6px 8px; min-height: 36px; font-size: 0.86rem; background: var(--panel); border: 1px solid var(--line-soft); }
+.seg-list button.sel { border-color: var(--focus); box-shadow: inset 3px 0 0 var(--focus); }
+.seg-list .sw { width: 14px; height: 14px; border-radius: 3px; }
+.seg-list .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.seg-list .bar { height: 8px; background: var(--bg-2); border-radius: 4px; overflow: hidden; }
+.seg-list .bar > span { display: block; height: 100%; }
+.seg-list .vl { font-size: 0.8rem; color: var(--text-2); white-space: nowrap; }
+@media (max-width: 520px) { .seg-list button { grid-template-columns: 14px minmax(0, 1fr) auto; } .seg-list .bar { display: none; } }
+.katex-display { overflow: visible; padding: 4px 0; margin: 0.5em 0; }
 .eq { overflow-x: auto; max-width: 100%; }
 .tour-step { counter-increment: step; }
 .badge-row { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -282,3 +291,34 @@ table.t td.num, table.t th.num { text-align: right; font-variant-numeric: tabula
   .brand { font-size: 0.95rem; }
   #theme { max-width: 104px; font-size: 0.8rem; padding: 4px 4px; }
 }
+
+/* ---------- course: code examples ---------- */
+.code-card { border-left: 4px solid var(--weight); }
+.code-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 4px; }
+.code-actions { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+pre.code { margin: 6px 0; padding: 10px 12px; background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 8px; overflow-x: auto; max-width: 100%; font-family: var(--mono); font-size: 0.8rem; line-height: 1.5; font-variant-ligatures: none; tab-size: 4; white-space: pre; color: var(--text); }
+pre.code.out { background: var(--panel-2); border-style: dashed; max-height: 420px; overflow-y: auto; }
+.code-out { margin-top: 6px; }
+.py-c { color: var(--text-3); font-style: italic; }
+.py-s { color: var(--act); }
+.py-k { color: var(--weight); font-weight: 600; }
+.py-n { color: var(--router); }
+.py-f { color: var(--attn); font-weight: 600; }
+.py-b { color: var(--accent); }
+
+/* ---------- course: figures ---------- */
+.fig { margin: 16px 0; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+.fig svg { display: block; width: 100%; height: auto; max-width: 640px; margin: 0 auto; }
+.fig figcaption { font-size: 0.86rem; color: var(--text-2); margin-top: 8px; }
+.fig svg text { font-family: var(--sans, system-ui); }
+.fig .fx-label { fill: var(--text); font-size: 13px; font-weight: 600; }
+.fig .fx-sub { fill: var(--text-2); font-size: 11px; }
+.fig .fx-small { fill: var(--text-3); font-size: 10px; }
+.fig .fx-mono { font-family: var(--mono); }
+.learn-part { margin: 22px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+.learn-part .faint { font-size: 0.85rem; }
+.learn-toc .toc-part { margin-top: 10px; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-3); list-style: none; }
+pre.code code { background: none; border: 0; padding: 0; border-radius: 0; font-size: inherit; color: inherit; white-space: inherit; }
+.cursor { color: var(--accent); animation: blink 1s steps(2, start) infinite; }
+@keyframes blink { to { visibility: hidden; } }
+@media (prefers-reduced-motion: reduce) { .cursor { animation: none; } }

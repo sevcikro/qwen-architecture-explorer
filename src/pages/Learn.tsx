@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { CHAPTERS, type Block } from '../content/chapters';
+import { CHAPTERS, PARTS, type Block } from '../content/chapters';
 import { Rich, useLang } from '../i18n/i18n';
 import { Tex } from '../components/ui';
 import { Widget } from '../learn/widgets';
+import { Figure } from '../learn/figures';
+import { CodeBlock } from '../learn/CodeBlock';
 
 const KEY = 'qa-learn-done';
 function loadDone(): string[] {
@@ -47,6 +49,8 @@ function BlockView({ b }: { b: Block }) {
     case 'math': return <div style={{ margin: '8px 0' }}><Tex block>{b.tex}</Tex>{b.t && <div className="faint" style={{ fontSize: '0.85rem', textAlign: 'center' }}>{tr(b.t)}</div>}</div>;
     case 'widget': return <Widget id={b.w} />;
     case 'quiz': return <Quiz b={b} />;
+    case 'figure': return <Figure id={b.f} caption={b.cap ? tr(b.cap) : undefined} />;
+    case 'code': return <CodeBlock id={b.c} t={b.t ? tr(b.t) : undefined} />;
     case 'links': return (
       <div style={{ marginTop: 14 }}>
         <strong>{t('learn_deeper')}:</strong>
@@ -72,8 +76,14 @@ export default function Learn({ id }: { id?: string }) {
           <a className="btn primary" href={`#/learn/${nextUp.id}`} data-testid="learn-start">{done.length ? `${t('learn_continue')}: ${nextUp.n}. ${tr(nextUp.title)}` : t('learn_start')}</a>
           <span className="faint">{done.length} / {CHAPTERS.length} {t('learn_progress')}</span>
         </div>
+        {PARTS.map((p) => (
+        <section key={p.n} aria-labelledby={`part-${p.n}`}>
+        <div className="learn-part">
+          <h2 id={`part-${p.n}`} style={{ margin: 0 }}>{t('learn_part')} {p.n} · {tr(p.title)}</h2>
+          <div className="faint">{tr(p.summary)}</div>
+        </div>
         <ol style={{ listStyle: 'none', padding: 0 }}>
-          {CHAPTERS.map((c) => (
+          {CHAPTERS.filter((c) => c.part === p.n).map((c) => (
             <li key={c.id} className="card" style={{ marginBottom: 8 }}>
               <a href={`#/learn/${c.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
                 <div className="row" style={{ justifyContent: 'space-between' }}>
@@ -86,6 +96,8 @@ export default function Learn({ id }: { id?: string }) {
             </li>
           ))}
         </ol>
+        </section>
+        ))}
       </div>
     );
   }
@@ -98,13 +110,16 @@ export default function Learn({ id }: { id?: string }) {
       <aside className="learn-toc" aria-label={t('learn_toc')}>
         <a href="#/learn">{t('learn_all')}</a>
         <ol>
-          {CHAPTERS.map((c) => (
-            <li key={c.id}><a href={`#/learn/${c.id}`} aria-current={c.id === ch.id ? 'page' : undefined}>{done.includes(c.id) ? '✓ ' : ''}{c.n}. {tr(c.title)}</a></li>
+          {CHAPTERS.map((c, k) => (
+            <li key={c.id}>
+              {(k === 0 || CHAPTERS[k - 1].part !== c.part) && <div className="toc-part" aria-hidden="true">{t('learn_part')} {c.part} · {tr(PARTS[(c.part ?? 1) - 1].title)}</div>}
+              <a href={`#/learn/${c.id}`} aria-current={c.id === ch.id ? 'page' : undefined}>{done.includes(c.id) ? '✓ ' : ''}{c.n}. {tr(c.title)}</a>
+            </li>
           ))}
         </ol>
       </aside>
       <article>
-        <div className="faint mono">{t('learn_chapter')} {ch.n} / {CHAPTERS.length} · {ch.minutes} {t('learn_min')}</div>
+        <div className="faint mono">{t('learn_part')} {ch.part} · {t('learn_chapter')} {ch.n} / {CHAPTERS.length} · {ch.minutes} {t('learn_min')}</div>
         <h1 style={{ marginTop: 4 }}>{tr(ch.title)}</h1>
         <p className="muted" style={{ fontSize: '1.08rem' }}>{tr(ch.summary)}</p>
         <div className="progress" aria-hidden="true"><span style={{ width: `${((i + 1) / CHAPTERS.length) * 100}%` }} /></div>

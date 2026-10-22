@@ -5,7 +5,7 @@ import { LayersLab, CacheLab } from './LayersCache';
 import { SamplingLab, TrainingLab } from './SamplingTraining';
 import { MemoryLab } from './MemoryLab';
 import { EvidenceLegend } from '../components/ui';
-import { EnglishOnlyNotice, useLang, type L10n } from '../i18n/i18n';
+import { useLang, type L10n } from '../i18n/i18n';
 
 const b = (en: string, sk: string): L10n => ({ en, sk });
 
@@ -25,7 +25,7 @@ export const LABS = [
 ] as const;
 
 export default function Labs({ lab }: { lab?: string }) {
-  const { t, tr, lang } = useLang();
+  const { t, tr } = useLang();
   const L = LABS.find((x) => x.id === lab);
   if (lab && !L) return <div className="page"><h1>{t('labs_unknown')}</h1><p><code>{lab}</code></p><a href="#/labs">{t('labs_all')}</a></div>;
   if (L) {
@@ -39,11 +39,9 @@ export default function Labs({ lab }: { lab?: string }) {
             {i < LABS.length - 1 && <a href={`#/labs/${LABS[i + 1].id}`}>{tr(LABS[i + 1].title)} ›</a>}
           </span>
         </nav>
-        {lang === 'sk' && (
-          <div className="callout" lang="sk" role="note" style={{ fontSize: '0.9rem' }}>
-            <strong>{tr(L.title)}:</strong> {tr(L.blurb)} {t('english_only')} <a href={`#/learn/${L.learn}`}>{t('english_only_link')}</a>
-          </div>
-        )}
+        <div className="callout" role="note" style={{ fontSize: '0.9rem' }}>
+          <strong>{tr(L.title)}:</strong> {tr(L.blurb)} <a href={`#/learn/${L.learn}`}>{t('lab_theory')}</a>
+        </div>
         <L.C />
       </div>
     );
@@ -52,7 +50,6 @@ export default function Labs({ lab }: { lab?: string }) {
     <div className="page">
       <h1>{t('labs_title')}</h1>
       <p className="muted">{t('labs_intro')}</p>
-      <EnglishOnlyNotice />
       <EvidenceLegend />
       <div className="grid-auto" style={{ marginTop: 14 }}>
         {LABS.map((x) => (

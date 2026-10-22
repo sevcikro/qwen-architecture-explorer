@@ -1,0 +1,336 @@
+import type { L10n } from '../i18n/i18n';
+import type { Block, Chapter } from './chapters';
+import { QWEN3_30B_A3B, QWEN3_8B } from '../models/profiles';
+import { accounting } from '../models/shapes';
+import { kvBytesPerToken } from '../math/memory';
+import { explorerHref } from '../state/route';
+
+// ---------------------------------------------------------------------------
+// v1.2 course extension: new chapters, extra diagrams/code for existing chapters, and the part structure.
+// Facts about Qwen are computed from the shared accounting or come from recorded, pinned runs.
+// ---------------------------------------------------------------------------
+
+const b = (en: string, sk: string): L10n => ({ en, sk });
+const E = (n: number) => n.toLocaleString('en-US');
+const S = (n: number) => n.toLocaleString('sk-SK');
+const A8 = accounting(QWEN3_8B);
+const A30 = accounting(QWEN3_30B_A3B);
+const KV8 = kvBytesPerToken(QWEN3_8B);
+const KV30 = kvBytesPerToken(QWEN3_30B_A3B);
+
+export interface Part { n: number; title: L10n; summary: L10n; chapters: string[] }
+
+export const PARTS: Part[] = [
+  { n: 1, title: b('Foundations', 'Základy'), summary: b('Numbers, neurons, vectors and probabilities: everything a transformer is built from.', 'Čísla, neuróny, vektory a pravdepodobnosti: všetko, z čoho je transformer postavený.'), chapters: ['what', 'weight', 'neuron', 'matrix', 'vectors', 'probability'] },
+  { n: 2, title: b('The building blocks of a transformer', 'Stavebné kamene transformera'), summary: b('Tokens, the residual stream, attention, positions, feed-forward networks and experts.', 'Tokeny, reziduálny prúd, pozornosť, pozície, dopredné siete a experti.'), chapters: ['tokens', 'residual', 'attention', 'heads', 'rope', 'ffn', 'moe', 'block'] },
+  { n: 3, title: b('The model in action', 'Model v akcii'), summary: b('Build a tiny transformer, generate text, use the K/V cache, and follow a chat message end to end.', 'Postavte malý transformer, generujte text, použite cache K/V a sledujte správu v chate od začiatku do konca.'), chapters: ['forward', 'generate', 'kvcache', 'journey', 'hf'] },
+  { n: 4, title: b('Learning', 'Učenie'), summary: b('Loss, gradients, backpropagation and how large language models are really trained.', 'Chyba, gradienty, spätné šírenie a ako sa veľké jazykové modely naozaj trénujú.'), chapters: ['learning', 'backprop', 'training-llm'] },
+  { n: 5, title: b('Practice and scale', 'Prax a škálovanie'), summary: b('Memory, hardware, serving many users, quantization, checkpoint files, newer designs and a one-page summary.', 'Pamäť, hardvér, obsluha mnohých používateľov, kvantizácia, súbory checkpointov, novšie návrhy a zhrnutie na jednej strane.'), chapters: ['hardware', 'serving', 'files', 'beyond', 'summary'] },
+];
+
+/** Extra diagrams, experiments and code inserted into the original chapters (before their quick check). */
+export const EXTRA: Record<string, Block[]> = {
+  what: [
+    { k: 'figure', f: 'loop' },
+    { k: 'p', t: b('The probabilities in the diagram are real: they are what the small Qwen3-0.6B model computes for “The cat sat on the”. No single answer is certain; the model spreads its belief over many plausible continuations, and the way one is picked ([generating text](#/learn/generate)) decides what you see.', 'Pravdepodobnosti v diagrame sú skutočné: vypočítal ich malý model Qwen3-0.6B pre „The cat sat on the“. Žiadna odpoveď nie je istá; model rozloží svoje presvedčenie medzi mnoho vierohodných pokračovaní a spôsob výberu jedného z nich ([generovanie textu](#/learn/generate)) rozhodne, čo uvidíte.') },
+  ],
+  neuron: [
+    { k: 'figure', f: 'neuron' },
+    { k: 'code', c: 'neuron', t: b('The same neuron and a small layer in a few lines of NumPy. Run it and change the numbers.', 'Ten istý neurón a malá vrstva v niekoľkých riadkoch NumPy. Spustite to a meňte čísla.') },
+  ],
+  matrix: [{ k: 'figure', f: 'matvec' }],
+  tokens: [
+    { k: 'figure', f: 'tokenize' },
+    { k: 'figure', f: 'embedding' },
+    { k: 'p', t: b('Why not just use letters or whole words? Letters would make sequences very long (attention cost grows with length), and whole words cannot cover every name, typo or language. Byte-level BPE is a compromise learned from data: frequent strings become single tokens, rare ones are split into smaller pieces, and any byte sequence can still be written. In the example below, the Slovak sentence needs 15 tokens for 37 characters, while common English words such as “ capital” are a single token each.', 'Prečo nepoužiť jednoducho písmená alebo celé slová? Písmená by veľmi predĺžili sekvencie (náklady pozornosti rastú s dĺžkou) a celé slová nedokážu pokryť každé meno, preklep či jazyk. BPE na úrovni bajtov je kompromis naučený z dát: časté reťazce sa stanú jedným tokenom, zriedkavé sa rozdelia na menšie kúsky a zapísať sa dá stále akákoľvek postupnosť bajtov. V príklade nižšie potrebuje slovenská veta 15 tokenov na 37 znakov, kým bežné anglické slová ako „ capital“ sú každé jediným tokenom.') },
+    { k: 'code', c: 'tokenizer', t: b('The real Qwen3 tokenizer on a Slovak sentence, and the chat template that wraps every message. The output below is from an actual run.', 'Skutočný tokenizér Qwen3 na slovenskej vete a šablóna chatu, ktorá obalí každú správu. Výstup nižšie pochádza zo skutočného behu.') },
+  ],
+  residual: [
+    { k: 'figure', f: 'residual' },
+    { k: 'figure', f: 'rmsnorm' },
+    { k: 'code', c: 'embed-norm', t: b('An embedding lookup and RMSNorm in NumPy. Note that RMSNorm gives the same output when the input is scaled by 10: it removes the overall size and keeps the direction.', 'Vyhľadanie embeddingu a RMSNorm v NumPy. Všimnite si, že RMSNorm dá rovnaký výstup, aj keď sa vstup vynásobí 10: odstráni celkovú veľkosť a zachová smer.') },
+  ],
+  attention: [
+    { k: 'figure', f: 'qkv' },
+    { k: 'figure', f: 'mask' },
+    { k: 'p', t: b('Why divide by √d_h? A dot product of two random vectors with d_h coordinates grows roughly like √d_h. Without the division, scores in a head of width 128 would be so large that softmax would put almost all weight on one token and its gradients would vanish. Dividing keeps the scores in a range where softmax can still express “mostly this, a bit of that”.', 'Prečo deliť √d_h? Skalárny súčin dvoch náhodných vektorov s d_h súradnicami rastie zhruba ako √d_h. Bez delenia by skóre v hlave so šírkou 128 boli také veľké, že softmax by takmer všetku váhu dal jednému tokenu a jeho gradienty by zmizli. Delenie udrží skóre v rozsahu, v ktorom softmax ešte vie vyjadriť „hlavne toto, trochu tamto“.') },
+    { k: 'code', c: 'attention', t: b('One causal attention head from scratch. Every number of the attention matrix below was computed by this code; check that each row sums to 1 and that the upper triangle is 0.', 'Jedna kauzálna hlava pozornosti od nuly. Každé číslo matice pozornosti nižšie vypočítal tento kód; overte, že každý riadok dáva spolu 1 a horný trojuholník je 0.') },
+    { k: 'links', items: [{ href: '#/trace', label: b('Real attention maps of Qwen3-0.6B', 'Skutočné mapy pozornosti Qwen3-0.6B') }] },
+  ],
+  ffn: [{ k: 'figure', f: 'swiglu' }],
+  moe: [
+    { k: 'figure', f: 'moe' },
+    { k: 'code', c: 'ffn-moe', t: b('A SwiGLU feed-forward network and a small mixture-of-experts layer with top-2 routing and renormalization, the same rule Qwen3-30B-A3B uses with 128 experts and top-8.', 'Dopredná sieť SwiGLU a malá vrstva zmesi expertov so smerovaním top-2 a prepočtom, rovnaké pravidlo používa Qwen3-30B-A3B so 128 expertmi a top-8.') },
+  ],
+  block: [{ k: 'figure', f: 'block' }, { k: 'figure', f: 'model' }],
+  generate: [{ k: 'widget', w: 'journey' }],
+  learning: [{ k: 'figure', f: 'train-loop' }, { k: 'widget', w: 'xent' }],
+  hardware: [{ k: 'widget', w: 'quant' }],
+};
+
+// ---------------------------------------------------------------------------
+export const NEW_CHAPTERS: Omit<Chapter, 'n'>[] = [
+  {
+    id: 'vectors', minutes: 7,
+    title: b('Vectors and dot products: the geometry of meaning', 'Vektory a skalárne súčiny: geometria významu'),
+    summary: b('A list of numbers is a point or an arrow in space; the dot product measures how much two arrows agree.', 'Zoznam čísel je bod alebo šípka v priestore; skalárny súčin meria, nakoľko sa dve šípky zhodujú.'),
+    blocks: [
+      { k: 'p', t: b('Inside a transformer, every token is represented by a **vector**: a list of numbers such as 4,096 numbers in Qwen3-8B. You can picture a vector with two numbers as an arrow on a sheet of paper, with three numbers as an arrow in a room. With 4,096 numbers we can no longer picture it, but the same rules of geometry still hold.', 'Vo vnútri transformera je každý token reprezentovaný **vektorom**: zoznamom čísel, napríklad 4 096 číslami v Qwen3-8B. Vektor s dvoma číslami si predstavte ako šípku na papieri, s tromi číslami ako šípku v miestnosti. Pri 4 096 číslach si ho už predstaviť nevieme, no rovnaké pravidlá geometrie stále platia.') },
+      { k: 'figure', f: 'vectors' },
+      { k: 'h', t: b('The dot product', 'Skalárny súčin') },
+      { k: 'p', t: b('The **dot product** of two vectors multiplies them coordinate by coordinate and adds the results: a·b = a₁b₁ + a₂b₂ + … It is large and positive when the arrows point the same way, zero when they are perpendicular, and negative when they point in opposite directions. Geometrically it equals the two lengths times the cosine of the angle between them.', '**Skalárny súčin** dvoch vektorov ich vynásobí súradnicu po súradnici a výsledky sčíta: a·b = a₁b₁ + a₂b₂ + … Je veľký a kladný, keď šípky ukazujú rovnakým smerom, nulový, keď sú na seba kolmé, a záporný, keď ukazujú opačne. Geometricky sa rovná súčinu dvoch dĺžok a kosínusu uhla medzi nimi.') },
+      { k: 'math', tex: 'a\\cdot b=\\sum_{i=1}^{d} a_i b_i = \\lVert a\\rVert\\,\\lVert b\\rVert\\cos\\theta' },
+      { k: 'widget', w: 'dot2d' },
+      { k: 'key', t: b('A neuron is a dot product (input · weights). An attention score is a dot product (query · key). Similarity of meanings is a dot product. Most of the arithmetic in a language model is dot products, billions of them per token.', 'Neurón je skalárny súčin (vstup · váhy). Skóre pozornosti je skalárny súčin (dopyt · kľúč). Podobnosť významov je skalárny súčin. Väčšina aritmetiky v jazykovom modeli sú skalárne súčiny, miliardy na každý token.') },
+      { k: 'h', t: b('Directions can carry meaning', 'Smery môžu niesť význam') },
+      { k: 'p', t: b('During training, the model arranges its vectors so that useful information is readable by dot products. Related tokens tend to end up with similar directions, and some directions roughly correspond to properties (for example plural vs singular). This is a tendency observed in trained models, not a rule that every coordinate has a human meaning: for Qwen we do not know what individual coordinates mean.', 'Počas trénovania si model usporiada vektory tak, aby sa užitočná informácia dala vyčítať skalárnymi súčinmi. Príbuzné tokeny majú často podobné smery a niektoré smery zhruba zodpovedajú vlastnostiam (napríklad množné vs jednotné číslo). Je to tendencia pozorovaná v natrénovaných modeloch, nie pravidlo, že každá súradnica má ľudský význam: pri Qwen nevieme, čo jednotlivé súradnice znamenajú.') },
+      { k: 'code', c: 'vectors', t: b('Dot products and cosine similarity with NumPy. The three “meaning vectors” are invented for illustration.', 'Skalárne súčiny a kosínusová podobnosť v NumPy. Tri „vektory významu“ sú vymyslené na ilustráciu.') },
+      { k: 'qwen', t: b(`In Qwen3-8B every token vector has ${E(QWEN3_8B.d)} numbers; one dot product of two such vectors is ${E(QWEN3_8B.d)} multiplications and additions. A single matrix like q_proj performs ${E(QWEN3_8B.hq * QWEN3_8B.headDim)} such dot products for every token.`, `V Qwen3-8B má každý vektor tokenu ${S(QWEN3_8B.d)} čísel; jeden skalárny súčin dvoch takých vektorov je ${S(QWEN3_8B.d)} násobení a sčítaní. Jediná matica, napríklad q_proj, vykoná pre každý token ${S(QWEN3_8B.hq * QWEN3_8B.headDim)} takých skalárnych súčinov.`) },
+      { k: 'quiz', q: b('Two vectors are perpendicular. What is their dot product?', 'Dva vektory sú na seba kolmé. Aký je ich skalárny súčin?'), options: [b('1', '1'), b('0', '0'), b('It depends only on their lengths', 'Závisí len od ich dĺžok')], correct: 1, explain: b('cos 90° = 0, so the dot product is 0 whatever the lengths are.', 'cos 90° = 0, preto je skalárny súčin 0 bez ohľadu na dĺžky.') },
+    ],
+  },
+  {
+    id: 'probability', minutes: 7,
+    title: b('Probabilities, softmax and the training loss', 'Pravdepodobnosti, softmax a chyba pri trénovaní'),
+    summary: b('How raw scores become probabilities, and how the model is scored on how surprised it was.', 'Ako sa zo surových skóre stanú pravdepodobnosti a ako sa model hodnotí podľa toho, nakoľko bol prekvapený.'),
+    blocks: [
+      { k: 'p', t: b('At the end of every forward pass the model produces one raw score, called a **logit**, for every entry of its vocabulary. Logits can be any number, positive or negative. To turn them into probabilities we need numbers that are positive and add up to 1. The function that does this is **softmax**.', 'Na konci každého dopredného prechodu model vytvorí jedno surové skóre, nazývané **logit**, pre každú položku svojho slovníka. Logity môžu byť ľubovoľné čísla, kladné aj záporné. Aby sme z nich urobili pravdepodobnosti, potrebujeme čísla, ktoré sú kladné a dávajú spolu 1. Funkcia, ktorá to robí, sa volá **softmax**.') },
+      { k: 'figure', f: 'softmax' },
+      { k: 'math', tex: 'p_i=\\operatorname{softmax}(z)_i=\\frac{e^{z_i}}{\\sum_j e^{z_j}}' },
+      { k: 'list', items: [
+        b('**exp** makes every score positive and exaggerates differences: a logit 2 higher means about 7.4× more probability.', '**exp** urobí každé skóre kladným a zväčší rozdiely: logit o 2 vyšší znamená asi 7,4× vyššiu pravdepodobnosť.'),
+        b('**Dividing by the sum** makes the results add up to exactly 1.', '**Delenie súčtom** zabezpečí, že výsledky dajú spolu presne 1.'),
+        b('Adding the same number to every logit changes nothing. Implementations subtract the largest logit first, which avoids overflow without changing the result.', 'Pripočítanie rovnakého čísla ku všetkým logitom nič nezmení. Implementácie najprv odčítajú najväčší logit, čím sa vyhnú pretečeniu bez zmeny výsledku.'),
+      ] },
+      { k: 'h', t: b('Temperature', 'Teplota') },
+      { k: 'p', t: b('Dividing all logits by a **temperature** T before softmax controls how peaked the distribution is. T below 1 sharpens it (the favourite becomes even more likely), T above 1 flattens it (rare tokens get a chance). Qwen3’s default for thinking mode is T = 0.6.', 'Vydelenie všetkých logitov **teplotou** T pred softmaxom určuje, aké špicaté je rozdelenie. T pod 1 ho zaostrí (favorit je ešte pravdepodobnejší), T nad 1 ho sploští (zriedkavé tokeny dostanú šancu). Predvolená hodnota Qwen3 pre režim premýšľania je T = 0,6.') },
+      { k: 'h', t: b('Cross-entropy: how training measures mistakes', 'Krížová entropia: ako trénovanie meria chyby') },
+      { k: 'p', t: b('During training we know the correct next token. The loss for one position is **−log p(correct token)**: 0 if the model gave it probability 1, and larger the more surprised it was. Averaged over trillions of positions, this one number is what training tries to make small. A model that guessed uniformly among Qwen’s 151,936 rows would have loss ln 151,936 ≈ 11.9.', 'Pri trénovaní poznáme správny ďalší token. Chyba pre jednu pozíciu je **−log p(správny token)**: 0, ak mu model dal pravdepodobnosť 1, a tým väčšia, čím bol model prekvapenejší. Spriemerované cez bilióny pozícií je toto jediné číslo to, čo sa trénovanie snaží zmenšiť. Model, ktorý by hádal rovnomerne medzi 151 936 riadkami Qwen, by mal chybu ln 151 936 ≈ 11,9.') },
+      { k: 'math', tex: '\\mathcal{L}=-\\log p_{\\text{target}}=-z_{\\text{target}}+\\log\\sum_j e^{z_j}' },
+      { k: 'widget', w: 'xent' },
+      { k: 'code', c: 'softmax', t: b('Softmax, temperature and cross-entropy in NumPy.', 'Softmax, teplota a krížová entropia v NumPy.') },
+      { k: 'key', t: b('Logits are scores, softmax turns them into probabilities, and −log p of the correct token is the training loss. Generation reads probabilities; training reads the loss.', 'Logity sú skóre, softmax z nich urobí pravdepodobnosti a −log p správneho tokenu je chyba pri trénovaní. Generovanie číta pravdepodobnosti; trénovanie číta chybu.') },
+      { k: 'quiz', q: b('All logits are increased by 5. What happens to the probabilities?', 'Všetky logity sa zväčšia o 5. Čo sa stane s pravdepodobnosťami?'), options: [b('They all grow', 'Všetky narastú'), b('Nothing: softmax only depends on differences between logits', 'Nič: softmax závisí len od rozdielov medzi logitmi'), b('The largest one becomes 1', 'Najväčšia sa stane 1')], correct: 1, explain: b('e^(z+5) = e^5 · e^z; the common factor e^5 cancels in the division.', 'e^(z+5) = e^5 · e^z; spoločný činiteľ e^5 sa pri delení vykráti.') },
+    ],
+  },
+  {
+    id: 'heads', minutes: 7,
+    title: b('Many heads at once: multi-head and grouped-query attention', 'Veľa hláv naraz: viachlavová pozornosť a GQA'),
+    summary: b('Attention runs in many independent heads; Qwen3 lets several query heads share one key/value head.', 'Pozornosť beží v mnohých nezávislých hlavách; Qwen3 nechá viac hláv dopytov zdieľať jednu hlavu kľúčov a hodnôt.'),
+    blocks: [
+      { k: 'p', t: b('One attention head computes one pattern of “who looks at whom”. A sentence has many relationships at once: which noun a pronoun refers to, which word came just before, where the question started. So a block runs many heads **in parallel**, each with its own small Q, K and V projections of width d_h = 128, and concatenates their outputs before the output projection W_O mixes them.', 'Jedna hlava pozornosti vypočíta jeden vzor „kto sa pozerá na koho“. Veta má naraz veľa vzťahov: na ktoré podstatné meno odkazuje zámeno, ktoré slovo bolo tesne predtým, kde sa začala otázka. Blok preto spúšťa veľa hláv **paralelne**, každú s vlastnými malými projekciami Q, K a V so šírkou d_h = 128, a ich výstupy spojí predtým, ako ich zmieša výstupná projekcia W_O.') },
+      { k: 'math', tex: '\\operatorname{MHA}(X)=\\operatorname{concat}(\\text{head}_1,\\dots,\\text{head}_{H})\\,W_O^{\\top},\\quad \\text{head}_h=\\operatorname{softmax}\\!\\Big(\\tfrac{Q_hK_h^{\\top}}{\\sqrt{d_h}}+M\\Big)V_h' },
+      { k: 'h', t: b('Grouped-query attention (GQA)', 'Pozornosť so zoskupenými dopytmi (GQA)') },
+      { k: 'p', t: b('During generation, the keys and values of all earlier tokens must be kept in memory (the K/V cache). With 32 full heads this cache becomes very large. **GQA** keeps all 32 query heads but only 8 key/value heads: every K/V head is shared by a group of 4 query heads. The cache shrinks 4×, while the model can still ask 32 different questions.', 'Počas generovania sa musia kľúče a hodnoty všetkých skorších tokenov držať v pamäti (cache K/V). Pri 32 úplných hlavách je táto cache veľmi veľká. **GQA** ponechá všetkých 32 hláv dopytov, ale len 8 hláv kľúčov a hodnôt: každú hlavu K/V zdieľa skupina 4 hláv dopytov. Cache sa zmenší 4× a model sa stále môže pýtať 32 rôznych otázok.') },
+      { k: 'figure', f: 'gqa' },
+      { k: 'widget', w: 'gqa' },
+      { k: 'h', t: b('QK-Norm: Qwen3’s stabilizer', 'QK-Norm: stabilizátor Qwen3') },
+      { k: 'p', t: b('Qwen3 adds one more detail inside every head: before RoPE, each query and each key vector is RMS-normalized with its own learned gain of 128 numbers (q_norm and k_norm). This keeps attention scores from growing out of control during training. The Qwen3 report lists QK-Norm as a change from Qwen2, which used biases on Q, K and V instead.', 'Qwen3 pridáva v každej hlave ešte jeden detail: pred RoPE sa každý vektor dopytu a kľúča RMS-normalizuje s vlastným naučeným ziskom zo 128 čísel (q_norm a k_norm). To bráni tomu, aby skóre pozornosti počas trénovania nekontrolovane rástli. Správa o Qwen3 uvádza QK-Norm ako zmenu oproti Qwen2, ktorý namiesto toho používal biasy na Q, K a V.') },
+      { k: 'code', c: 'gqa-rope', t: b('GQA shapes (how 8 stored K/V heads serve 32 query heads) and RoPE, verified numerically. The second half is explained in the next chapter.', 'Tvary GQA (ako 8 uložených hláv K/V slúži 32 hlavám dopytov) a RoPE, overené číselne. Druhú polovicu vysvetlí ďalšia kapitola.') },
+      { k: 'qwen', t: b(`Qwen3-8B: ${QWEN3_8B.hq} query heads and ${QWEN3_8B.hkv} K/V heads of width ${QWEN3_8B.headDim} → K/V cache ${E(KV8)} bytes per token. Qwen3-30B-A3B: ${QWEN3_30B_A3B.hq} query heads and only ${QWEN3_30B_A3B.hkv} K/V heads → ${E(KV30)} bytes per token. Without GQA, Qwen3-8B would need ${E(KV8 * 4)} bytes per token.`, `Qwen3-8B: ${QWEN3_8B.hq} hláv dopytov a ${QWEN3_8B.hkv} hláv K/V so šírkou ${QWEN3_8B.headDim} → cache K/V ${S(KV8)} bajtov na token. Qwen3-30B-A3B: ${QWEN3_30B_A3B.hq} hláv dopytov a len ${QWEN3_30B_A3B.hkv} hlavy K/V → ${S(KV30)} bajtov na token. Bez GQA by Qwen3-8B potreboval ${S(KV8 * 4)} bajtov na token.`) },
+      { k: 'quiz', q: b('In Qwen3-8B, which K/V head does query head 13 use?', 'Ktorú hlavu K/V používa v Qwen3-8B hlava dopytu 13?'), options: [b('K/V head 13', 'Hlavu K/V 13'), b('K/V head 3', 'Hlavu K/V 3'), b('All 8 of them', 'Všetkých 8')], correct: 1, explain: b('32 query heads / 8 K/V heads = groups of 4; ⌊13 / 4⌋ = 3.', '32 hláv dopytov / 8 hláv K/V = skupiny po 4; ⌊13 / 4⌋ = 3.') },
+      { k: 'links', items: [{ href: '#/labs/attention', label: b('Attention lab with GQA', 'Laboratórium pozornosti s GQA') }, { href: explorerHref({ m: 'qwen3-8b', lv: 3, b: 0, mod: 'attention' }), label: b('Attention module of Qwen3-8B', 'Modul pozornosti Qwen3-8B') }] },
+    ],
+  },
+  {
+    id: 'rope', minutes: 7,
+    title: b('Where is each token? Rotary position embeddings', 'Kde je ktorý token? Rotačné pozičné kódovanie'),
+    summary: b('Attention by itself ignores order; RoPE rotates queries and keys so that scores depend on distance.', 'Samotná pozornosť poradie ignoruje; RoPE otáča dopyty a kľúče tak, aby skóre záviseli od vzdialenosti.'),
+    blocks: [
+      { k: 'p', t: b('Attention compares every query with every key, but a dot product does not know *where* the two tokens are. Without extra information, “dog bites man” and “man bites dog” would look the same to an attention head. The model therefore needs a signal of position.', 'Pozornosť porovnáva každý dopyt s každým kľúčom, ale skalárny súčin nevie, *kde* sa tie dva tokeny nachádzajú. Bez ďalšej informácie by „pes hryzie muža“ a „muž hryzie psa“ vyzerali pre hlavu pozornosti rovnako. Model preto potrebuje signál o pozícii.') },
+      { k: 'p', t: b('The original transformer added a position vector to each embedding. Qwen3 uses **RoPE** (rotary position embedding) instead: the 128 coordinates of each query and key are treated as 64 pairs, and every pair is **rotated** by an angle that grows with the token’s position. Each pair rotates at its own speed: fast pairs distinguish neighbouring positions, slow pairs track long distances.', 'Pôvodný transformer pripočítal ku každému embeddingu vektor pozície. Qwen3 namiesto toho používa **RoPE** (rotačné pozičné kódovanie): 128 súradníc každého dopytu a kľúča sa berie ako 64 párov a každý pár sa **otočí** o uhol, ktorý rastie s pozíciou tokenu. Každý pár sa otáča vlastnou rýchlosťou: rýchle páry rozlišujú susedné pozície, pomalé sledujú veľké vzdialenosti.') },
+      { k: 'figure', f: 'rope' },
+      { k: 'math', tex: '\\begin{pmatrix}x_i\\\\x_{i+d/2}\\end{pmatrix}\\mapsto\\begin{pmatrix}\\cos m\\theta_i&-\\sin m\\theta_i\\\\\\sin m\\theta_i&\\cos m\\theta_i\\end{pmatrix}\\begin{pmatrix}x_i\\\\x_{i+d/2}\\end{pmatrix},\\qquad \\theta_i=10^{6\\,(-2i/d)}' },
+      { k: 'p', t: b('The beautiful property: rotating the query by its position m and the key by its position n makes their dot product depend only on **m − n**, the distance between them. The same relationship gets the same score wherever it appears in the text. RoPE has no learned parameters; it is pure geometry applied to Q and K (not to V).', 'Krásna vlastnosť: otočenie dopytu podľa jeho pozície m a kľúča podľa jeho pozície n spôsobí, že ich skalárny súčin závisí len od **m − n**, vzdialenosti medzi nimi. Rovnaký vzťah dostane rovnaké skóre, nech sa v texte objaví kdekoľvek. RoPE nemá naučené parametre; je to čistá geometria použitá na Q a K (nie na V).') },
+      { k: 'widget', w: 'rope2d' },
+      { k: 'qwen', t: b('Qwen3 uses the “rotate half” pairing (coordinate i with i + 64) and base θ = 1,000,000. The base was raised from 10,000 to 1,000,000 during the long-context pre-training stage so that the slowest pairs turn slowly enough for 32,768 tokens; with YaRN scaling the model card allows 131,072 tokens.', 'Qwen3 používa párovanie „rotate half“ (súradnica i so súradnicou i + 64) a základ θ = 1 000 000. Základ sa zvýšil z 10 000 na 1 000 000 vo fáze predtrénovania na dlhom kontexte, aby sa najpomalšie páry otáčali dosť pomaly pre 32 768 tokenov; so škálovaním YaRN karta modelu povoľuje 131 072 tokenov.') },
+      { k: 'key', t: b('Position is not stored as a learned table. It is applied on the fly as a rotation of queries and keys, so the attention score encodes relative distance.', 'Pozícia nie je uložená ako naučená tabuľka. Uplatní sa za behu ako otočenie dopytov a kľúčov, takže skóre pozornosti kóduje relatívnu vzdialenosť.') },
+      { k: 'quiz', q: b('A query at position 105 and a key at 103 get score s. What score do a query at 5 and a key at 3 (same vectors) get?', 'Dopyt na pozícii 105 a kľúč na 103 dostanú skóre s. Aké skóre dostanú dopyt na 5 a kľúč na 3 (rovnaké vektory)?'), options: [b('The same s', 'To isté s'), b('A larger score, because they are closer to the start', 'Väčšie skóre, lebo sú bližšie k začiatku'), b('Zero', 'Nulu')], correct: 0, explain: b('With RoPE the score depends only on the distance m − n = 2 in both cases. The Python example verifies this numerically.', 'Pri RoPE závisí skóre len od vzdialenosti m − n = 2 v oboch prípadoch. Príklad v Pythone to overuje číselne.') },
+      { k: 'links', items: [{ href: '#/labs/rope', label: b('RoPE lab', 'Laboratórium RoPE') }] },
+    ],
+  },
+  {
+    id: 'forward', minutes: 10,
+    title: b('Build a tiny transformer yourself', 'Postavte si malý transformer sami'),
+    summary: b('Every operation of a Qwen3 block in about 80 lines of NumPy, with generation and a K/V cache.', 'Každá operácia bloku Qwen3 v asi 80 riadkoch NumPy, s generovaním a cache K/V.'),
+    blocks: [
+      { k: 'p', t: b('You now know every piece. Put together, they fit in a surprisingly short program. The code below is a complete decoder-only transformer with the same operations as Qwen3: embedding lookup, pre-RMSNorm, attention with grouped-query heads, QK-norm and RoPE, a SwiGLU feed-forward network, residual additions, a final norm and an untied output head. Only the sizes differ: width 16 instead of 4,096, two blocks instead of 36, and 12 tokens instead of 151,936.', 'Teraz poznáte každý kúsok. Spolu sa zmestia do prekvapivo krátkeho programu. Kód nižšie je úplný transformer typu iba dekodér s rovnakými operáciami ako Qwen3: vyhľadanie embeddingu, pred-RMSNorm, pozornosť so zoskupenými hlavami dopytov, QK-norm a RoPE, dopredná sieť SwiGLU, reziduálne sčítania, záverečná normalizácia a neprepojená výstupná hlava. Líšia sa len rozmery: šírka 16 namiesto 4 096, dva bloky namiesto 36 a 12 tokenov namiesto 151 936.') },
+      { k: 'figure', f: 'model' },
+      { k: 'code', c: 'tiny-transformer', t: b('Read it top to bottom: `step()` is one decoder pass for one token. The last line checks that generating with the cache gives exactly the same logits as recomputing everything.', 'Čítajte zhora nadol: `step()` je jeden prechod dekodérom pre jeden token. Posledný riadok overí, že generovanie s cache dá presne rovnaké logity ako prepočítanie všetkého.') },
+      { k: 'list', items: [
+        b('**Shapes are everything.** Each matrix is [output, input], exactly like PyTorch `nn.Linear` and the Qwen checkpoint files.', '**Tvary sú všetko.** Každá matica je [výstup, vstup], presne ako `nn.Linear` v PyTorch a v súboroch checkpointu Qwen.'),
+        b('**The weights are random**, so the generated tokens are meaningless. Training (Part 4) is what turns the same program into a useful model.', '**Váhy sú náhodné**, preto generované tokeny nemajú zmysel. Až trénovanie (časť 4) urobí z toho istého programu užitočný model.'),
+        b('**Real implementations** process all prompt tokens at once (prefill) with batched matrix multiplications and fused GPU kernels. The arithmetic is the same; only the order and speed differ.', '**Skutočné implementácie** spracujú všetky tokeny zadania naraz (predvyplnenie) dávkovým násobením matíc a zlúčenými jadrami GPU. Aritmetika je rovnaká; líši sa len poradie a rýchlosť.'),
+      ] },
+      { k: 'qwen', t: b(`Scale this program up to d = ${E(QWEN3_8B.d)}, ${QWEN3_8B.layers} blocks, ${QWEN3_8B.hq}/${QWEN3_8B.hkv} heads, FFN width ${E(QWEN3_8B.ffnWidth!)} and ${E(QWEN3_8B.vocabRows)} vocabulary rows, load the trained numbers, and you have Qwen3-8B: ${E(A8.total)} parameters.`, `Zväčšite tento program na d = ${S(QWEN3_8B.d)}, ${QWEN3_8B.layers} blokov, ${QWEN3_8B.hq}/${QWEN3_8B.hkv} hláv, šírku FFN ${S(QWEN3_8B.ffnWidth!)} a ${S(QWEN3_8B.vocabRows)} riadkov slovníka, načítajte natrénované čísla a máte Qwen3-8B: ${S(A8.total)} parametrov.`) },
+      { k: 'quiz', q: b('What turns this tiny program into a model that writes sensible text?', 'Čo z tohto malého programu urobí model, ktorý píše zmysluplný text?'), options: [b('Adding more code', 'Pridanie ďalšieho kódu'), b('Different weight values (found by training) and larger sizes', 'Iné hodnoty váh (nájdené trénovaním) a väčšie rozmery'), b('A different activation function', 'Iná aktivačná funkcia')], correct: 1, explain: b('The architecture is essentially this program. The knowledge is in the numbers, which training sets.', 'Architektúra je v podstate tento program. Znalosti sú v číslach, ktoré nastaví trénovanie.') },
+      { k: 'links', items: [{ href: '#/labs/layers', label: b('Toy simulator: step through the layers', 'Hračkový simulátor: prechádzajte vrstvami') }] },
+    ],
+  },
+  {
+    id: 'kvcache', minutes: 7,
+    title: b('Prefill, decode and the K/V cache', 'Predvyplnenie, generovanie a cache K/V'),
+    summary: b('Why answers start after a pause and then stream: two phases, and a memory of keys and values.', 'Prečo odpovede začnú po pauze a potom plynú: dve fázy a pamäť kľúčov a hodnôt.'),
+    blocks: [
+      { k: 'p', t: b('Generating text has two phases. In **prefill**, the whole prompt is processed at once: all tokens pass through every block in parallel, which keeps the GPU busy with large matrix multiplications. In **decode**, the model produces one token per step, because each new token depends on the previous one.', 'Generovanie textu má dve fázy. Pri **predvyplnení** sa celé zadanie spracuje naraz: všetky tokeny prejdú každým blokom paralelne, čo zamestná GPU veľkými násobeniami matíc. Pri **generovaní** model vytvára jeden token na krok, lebo každý nový token závisí od predchádzajúceho.') },
+      { k: 'figure', f: 'decode' },
+      { k: 'p', t: b('A new token needs to attend to all earlier tokens, which means it needs their keys and values in every block. Those do not change once computed (causal attention never lets old tokens see new ones), so they are stored: this store is the **K/V cache**. Each decode step computes Q, K and V only for the new token, appends its K and V, and reads the rest from memory.', 'Nový token musí venovať pozornosť všetkým skorším tokenom, teda v každom bloku potrebuje ich kľúče a hodnoty. Tie sa po vypočítaní nemenia (kauzálna pozornosť nikdy nedovolí starým tokenom vidieť nové), preto sa uložia: toto úložisko je **cache K/V**. Každý krok generovania vypočíta Q, K a V len pre nový token, pripojí jeho K a V a zvyšok prečíta z pamäte.') },
+      { k: 'widget', w: 'kvcost' },
+      { k: 'list', items: [
+        b('**Time to first token** is mostly prefill; it grows with the prompt length.', '**Čas do prvého tokenu** je hlavne predvyplnenie; rastie s dĺžkou zadania.'),
+        b('**Tokens per second** during decode is usually limited by memory bandwidth: every step must read all active weights and the whole cache, but does little arithmetic per byte.', '**Tokeny za sekundu** pri generovaní obmedzuje zvyčajne priepustnosť pamäte: každý krok musí prečítať všetky aktívne váhy a celú cache, ale na bajt urobí málo výpočtov.'),
+        b('The cache is **runtime state, not parameters**. It belongs to one conversation and is thrown away (or reused for a shared prefix) when it ends.', 'Cache je **stav počas behu, nie parametre**. Patrí jednému rozhovoru a po jeho skončení sa zahodí (alebo znovu použije pre spoločnú predponu).'),
+      ] },
+      { k: 'math', tex: '\\text{KV bytes}=2\\cdot L\\cdot H_{kv}\\cdot d_h\\cdot \\text{bytes}\\cdot T' },
+      { k: 'qwen', t: b(`Qwen3-8B stores ${E(KV8)} bytes per token (BF16): 2 (K and V) × ${QWEN3_8B.layers} blocks × ${QWEN3_8B.hkv} heads × ${QWEN3_8B.headDim} × 2 bytes. A 32,768-token conversation therefore needs ${E(KV8 * 32768 / 2 ** 30)} GiB of cache, next to ${E(Math.round(A8.total * 2 / 1e9 * 10) / 10)} GB of weights.`, `Qwen3-8B ukladá ${S(KV8)} bajtov na token (BF16): 2 (K a V) × ${QWEN3_8B.layers} blokov × ${QWEN3_8B.hkv} hláv × ${QWEN3_8B.headDim} × 2 bajty. Rozhovor s 32 768 tokenmi preto potrebuje ${S(KV8 * 32768 / 2 ** 30)} GiB cache popri ${S(Math.round(A8.total * 2 / 1e9 * 10) / 10)} GB váh.`) },
+      { k: 'quiz', q: b('Why can keys and values of old tokens be cached safely?', 'Prečo sa kľúče a hodnoty starých tokenov môžu bezpečne uložiť do cache?'), options: [b('Because causal attention means earlier positions never depend on later tokens', 'Lebo pri kauzálnej pozornosti skoršie pozície nikdy nezávisia od neskorších tokenov'), b('Because they are parameters', 'Lebo sú to parametre'), b('Because the GPU is fast', 'Lebo GPU je rýchla')], correct: 0, explain: b('Token i only sees tokens 0..i, so its K and V in every block are final the moment they are computed.', 'Token i vidí len tokeny 0..i, preto sú jeho K a V v každom bloku konečné v okamihu výpočtu.') },
+      { k: 'links', items: [{ href: '#/labs/cache', label: b('Cache lab: cached decode = full recomputation', 'Laboratórium cache: generovanie s cache = úplný prepočet') }] },
+    ],
+  },
+  {
+    id: 'journey', minutes: 10,
+    title: b('From your message to the answer', 'Od vašej správy k odpovedi'),
+    summary: b('Follow one real chat turn of Qwen3-0.6B through every stage, from the keyboard to the streamed reply.', 'Sledujte jeden skutočný ťah v chate s Qwen3-0.6B cez všetky fázy, od klávesnice po streamovanú odpoveď.'),
+    blocks: [
+      { k: 'p', t: b('What actually happens between pressing Enter and seeing the answer appear? This chapter follows one real conversation turn of the Qwen3-0.6B model. The prompt tokens, the 139 generated tokens and the five most likely candidates at every step were recorded from an actual run; the server steps are explained.', 'Čo sa naozaj deje medzi stlačením Enter a objavením sa odpovede? Táto kapitola sleduje jeden skutočný ťah rozhovoru s modelom Qwen3-0.6B. Tokeny zadania, 139 generovaných tokenov a päť najpravdepodobnejších kandidátov v každom kroku boli zaznamenané zo skutočného behu; kroky na serveri sú vysvetlené.') },
+      { k: 'figure', f: 'journey' },
+      { k: 'widget', w: 'journey' },
+      { k: 'h', t: b('What the app sends', 'Čo aplikácia posiela') },
+      { k: 'p', t: b('A chat app does not send just your last line. It sends the **whole conversation** (system instructions, earlier questions and answers) together with decoding settings such as temperature and the maximum number of new tokens, because the model itself remembers nothing between requests. Many servers (vLLM, SGLang, llama.cpp) offer an OpenAI-compatible endpoint for this:', 'Chatová aplikácia neposiela len váš posledný riadok. Posiela **celý rozhovor** (systémové pokyny, skoršie otázky a odpovede) spolu s nastaveniami dekódovania, ako je teplota a maximálny počet nových tokenov, lebo samotný model si medzi požiadavkami nič nepamätá. Mnohé servery (vLLM, SGLang, llama.cpp) na to ponúkajú rozhranie kompatibilné s OpenAI:') },
+      { k: 'code', c: 'api-client', t: b('A streaming request as an app would send it. This file is not executed on this site (it needs a running server).', 'Streamovaná požiadavka tak, ako by ju poslala aplikácia. Tento súbor sa na tejto stránke nespúšťa (potrebuje bežiaci server).') },
+      { k: 'h', t: b('What the server does with it', 'Čo s ňou robí server') },
+      { k: 'list', items: [
+        b('**Scheduling and batching.** Hundreds of conversations share one copy of the weights on the GPU. The scheduler mixes prefill of new requests with decode steps of running ones (continuous batching).', '**Plánovanie a dávkovanie.** Stovky rozhovorov zdieľajú jednu kópiu váh na GPU. Plánovač mieša predvyplnenie nových požiadaviek s krokmi generovania bežiacich (priebežné dávkovanie).'),
+        b('**Chat template + tokenizer.** The messages become text with special tokens, then token ids.', '**Šablóna chatu + tokenizér.** Zo správ sa stane text so špeciálnymi tokenmi, potom ID tokenov.'),
+        b('**Prefill**, then a **decode loop**: logits → sampling (temperature, top-k, top-p) → next token → append → repeat.', '**Predvyplnenie** a potom **slučka generovania**: logity → vzorkovanie (teplota, top-k, top-p) → ďalší token → pripojiť → znova.'),
+        b('**Streaming.** Each new token is detokenized and sent immediately (server-sent events), which is why text appears word by word.', '**Streamovanie.** Každý nový token sa detokenizuje a hneď odošle (server-sent events), preto sa text objavuje slovo po slove.'),
+        b('**Stopping.** Generation ends at the end-of-turn token `<|im_end|>`, a stop string or the length limit.', '**Zastavenie.** Generovanie skončí tokenom konca ťahu `<|im_end|>`, zastavovacím reťazcom alebo limitom dĺžky.'),
+      ] },
+      { k: 'code', c: 'hf-generate', t: b('The same path on your own computer with Hugging Face Transformers. The answer below is the real output of the real Qwen3-0.6B files (greedy decoding).', 'Tá istá cesta na vašom vlastnom počítači s Hugging Face Transformers. Odpoveď nižšie je skutočný výstup skutočných súborov Qwen3-0.6B (hladové dekódovanie).') },
+      { k: 'key', t: b('Your message changes only the input text. The same fixed weights run a prefill pass over the whole conversation and then one pass per generated token; nothing is learned during a chat.', 'Vaša správa mení len vstupný text. Tie isté pevné váhy vykonajú predvyplnenie nad celým rozhovorom a potom jeden prechod na každý generovaný token; počas rozhovoru sa nič nenaučí.') },
+      { k: 'quiz', q: b('You ask a follow-up question in the same chat. What does the app send to the server?', 'V tom istom chate položíte doplňujúcu otázku. Čo aplikácia pošle na server?'), options: [b('Only the new question; the model remembers the rest', 'Len novú otázku; zvyšok si model pamätá'), b('The whole conversation again, including the earlier answer', 'Znova celý rozhovor vrátane skoršej odpovede'), b('Only the model’s previous answer', 'Len predchádzajúcu odpoveď modelu')], correct: 1, explain: b('The model is stateless between requests. Servers may reuse a cached prefix to save time, but logically the whole conversation is the input.', 'Model si medzi požiadavkami nič nepamätá. Servery môžu na úsporu času znovu použiť predponu z cache, ale logicky je vstupom celý rozhovor.') },
+      { k: 'links', items: [{ href: '#/pipeline', label: b('Real tokens of both chat templates', 'Skutočné tokeny oboch šablón chatu') }, { href: '#/trace', label: b('What happens inside the 28 blocks', 'Čo sa deje vo vnútri 28 blokov') }] },
+    ],
+  },
+  {
+    id: 'hf', minutes: 9,
+    title: b('Running and inspecting a real Qwen model', 'Spustenie a preskúmanie skutočného modelu Qwen'),
+    summary: b('Load Qwen3-0.6B with Hugging Face, look at its modules, its next-token probabilities and its hidden states.', 'Načítajte Qwen3-0.6B cez Hugging Face a pozrite sa na jeho moduly, pravdepodobnosti ďalšieho tokenu a skryté stavy.'),
+    blocks: [
+      { k: 'p', t: b('Everything in this course can be checked on a real model. **Qwen3-0.6B** is the smallest Qwen3 model (28 blocks, width 1,024, 596 million unique parameters); it runs on an ordinary laptop CPU. It has the same architecture as Qwen3-8B except for the sizes and one detail: its input embedding and output head share one matrix (tied embeddings).', 'Všetko v tomto kurze sa dá overiť na skutočnom modeli. **Qwen3-0.6B** je najmenší model Qwen3 (28 blokov, šírka 1 024, 596 miliónov jedinečných parametrov); beží na bežnom procesore notebooku. Má rovnakú architektúru ako Qwen3-8B okrem rozmerov a jedného detailu: jeho vstupný embedding a výstupná hlava zdieľajú jednu maticu (prepojené embeddingy).') },
+      { k: 'code', c: 'hf-inspect', t: b('Print one decoder block, the five most likely next tokens for “The capital of France is”, the size of the residual stream after selected blocks, and one real attention map. All output below is from the real model.', 'Vypíše jeden blok dekodéra, päť najpravdepodobnejších ďalších tokenov pre „The capital of France is“, veľkosť reziduálneho prúdu po vybraných blokoch a jednu skutočnú mapu pozornosti. Celý výstup nižšie je zo skutočného modelu.') },
+      { k: 'list', items: [
+        b('The printed module tree shows exactly the tensors you met: q_proj [2048 × 1024] (16 heads × 128), k_proj and v_proj [1024 × 1024] (8 K/V heads × 128), o_proj, q_norm and k_norm of size 128, gate/up/down with width 3,072, two RMSNorms.', 'Vypísaný strom modulov ukazuje presne tenzory, ktoré už poznáte: q_proj [2048 × 1024] (16 hláv × 128), k_proj a v_proj [1024 × 1024] (8 hláv K/V × 128), o_proj, q_norm a k_norm veľkosti 128, gate/up/down so šírkou 3 072, dve RMSNorm.'),
+        b('“ Paris” gets probability 0.657. The rest (0.343) is spread over thousands of other tokens.', '„ Paris“ dostane pravdepodobnosť 0,657. Zvyšok (0,343) je rozložený medzi tisíce iných tokenov.'),
+        b('The size (RMS) of the residual stream at the last position grows from about 0.02 after the embedding to about 17 after block 26 (14.2 after the last block); the final norm brings it back to about 3.5.', 'Veľkosť (RMS) reziduálneho prúdu na poslednej pozícii narastie z asi 0,02 po embeddingu na asi 17 po bloku 26 (14,2 po poslednom bloku); záverečná normalizácia ju vráti na asi 3,5.'),
+        b('In the attention map of block 13, almost all weight goes to the first token. This “attention sink” is common in trained transformers; a head that has nothing useful to read parks its attention there.', 'V mape pozornosti bloku 13 ide takmer všetka váha na prvý token. Tento „odtok pozornosti“ je v natrénovaných transformeroch bežný; hlava, ktorá nemá čo užitočné čítať, tam „zaparkuje“ svoju pozornosť.'),
+      ] },
+      { k: 'key', t: b('A real model is the architecture of this course plus trained numbers. You can open it, print its pieces, and measure every intermediate value.', 'Skutočný model je architektúra z tohto kurzu plus natrénované čísla. Môžete ho otvoriť, vypísať jeho časti a zmerať každú medzihodnotu.') },
+      { k: 'quiz', q: b('Qwen3-0.6B’s k_proj has shape [1024 × 1024] while q_proj is [2048 × 1024]. Why?', 'k_proj v Qwen3-0.6B má tvar [1024 × 1024], kým q_proj [2048 × 1024]. Prečo?'), options: [b('Keys are less important', 'Kľúče sú menej dôležité'), b('GQA: 8 K/V heads × 128 versus 16 query heads × 128', 'GQA: 8 hláv K/V × 128 oproti 16 hlavám dopytov × 128'), b('A bug in the checkpoint', 'Chyba v checkpointe')], correct: 1, explain: b('Two query heads share each K/V head, so K and V projections have half the outputs of Q.', 'Každú hlavu K/V zdieľajú dve hlavy dopytov, preto majú projekcie K a V polovicu výstupov oproti Q.') },
+      { k: 'links', items: [{ href: '#/trace', label: b('Interactive real run of Qwen3-0.6B', 'Interaktívny skutočný beh Qwen3-0.6B') }] },
+    ],
+  },
+  {
+    id: 'backprop', minutes: 9,
+    title: b('Backpropagation step by step', 'Spätné šírenie krok za krokom'),
+    summary: b('How a model finds, for every one of billions of weights, which direction lowers the loss.', 'Ako model pre každú z miliárd váh zistí, ktorým smerom sa chyba zníži.'),
+    blocks: [
+      { k: 'p', t: b('Training needs one number per weight: the **gradient**, ∂loss/∂w, which says how much the loss would change if that weight were nudged. Computing it separately for 8 billion weights by trial and error would need 8 billion extra forward passes per step. **Backpropagation** gets all gradients at once for about the cost of two forward passes.', 'Trénovanie potrebuje pre každú váhu jedno číslo: **gradient** ∂chyba/∂w, ktorý hovorí, o koľko by sa chyba zmenila, keby sa táto váha trochu posunula. Vypočítať ho pre 8 miliárd váh samostatne pokusom a omylom by v každom kroku vyžadovalo 8 miliárd ďalších dopredných prechodov. **Spätné šírenie** získa všetky gradienty naraz za cenu zhruba dvoch dopredných prechodov.') },
+      { k: 'figure', f: 'graph' },
+      { k: 'h', t: b('The chain rule', 'Reťazové pravidlo') },
+      { k: 'p', t: b('A model is a chain of simple operations. If loss depends on y, y on z, and z on w, then ∂loss/∂w = ∂loss/∂y · ∂y/∂z · ∂z/∂w. Backpropagation walks the chain **backwards** from the loss, multiplying the local derivative of each operation, and reuses every intermediate result. Values computed in the forward pass (like z and y) are stored for this, which is why training needs much more memory than inference.', 'Model je reťaz jednoduchých operácií. Ak chyba závisí od y, y od z a z od w, potom ∂chyba/∂w = ∂chyba/∂y · ∂y/∂z · ∂z/∂w. Spätné šírenie prechádza reťazou **odzadu** od chyby, násobí lokálnu deriváciu každej operácie a každý medzivýsledok použije znovu. Hodnoty vypočítané v doprednom prechode (napríklad z a y) sa na to ukladajú, preto trénovanie potrebuje oveľa viac pamäte ako inferencia.') },
+      { k: 'math', tex: '\\frac{\\partial \\mathcal L}{\\partial w}=\\frac{\\partial \\mathcal L}{\\partial y}\\cdot\\frac{\\partial y}{\\partial z}\\cdot\\frac{\\partial z}{\\partial w},\\qquad w\\leftarrow w-\\eta\\,\\frac{\\partial \\mathcal L}{\\partial w}' },
+      { k: 'widget', w: 'backprop' },
+      { k: 'p', t: b('Try a learning rate of 1.0: the loss can go **up**. The gradient only describes the loss very close to the current weights; a step that is too large jumps over the valley. Real training uses small learning rates, warm-up and optimizers such as AdamW that adapt the step per weight.', 'Skúste rýchlosť učenia 1,0: chyba môže **stúpnuť**. Gradient opisuje chybu len veľmi blízko aktuálnych váh; príliš veľký krok preskočí údolie. Skutočné trénovanie používa malé rýchlosti učenia, postupné zahrievanie a optimalizátory ako AdamW, ktoré prispôsobujú krok každej váhe.') },
+      { k: 'code', c: 'backprop', t: b('The same tiny graph by hand, with PyTorch autograd and with finite differences. All three agree to six decimals; then one good and one too-large step.', 'Ten istý malý graf ručne, cez autograd v PyTorch a konečnými diferenciami. Všetky tri sa zhodujú na šesť desatinných miest; potom jeden dobrý a jeden príliš veľký krok.') },
+      { k: 'key', t: b('Backpropagation is just the chain rule applied systematically. Frameworks like PyTorch record the forward operations and run the chain rule backwards automatically (autograd).', 'Spätné šírenie je len systematicky použité reťazové pravidlo. Knižnice ako PyTorch si zaznamenajú dopredné operácie a reťazové pravidlo spustia odzadu automaticky (autograd).') },
+      { k: 'quiz', q: b('∂loss/∂w is negative. What should a gradient-descent step do to w?', '∂chyba/∂w je záporné. Čo má krok gradientného zostupu urobiť s w?'), options: [b('Decrease it', 'Zmenšiť ju'), b('Increase it', 'Zväčšiť ju'), b('Leave it alone', 'Nechať ju tak')], correct: 1, explain: b('w ← w − η·(negative) = w + something: increasing w lowers the loss.', 'w ← w − η·(záporné) = w + niečo: zväčšenie w zníži chybu.') },
+      { k: 'links', items: [{ href: '#/labs/training', label: b('Training lab: backprop through a whole block', 'Laboratórium trénovania: spätné šírenie celým blokom') }] },
+    ],
+  },
+  {
+    id: 'training-llm', minutes: 9,
+    title: b('How large language models are trained', 'Ako sa trénujú veľké jazykové modely'),
+    summary: b('Pre-training on trillions of tokens, then fine-tuning and reinforcement learning; small models learn from big ones.', 'Predtrénovanie na biliónoch tokenov, potom doladenie a posilňované učenie; malé modely sa učia od veľkých.'),
+    blocks: [
+      { k: 'p', t: b('The training loop of a real language model is the same loop you just saw, run at enormous scale: take a batch of text, predict every next token, compute the cross-entropy loss, backpropagate, update all weights with an optimizer, repeat. Below, a tiny transformer learns one sentence on a laptop in seconds.', 'Slučka trénovania skutočného jazykového modelu je tá istá slučka, ktorú ste práve videli, len v obrovskom meradle: vziať dávku textu, predpovedať každý ďalší token, vypočítať krížovú entropiu, spätne šíriť, optimalizátorom upraviť všetky váhy, opakovať. Nižšie sa malý transformer za pár sekúnd na notebooku naučí jednu vetu.') },
+      { k: 'code', c: 'train-lm', t: b('A complete training run in PyTorch: the loss drops from 2.76 to about 0.06, and the model then continues “the d” by itself. The recorded output is real.', 'Úplný beh trénovania v PyTorch: chyba klesne z 2,76 na asi 0,06 a model potom sám pokračuje v „the d“. Zaznamenaný výstup je skutočný.') },
+      { k: 'figure', f: 'pipeline' },
+      { k: 'h', t: b('The stages', 'Fázy') },
+      { k: 'list', items: [
+        b('**Pre-training** teaches the model language and knowledge by next-token prediction on raw text. For Qwen3: over 36 trillion tokens in 119 languages and dialects, in three stages (general, reasoning-heavy, long context).', '**Predtrénovanie** naučí model jazyk a znalosti predpovedaním ďalšieho tokenu na surovom texte. Pri Qwen3: viac než 36 biliónov tokenov v 119 jazykoch a nárečiach, v troch fázach (všeobecná, s dôrazom na uvažovanie, dlhý kontext).'),
+        b('**Supervised fine-tuning (SFT)** continues training on example conversations so the model answers instead of just continuing text.', '**Doladenie s učiteľom (SFT)** pokračuje v trénovaní na vzorových rozhovoroch, aby model odpovedal, a nie len pokračoval v texte.'),
+        b('**Reinforcement learning** rewards good answers (for example correct solutions to math problems) and adjusts the model to produce them more often.', '**Posilňované učenie** odmeňuje dobré odpovede (napríklad správne riešenia matematických úloh) a upraví model tak, aby ich vytváral častejšie.'),
+        b('**Distillation** trains a small “student” to imitate the probability distributions of a large “teacher”. Qwen3-8B and Qwen3-30B-A3B were produced this way from larger Qwen3 models.', '**Destilácia** trénuje malého „študenta“, aby napodobňoval rozdelenia pravdepodobností veľkého „učiteľa“. Takto vznikli Qwen3-8B a Qwen3-30B-A3B z väčších modelov Qwen3.'),
+      ] },
+      { k: 'h', t: b('What it costs', 'Čo to stojí') },
+      { k: 'p', t: b('A common rule of thumb is about 6 floating-point operations per parameter per training token (2 for the forward pass, 4 for the backward pass). For an 8-billion-parameter model and 36 trillion tokens that is roughly 6 × 8×10⁹ × 3.6×10¹³ ≈ 1.7×10²⁴ operations, which is weeks on thousands of GPUs. This is an estimate from a general formula, not a figure published for Qwen3.', 'Bežné pravidlo hovorí asi 6 operácií s pohyblivou čiarkou na parameter a trénovací token (2 pre dopredný, 4 pre spätný prechod). Pre model s 8 miliardami parametrov a 36 biliónmi tokenov je to zhruba 6 × 8×10⁹ × 3,6×10¹³ ≈ 1,7×10²⁴ operácií, teda týždne na tisícoch GPU. Je to odhad zo všeobecného vzorca, nie číslo zverejnené pre Qwen3.') },
+      { k: 'qwen', t: b('What the Qwen3 report does not publish (exact data mixtures, learning-rate schedules per model, the cost of training) is not filled in anywhere on this site.', 'Čo správa o Qwen3 nezverejňuje (presné zloženie dát, priebeh rýchlosti učenia pre jednotlivé modely, cenu trénovania), sa nikde na tejto stránke nedopĺňa.') },
+      { k: 'quiz', q: b('During pre-training, what is the target for each position?', 'Čo je pri predtrénovaní cieľom pre každú pozíciu?'), options: [b('A human rating', 'Hodnotenie od človeka'), b('The actual next token of the text', 'Skutočný ďalší token textu'), b('The previous token', 'Predchádzajúci token')], correct: 1, explain: b('Pre-training is self-supervised: the text itself supplies the answers, shifted by one position.', 'Predtrénovanie je samoučiace: odpovede dodá samotný text posunutý o jednu pozíciu.') },
+    ],
+  },
+  {
+    id: 'serving', minutes: 8,
+    title: b('Serving many users: batching, caches and quantization', 'Obsluha mnohých používateľov: dávky, cache a kvantizácia'),
+    summary: b('How one GPU answers many people at once, and how models are squeezed into less memory.', 'Ako jedna GPU odpovedá mnohým ľuďom naraz a ako sa modely vtesnajú do menšej pamäte.'),
+    blocks: [
+      { k: 'p', t: b('A single decode step of one conversation reads every active weight from memory but does only a little arithmetic with each one. GPUs can do far more arithmetic than memory can deliver, so serving one user at a time wastes most of the chip. The fix is **batching**: run the decode steps of many conversations together, so every weight read from memory is used many times.', 'Jeden krok generovania jedného rozhovoru prečíta z pamäte každú aktívnu váhu, ale s každou urobí len málo výpočtov. GPU zvládne oveľa viac výpočtov, než pamäť stihne dodať, takže obsluhovať jedného používateľa naraz plytvá väčšinou čipu. Riešením je **dávkovanie**: spustiť kroky generovania mnohých rozhovorov spolu, aby sa každá váha prečítaná z pamäte použila mnohokrát.') },
+      { k: 'figure', f: 'serving' },
+      { k: 'list', items: [
+        b('**Continuous batching**: finished conversations leave the batch and new ones join at every step, instead of waiting for the slowest one.', '**Priebežné dávkovanie**: dokončené rozhovory opustia dávku a nové sa pridajú v každom kroku, namiesto čakania na najpomalší.'),
+        b('**Paged K/V cache**: the cache is stored in small fixed-size blocks, like pages of virtual memory, so memory is not wasted on reserved-but-unused space and shared prefixes can be stored once.', '**Stránkovaná cache K/V**: cache sa ukladá do malých blokov pevnej veľkosti, ako stránky virtuálnej pamäte, takže sa pamäť neplytvá na rezervované, no nevyužité miesto a spoločné predpony sa dajú uložiť raz.'),
+        b('**Speculative decoding**: a small fast model drafts several tokens, the big model checks them all in one pass and keeps the ones it agrees with. The output distribution is unchanged; it is just faster.', '**Špekulatívne dekódovanie**: malý rýchly model navrhne niekoľko tokenov, veľký model ich všetky overí v jednom prechode a ponechá tie, s ktorými súhlasí. Rozdelenie výstupu sa nezmení; je to len rýchlejšie.'),
+        b('**Parallelism**: tensor parallelism splits matrices across GPUs, pipeline parallelism splits blocks, expert parallelism places MoE experts on different GPUs.', '**Paralelizmus**: tenzorový paralelizmus rozdelí matice medzi GPU, potrubný paralelizmus rozdelí bloky, paralelizmus expertov umiestni expertov MoE na rôzne GPU.'),
+      ] },
+      { k: 'h', t: b('Quantization', 'Kvantizácia') },
+      { k: 'p', t: b('Qwen3 is published in BF16: 16 bits per weight. **Quantization** stores weights with fewer bits (8, 4 or even fewer) plus a scale factor per small group, and converts them back on the fly. This cuts memory and memory traffic, usually at a small cost in quality; the number of parameters stays the same.', 'Qwen3 je zverejnený v BF16: 16 bitov na váhu. **Kvantizácia** ukladá váhy s menším počtom bitov (8, 4 alebo ešte menej) plus mierku pre každú malú skupinu a za behu ich prevádza späť. Tým sa zníži pamäť aj prenos dát z pamäte, zvyčajne za cenu malej straty kvality; počet parametrov zostáva rovnaký.') },
+      { k: 'figure', f: 'quant' },
+      { k: 'widget', w: 'quant' },
+      { k: 'code', c: 'quantize', t: b('Symmetric per-group quantization of a weight-like matrix. With random Gaussian weights and this simple rounding, 4 bits already give about 11 % output error; practical methods (GPTQ, AWQ, k-quants) are much better because they choose roundings that matter least.', 'Symetrická kvantizácia po skupinách na matici podobnej váham. S náhodnými gaussovskými váhami a týmto jednoduchým zaokrúhľovaním dajú 4 bity už asi 11 % chybu výstupu; praktické metódy (GPTQ, AWQ, k-quants) sú oveľa lepšie, lebo volia zaokrúhlenia, na ktorých najmenej záleží.') },
+      { k: 'qwen', t: b(`Qwen3-8B weights: ${E(Math.round(A8.total * 2 / 1e8) / 10)} GB at 16 bits, about ${E(Math.round(A8.total * 0.5 / 1e8) / 10)} GB of payload at 4 bits (plus scales). Qwen3-30B-A3B: ${E(Math.round(A30.total * 2 / 1e8) / 10)} GB at 16 bits; all experts must be in memory even though only 8 per block run for each token.`, `Váhy Qwen3-8B: ${S(Math.round(A8.total * 2 / 1e8) / 10)} GB pri 16 bitoch, asi ${S(Math.round(A8.total * 0.5 / 1e8) / 10)} GB dát pri 4 bitoch (plus mierky). Qwen3-30B-A3B: ${S(Math.round(A30.total * 2 / 1e8) / 10)} GB pri 16 bitoch; všetci experti musia byť v pamäti, hoci pre každý token beží len 8 v každom bloku.`) },
+      { k: 'quiz', q: b('Why does batching many users make each GPU more efficient during decode?', 'Prečo dávkovanie mnohých používateľov zefektívni každú GPU pri generovaní?'), options: [b('Each weight read from memory is reused for many conversations', 'Každá váha prečítaná z pamäte sa použije pre mnoho rozhovorov'), b('The model gets smaller', 'Model sa zmenší'), b('Fewer tokens are generated', 'Generuje sa menej tokenov')], correct: 0, explain: b('Decode is limited by memory traffic; batching spreads the cost of reading the weights over many tokens.', 'Generovanie obmedzuje prenos dát z pamäte; dávkovanie rozloží cenu čítania váh na mnoho tokenov.') },
+      { k: 'links', items: [{ href: '#/labs/memory', label: b('Memory lab with quantization estimates', 'Laboratórium pamäte s odhadmi kvantizácie') }] },
+    ],
+  },
+  {
+    id: 'files', minutes: 6,
+    title: b('Inside a checkpoint file', 'Vo vnútri súboru checkpointu'),
+    summary: b('Where the numbers are stored on disk, and how to read one weight yourself.', 'Kde sú čísla uložené na disku a ako si sami prečítať jednu váhu.'),
+    blocks: [
+      { k: 'p', t: b('A downloaded model is mostly one or more **.safetensors** files. The format is deliberately simple: 8 bytes giving the length of a JSON header, the header itself (the name, data type, shape and byte range of every tensor), and then all tensor bytes back to back. There is no executable code inside, which is why it is safer than older pickle-based formats.', 'Stiahnutý model tvorí väčšinou jeden alebo viac súborov **.safetensors**. Formát je zámerne jednoduchý: 8 bajtov s dĺžkou hlavičky JSON, samotná hlavička (názov, dátový typ, tvar a rozsah bajtov každého tenzora) a potom všetky bajty tenzorov za sebou. Vnútri nie je žiadny spustiteľný kód, preto je bezpečnejší než staršie formáty založené na pickle.') },
+      { k: 'figure', f: 'safetensors' },
+      { k: 'code', c: 'safetensors', t: b('Read the header of Qwen3-0.6B’s model.safetensors by hand, list its tensors, and decode a 4 × 4 tile of q_proj from raw BF16 bytes. The result matches the official safetensors library bit for bit.', 'Ručne prečíta hlavičku model.safetensors modelu Qwen3-0.6B, vypíše jeho tenzory a dekóduje dlaždicu 4 × 4 z q_proj zo surových bajtov BF16. Výsledok sa bit po bite zhoduje s oficiálnou knižnicou safetensors.') },
+      { k: 'p', t: b('Notice two things in the output. First, the file stores 751,632,384 numbers, but the model has only 596,049,920 unique parameters: lm_head.weight is saved as a byte-identical copy of the tied embedding table. Second, a weight’s position in the file has nothing to do with “where it is” in the network; when the model runs, the bytes are copied into GPU or CPU memory arrays.', 'Všimnite si vo výstupe dve veci. Po prvé, súbor ukladá 751 632 384 čísel, ale model má len 596 049 920 jedinečných parametrov: lm_head.weight je uložená ako bajtovo identická kópia prepojenej tabuľky embeddingov. Po druhé, pozícia váhy v súbore nemá nič spoločné s tým, „kde je“ v sieti; pri behu modelu sa bajty skopírujú do polí v pamäti GPU alebo CPU.') },
+      { k: 'qwen', t: b('This site reads Qwen3-8B and Qwen3-30B-A3B the same way, but only over the network with HTTP range requests: the headers, plus 26 tiles of at most 16 × 16 numbers, each with a SHA-256 checksum. The full checkpoints (16 GB and 61 GB) were never downloaded.', 'Táto stránka číta Qwen3-8B a Qwen3-30B-A3B rovnakým spôsobom, ale len cez sieť pomocou požiadaviek HTTP na rozsahy: hlavičky a 26 dlaždíc s najviac 16 × 16 číslami, každú s kontrolným súčtom SHA-256. Úplné checkpointy (16 GB a 61 GB) sa nikdy nesťahovali.') },
+      { k: 'quiz', q: b('What is in the first 8 bytes of a .safetensors file?', 'Čo je v prvých 8 bajtoch súboru .safetensors?'), options: [b('The first weight', 'Prvá váha'), b('The length of the JSON header', 'Dĺžka hlavičky JSON'), b('A password', 'Heslo')], correct: 1, explain: b('A little-endian unsigned 64-bit integer: the header length n. Tensor data starts at byte 8 + n.', 'Celé číslo bez znamienka s 64 bitmi v poradí little-endian: dĺžka hlavičky n. Dáta tenzorov začínajú na bajte 8 + n.') },
+      { k: 'links', items: [{ href: '#/catalog', label: b('Every tensor with its byte offset', 'Každý tenzor s jeho bajtovým posunom') }, { href: explorerHref({ m: 'qwen3-8b', lv: 0, b: 0, t: 'q_proj', r: 0, c: 0 }), label: b('One real weight of Qwen3-8B', 'Jedna skutočná váha Qwen3-8B') }] },
+    ],
+  },
+  {
+    id: 'summary', minutes: 6,
+    title: b('The whole transformer on one page', 'Celý transformer na jednej strane'),
+    summary: b('Everything from this course in one diagram and six equations, with the real Qwen3 sizes.', 'Všetko z tohto kurzu v jednom diagrame a šiestich rovniciach, so skutočnými rozmermi Qwen3.'),
+    blocks: [
+      { k: 'figure', f: 'overview' },
+      { k: 'math', tex: 'h_0=E[\\text{tokens}]', t: b('embedding lookup', 'vyhľadanie embeddingu') },
+      { k: 'math', tex: 'a=\\operatorname{softmax}\\!\\Big(\\tfrac{\\operatorname{RoPE}(\\operatorname{norm}(Q))\\,\\operatorname{RoPE}(\\operatorname{norm}(K))^{\\top}}{\\sqrt{d_h}}+M\\Big)V,\\quad Q,K,V=\\operatorname{RMSNorm}(h)\\,W_{Q,K,V}^{\\top}', t: b('attention, per head (GQA shares K and V)', 'pozornosť pre každú hlavu (GQA zdieľa K a V)') },
+      { k: 'math', tex: 'h\\leftarrow h+\\operatorname{concat}(a_1,\\dots,a_H)\\,W_O^{\\top}', t: b('first residual add', 'prvé reziduálne sčítanie') },
+      { k: 'math', tex: 'h\\leftarrow h+W_{down}\\big(\\operatorname{SiLU}(W_{gate}u)\\odot W_{up}u\\big),\\quad u=\\operatorname{RMSNorm}(h)', t: b('feed-forward (or a weighted sum of top-k experts) and the second residual add', 'dopredná sieť (alebo vážený súčet top-k expertov) a druhé reziduálne sčítanie') },
+      { k: 'math', tex: 'p=\\operatorname{softmax}\\big(W_{head}\\operatorname{RMSNorm}(h_L)/T\\big)', t: b('output head, temperature, probabilities', 'výstupná hlava, teplota, pravdepodobnosti') },
+      { k: 'math', tex: '\\mathcal L=-\\textstyle\\sum_t\\log p_t(\\text{next token}),\\quad w\\leftarrow w-\\eta\\,\\nabla_w\\mathcal L', t: b('training: cross-entropy and gradient descent', 'trénovanie: krížová entropia a gradientný zostup') },
+      { k: 'h', t: b('The numbers of the two reference models', 'Čísla dvoch referenčných modelov') },
+      { k: 'list', items: [
+        b(`**Qwen3-8B** (dense): ${QWEN3_8B.layers} blocks, d = ${E(QWEN3_8B.d)}, ${QWEN3_8B.hq} query / ${QWEN3_8B.hkv} K/V heads of 128, FFN width ${E(QWEN3_8B.ffnWidth!)}, ${E(QWEN3_8B.vocabRows)} vocabulary rows, **${E(A8.total)}** parameters.`, `**Qwen3-8B** (hustý): ${QWEN3_8B.layers} blokov, d = ${S(QWEN3_8B.d)}, ${QWEN3_8B.hq} hláv dopytov / ${QWEN3_8B.hkv} hláv K/V so šírkou 128, šírka FFN ${S(QWEN3_8B.ffnWidth!)}, ${S(QWEN3_8B.vocabRows)} riadkov slovníka, **${S(A8.total)}** parametrov.`),
+        b(`**Qwen3-30B-A3B** (MoE): ${QWEN3_30B_A3B.layers} blocks, d = ${E(QWEN3_30B_A3B.d)}, ${QWEN3_30B_A3B.hq} / ${QWEN3_30B_A3B.hkv} heads, 128 experts of width 768 with top-8, **${E(A30.total)}** parameters, about 3.3 billion used per token.`, `**Qwen3-30B-A3B** (MoE): ${QWEN3_30B_A3B.layers} blokov, d = ${S(QWEN3_30B_A3B.d)}, ${QWEN3_30B_A3B.hq} / ${QWEN3_30B_A3B.hkv} hláv, 128 expertov so šírkou 768 a top-8, **${S(A30.total)}** parametrov, na token sa použije asi 3,3 miliardy.`),
+      ] },
+      { k: 'h', t: b('Where to go next', 'Kam ďalej') },
+      { k: 'list', items: [
+        b('Walk the real structure from the whole model down to a single weight in the [explorer](#/explore?m=qwen3-8b&lv=5).', 'Prejdite skutočnou štruktúrou od celého modelu po jednu váhu v [prieskumníku](#/explore?m=qwen3-8b&lv=5).'),
+        b('Change weights and watch every number update in the [labs](#/labs).', 'Meňte váhy a sledujte, ako sa menia všetky čísla, v [laboratóriách](#/labs).'),
+        b('Look inside a real forward pass on the [real run](#/trace) page.', 'Pozrite sa do skutočného dopredného prechodu na stránke [skutočný beh](#/trace).'),
+        b('Run the Python examples from the [GitHub repository](https://github.com/sevcikro/qwen-architecture-explorer/tree/main/examples/python) on your own computer.', 'Spustite príklady v Pythone z [repozitára na GitHube](https://github.com/sevcikro/qwen-architecture-explorer/tree/main/examples/python) na vlastnom počítači.'),
+      ] },
+      { k: 'quiz', q: b('Which part of a Qwen3-8B block holds the most parameters?', 'Ktorá časť bloku Qwen3-8B má najviac parametrov?'), options: [b('The RMSNorm gains', 'Zisky RMSNorm'), b('The attention projections', 'Projekcie pozornosti'), b('The feed-forward network (gate, up, down)', 'Dopredná sieť (gate, up, down)')], correct: 2, explain: b(`FFN: ${E(A8.ffnPerBlock)} parameters per block; attention: ${E(A8.attentionPerBlock)}; norms: ${E(A8.normsPerBlock)}.`, `FFN: ${S(A8.ffnPerBlock)} parametrov v bloku; pozornosť: ${S(A8.attentionPerBlock)}; normalizácie: ${S(A8.normsPerBlock)}.`) },
+    ],
+  },
+];

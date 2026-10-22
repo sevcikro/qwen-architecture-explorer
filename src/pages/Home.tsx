@@ -17,7 +17,7 @@ function StackDiagram() {
     { y: 52, h: 38, label: T(`Embedding table [${num(151936)} × ${num(4096)}]`, `Tabuľka embeddingov [${num(151936)} × ${num(4096)}]`), sub: T(`${B(a.embedding)} parameters · one row looked up per token`, `${B(a.embedding)} parametrov · pre každý token sa vyhľadá jeden riadok`), href: explorerHref({ m: 'qwen3-8b', lv: 2, t: 'embed_tokens' }), kind: 'param' },
   ];
   return (
-    <svg viewBox="0 0 460 470" role="img" aria-labelledby="hd-t hd-d" style={{ width: '100%', maxWidth: 520, height: 'auto' }}>
+    <svg viewBox="0 0 460 470" role="group" aria-labelledby="hd-t hd-d" style={{ width: '100%', maxWidth: 520, height: 'auto' }}>
       <title id="hd-t">{T('Qwen3-8B at a glance', 'Qwen3-8B na prvý pohľad')}</title>
       <desc id="hd-d">{T('Token ids enter an embedding table, pass through 36 decoder blocks each containing attention and a feed-forward network with residual additions, then a final RMSNorm and an untied vocabulary projection produce scores for sampling. Each part links into the explorer.', 'ID tokenov vstúpia do tabuľky embeddingov, prejdú 36 blokmi dekodéra, z ktorých každý obsahuje pozornosť a doprednú sieť s reziduálnymi sčítaniami; potom záverečná RMSNorm a samostatná výstupná projekcia vytvoria skóre pre vzorkovanie. Každá časť je odkazom do prieskumníka.')}</desc>
       {rows.map((r) => (

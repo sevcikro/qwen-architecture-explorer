@@ -14,6 +14,7 @@ export const UI = d({
   nav_learn: { en: 'Learn', sk: 'Kapitoly' },
   nav_explore: { en: 'Explorer', sk: 'Prieskumník' },
   nav_labs: { en: 'Labs', sk: 'Laboratóriá' },
+  nav_trace: { en: 'Real run', sk: 'Skutočný beh' },
   nav_parameters: { en: 'Parameters', sk: 'Parametre' },
   nav_catalog: { en: 'Catalog', sk: 'Katalóg' },
   nav_pipeline: { en: 'Tokens', sk: 'Tokeny' },
@@ -29,8 +30,7 @@ export const UI = d({
   not_found_text: { en: 'This address does not match a page:', sk: 'Táto adresa nezodpovedá žiadnej stránke:' },
   go_home: { en: 'Go to the start page', sk: 'Prejsť na úvodnú stránku' },
   loading_page: { en: 'Loading page…', sk: 'Načítavam stránku…' },
-  english_only: { en: 'The detailed technical text on this page is in English.', sk: 'Podrobný technický text na tejto stránke je zatiaľ v angličtine. Všetky čísla, výpočty a ovládacie prvky fungujú rovnako. Zrozumiteľné vysvetlenie v slovenčine nájdete v kapitolách:' },
-  english_only_link: { en: 'Chapters', sk: 'Kapitoly →' },
+  lab_theory: { en: 'Theory in the matching chapter →', sk: 'Teória v príslušnej kapitole →' },
 
   // evidence
   ev_verified: { en: 'Verified', sk: 'Overené' },
@@ -117,7 +117,6 @@ export const UI = d({
   in_evidence: { en: 'Evidence', sk: 'Dôkazy' },
   in_sources: { en: 'Sources:', sk: 'Zdroje:' },
   in_next: { en: 'Explore next', sk: 'Preskúmať ďalej' },
-  in_sk_note: { en: '', sk: 'Popis prvku je v angličtine; vysvetlenie v slovenčine nájdete v kapitolách.' },
   role_param: { en: 'Holds learned parameters', sk: 'Obsahuje naučené parametre' },
   role_norm: { en: 'Normalization with a learned gain', sk: 'Normalizácia s naučeným ziskom' },
   role_act: { en: 'Runtime activation', sk: 'Aktivácia počas behu' },
@@ -147,7 +146,8 @@ export const UI = d({
 
   // learn
   learn_title: { en: 'Learn: from one weight to the whole model', sk: 'Kapitoly: od jednej váhy k celému modelu' },
-  learn_intro: { en: 'Fourteen short chapters that build understanding step by step, no prior knowledge needed. Each chapter has a plain explanation, a small experiment you can play with, the real numbers for Qwen3, and a quick check. Read them in order, or jump to what you need.', sk: 'Štrnásť krátkych kapitol, ktoré krok za krokom budujú porozumenie, bez potreby predchádzajúcich znalostí. Každá kapitola obsahuje jednoduché vysvetlenie, malý pokus na vyskúšanie, skutočné čísla pre Qwen3 a krátku kontrolnú otázku. Čítajte ich po poradí alebo skočte priamo na to, čo potrebujete.' },
+  learn_intro: { en: 'An interactive mini-course in five parts that takes you from a single stored number to the whole transformer, how it answers a chat message, how it is trained and how it is served. No prior knowledge needed. The chapters combine plain explanations, diagrams, experiments you can play with, runnable Python code with recorded output, the real numbers of Qwen3, and a quick check. Read them in order, or jump to what you need.', sk: 'Interaktívny minikurz v piatich častiach, ktorý vás prevedie od jedného uloženého čísla k celému transformeru, k tomu, ako odpovedá na správu v chate, ako sa trénuje a ako sa prevádzkuje. Netreba žiadne predchádzajúce znalosti. Kapitoly spájajú jednoduché vysvetlenia, diagramy, pokusy na vyskúšanie, spustiteľný kód v Pythone so zaznamenaným výstupom, skutočné čísla Qwen3 a krátku kontrolnú otázku. Čítajte ich po poradí alebo skočte priamo na to, čo potrebujete.' },
+  learn_part: { en: 'Part', sk: 'Časť' },
   learn_chapter: { en: 'Chapter', sk: 'Kapitola' },
   learn_min: { en: 'min', sk: 'min' },
   learn_prev: { en: '← Previous', sk: '← Predchádzajúca' },
@@ -172,7 +172,7 @@ export const UI = d({
   // home
   home_h1: { en: 'Where are the weights, neurons and experts in a Qwen model?', sk: 'Kde sú v modeli Qwen váhy, neuróny a experti?' },
   home_lead: { en: 'Qwen Atlas lets you zoom from one stored number all the way out to the whole model, for **Qwen3-8B** (dense) and **Qwen3-30B-A3B** (mixture of experts). Every number is labeled: verified from the official files, derived by a shown formula, simulated in a tiny toy model, or actually read from a checkpoint.', sk: 'Qwen Atlas vám umožní priblížiť sa od jedného uloženého čísla až po celý model, pre **Qwen3-8B** (hustý model) a **Qwen3-30B-A3B** (zmes expertov). Každé číslo je označené: overené z oficiálnych súborov, odvodené zobrazeným vzorcom, simulované v malom hračkovom modeli alebo skutočne prečítané z checkpointu.' },
-  home_learn: { en: '▶ Learn step by step (14 chapters)', sk: '▶ Učiť sa krok za krokom (14 kapitol)' },
+  home_learn: { en: '▶ Learn step by step (27 chapters)', sk: '▶ Učiť sa krok za krokom (27 kapitol)' },
   home_weight: { en: '● Start with one weight', sk: '● Začať jednou váhou' },
   home_model: { en: 'Start from the whole model', sk: 'Začať celým modelom' },
   home_labs: { en: 'Open the labs', sk: 'Otvoriť laboratóriá' },

@@ -25,7 +25,36 @@ export interface TensorFamily {
   pathTemplate: string; // checkpoint tensor name with {layer} / {expert}
   symbol: string; // implementation symbol
   role: string;
+  labelSk: string;
+  roleSk: string;
 }
+
+type RawFamily = Omit<TensorFamily, 'labelSk' | 'roleSk'>;
+
+/** Slovak label and plain-language role for every family (same keys as tensorFamilies). */
+function slovak(p: CoreProfile): Record<string, [string, string]> {
+  return {
+    embed_tokens: ['Tabuľka vstupných embeddingov', 'Jeden naučený riadok s d číslami pre každé ID tokenu. Priechod modelom riadky vyhľadáva; celú tabuľku nenásobí.'],
+    input_layernorm: ['Zisk γ normalizácie pred pozornosťou', 'Naučený zisk pre každú vlastnosť, použitý po RMS normalizácii na vstupe bloku.'],
+    q_proj: ['Projekcia dopytov W_Q', 'Premení normalizovaný vektor reziduálneho prúdu na všetky hlavy dopytov.'],
+    k_proj: ['Projekcia kľúčov W_K', 'Vytvorí hlavy kľúčov, s ktorými sa neskoršie dopyty porovnávajú.'],
+    v_proj: ['Projekcia hodnôt W_V', 'Vytvorí hlavy hodnôt, ktoré pozornosť mieša.'],
+    q_norm: ['Zisk normy hláv dopytov', `Jeden zisk pre každú súradnicu hlavy, spoločný pre všetkých ${p.hq} hláv dopytov (nenásobí sa počtom hláv).`],
+    k_norm: ['Zisk normy hláv kľúčov', `Jeden zisk pre každú súradnicu hlavy, spoločný pre všetky ${p.hkv} hlavy kľúčov.`],
+    o_proj: ['Výstupná projekcia W_O', 'Zmieša spojené výstupy hláv späť na šírku reziduálneho prúdu.'],
+    post_attention_layernorm: ['Zisk γ normalizácie pred FFN', 'Naučený zisk RMSNorm pred vetvou FFN / MoE (nazýva sa „post-attention“, lebo nasleduje za prvým reziduálnym sčítaním).'],
+    gate_proj: ['Hradlo FFN W_gate', 'Riadok j vypočíta pred-aktiváciu hradlového kanála j; na ňu sa použije SiLU.'],
+    up_proj: ['FFN up W_up', 'Riadok j vypočíta lineárnu hodnotu „up“, ktorú hradlo násobí.'],
+    down_proj: ['FFN down W_down', 'Stĺpec j prenesie hradlovaný kanál j späť do každej vlastnosti reziduálneho prúdu.'],
+    router: ['Smerovač W_router', 'Naučené parametre smerovača: jeden riadok skóre pre každého experta. (V checkpointe sa volá „gate“; so SwiGLU hradlom nesúvisí.)'],
+    expert_gate_proj: ['Hradlo experta W_gate[e]', 'Vlastná matica hradla SwiGLU experta e.'],
+    expert_up_proj: ['Up experta W_up[e]', 'Vlastná matica up SwiGLU experta e.'],
+    expert_down_proj: ['Down experta W_down[e]', 'Vlastná projekcia down experta e späť na šírku reziduálneho prúdu.'],
+    norm: ['Zisk γ záverečnej normy', 'Zisk poslednej RMSNorm pred projekciou do slovníka.'],
+    lm_head: ['Výstupná hlava W_vocab', p.tiedEmbeddings ? 'Zviazaná so vstupným embeddingom.' : 'Neviazaná: vlastná matica, oddelená od vstupnej tabuľky embeddingov. Vytvorí jeden logit pre každý riadok slovníka.'],
+  };
+}
+
 
 export const prod = (s: number[]) => s.reduce((a, b) => a * b, 1);
 
@@ -33,7 +62,7 @@ export function tensorFamilies(p: CoreProfile): TensorFamily[] {
   const qw = p.hq * p.headDim;
   const kvw = p.hkv * p.headDim;
   const L = p.layers;
-  const fam: TensorFamily[] = [
+  const fam: RawFamily[] = [
     { key: 'embed_tokens', label: 'Input embedding table', module: 'embedding', scope: 'model', kind: 'table', shape: [p.vocabRows, p.d], axes: ['row = token id', 'column = residual feature'], multiplicity: 1, pathTemplate: 'model.embed_tokens.weight', symbol: 'nn.Embedding', role: 'One learned row of d numbers per token id. A forward pass looks up rows; it does not multiply the whole table.' },
     { key: 'input_layernorm', label: 'Attention pre-norm scale γ', module: 'attn_norm', scope: 'block', kind: 'vector', shape: [p.d], axes: ['feature'], multiplicity: L, pathTemplate: 'model.layers.{layer}.input_layernorm.weight', symbol: 'Qwen3RMSNorm.weight', role: 'Learned per-feature gain applied after RMS normalization at the block entrance.' },
     { key: 'q_proj', label: 'Query projection W_Q', module: 'attention', scope: 'block', kind: 'matrix', shape: [qw, p.d], axes: [`out = Hq·dh = ${qw}`, `in = d = ${p.d}`], multiplicity: L, pathTemplate: 'model.layers.{layer}.self_attn.q_proj.weight', symbol: 'self_attn.q_proj (nn.Linear, bias=False)', role: 'Turns the normalized residual vector into all query heads.' },
@@ -64,7 +93,8 @@ export function tensorFamilies(p: CoreProfile): TensorFamily[] {
     { key: 'norm', label: 'Final norm scale γ', module: 'final_norm', scope: 'model', kind: 'vector', shape: [p.d], axes: ['feature'], multiplicity: 1, pathTemplate: 'model.norm.weight', symbol: 'model.norm (RMSNorm)', role: 'Gain of the last RMSNorm before the vocabulary projection.' },
     { key: 'lm_head', label: 'Output head W_vocab', module: 'lm_head', scope: 'model', kind: 'matrix', shape: [p.vocabRows, p.d], axes: [`out = vocabulary rows = ${p.vocabRows}`, `in = d = ${p.d}`], multiplicity: 1, pathTemplate: 'lm_head.weight', symbol: 'lm_head (nn.Linear, bias=False)', role: p.tiedEmbeddings ? 'Tied to the input embedding.' : 'Untied: its own matrix, separate from the input embedding table. Produces one logit per vocabulary row.' },
   );
-  return fam;
+  const sk = slovak(p);
+  return fam.map((f) => ({ ...f, labelSk: sk[f.key]?.[0] ?? f.label, roleSk: sk[f.key]?.[1] ?? f.role }));
 }
 
 export const familyParams = (f: TensorFamily) => prod(f.shape) * f.multiplicity;

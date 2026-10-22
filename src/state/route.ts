@@ -78,28 +78,29 @@ export function familyRows(f: TensorFamily): number { return f.shape[0]; }
 export function familyCols(f: TensorFamily): number | null { return f.shape.length > 1 ? f.shape[1] : null; }
 
 /** Normalize a possibly-invalid state for a profile: clamp indices, drop incompatible fields, lower the level if needed. */
-export function normalizeExplorer(raw: Partial<ExplorerState>): { state: ExplorerState; profile: CoreProfile; warnings: string[] } {
+export function normalizeExplorer(raw: Partial<ExplorerState>, lang: 'en' | 'sk' = 'en'): { state: ExplorerState; profile: CoreProfile; warnings: string[] } {
   const warnings: string[] = [];
+  const W = (en: string, sk: string) => (lang === 'sk' ? sk : en);
   let profile = coreById(raw.m ?? '');
   if (!profile) {
-    if (raw.m) warnings.push(`Unknown model "${raw.m}"; showing Qwen3-8B.`);
+    if (raw.m) warnings.push(W(`Unknown model "${raw.m}"; showing Qwen3-8B.`, `Neznámy model „${raw.m}“; zobrazuje sa Qwen3-8B.`));
     profile = ALL_CORE[0];
   }
   const s: ExplorerState = { m: profile.id, lv: raw.lv ?? 5 };
   if (raw.b !== undefined) {
     if (raw.b < profile.layers) s.b = raw.b;
-    else warnings.push(`Block ${raw.b} does not exist in ${profile.name} (${profile.layers} blocks); selection cleared.`);
+    else warnings.push(W(`Block ${raw.b} does not exist in ${profile.name} (${profile.layers} blocks); selection cleared.`, `Blok ${raw.b} v ${profile.name} neexistuje (${profile.layers} blokov); výber zrušený.`));
   }
   const fams = tensorFamilies(profile);
   let fam: TensorFamily | undefined;
   if (raw.t) {
     fam = fams.find((f) => f.key === raw.t);
-    if (!fam) warnings.push(`Tensor "${raw.t}" does not exist in ${profile.name}; selection cleared.`);
+    if (!fam) warnings.push(W(`Tensor "${raw.t}" does not exist in ${profile.name}; selection cleared.`, `Tenzor „${raw.t}“ v ${profile.name} neexistuje; výber zrušený.`));
   }
   if (raw.mod) {
     const valid = profile.kind === 'dense' ? raw.mod !== 'moe' : raw.mod !== 'ffn';
     if ([...BLOCK_MODULES, ...MODEL_MODULES].includes(raw.mod as ExModule) && valid) s.mod = raw.mod;
-    else warnings.push(`Module "${raw.mod}" is not part of ${profile.name}; selection cleared.`);
+    else warnings.push(W(`Module "${raw.mod}" is not part of ${profile.name}; selection cleared.`, `Modul „${raw.mod}“ nie je súčasťou ${profile.name}; výber zrušený.`));
   }
   if (fam) {
     s.t = fam.key;
@@ -109,17 +110,17 @@ export function normalizeExplorer(raw: Partial<ExplorerState>): { state: Explore
     if (fam.scope === 'expert') {
       const E = profile.moe!.numExperts;
       s.e = raw.e !== undefined && raw.e < E ? raw.e : 0;
-      if (raw.e !== undefined && raw.e >= E) warnings.push(`Expert ${raw.e} does not exist (0–${E - 1}).`);
+      if (raw.e !== undefined && raw.e >= E) warnings.push(W(`Expert ${raw.e} does not exist (0–${E - 1}).`, `Expert ${raw.e} neexistuje (0–${E - 1}).`));
     }
     if (raw.r !== undefined) {
       if (raw.r < familyRows(fam)) s.r = raw.r;
-      else warnings.push(`Row ${raw.r} is outside ${fam.label} (${familyRows(fam)} rows).`);
+      else warnings.push(W(`Row ${raw.r} is outside ${fam.label} (${familyRows(fam)} rows).`, `Riadok ${raw.r} je mimo ${fam.labelSk} (${familyRows(fam)} riadkov).`));
     }
     const cols = familyCols(fam);
     if (raw.c !== undefined && s.r !== undefined) {
       if (cols === null) s.c = undefined;
       else if (raw.c < cols) s.c = raw.c;
-      else warnings.push(`Column ${raw.c} is outside ${fam.label} (${cols} columns).`);
+      else warnings.push(W(`Column ${raw.c} is outside ${fam.label} (${cols} columns).`, `Stĺpec ${raw.c} je mimo ${fam.labelSk} (${cols} stĺpcov).`));
     }
   } else if (raw.e !== undefined && s.mod === 'moe' && profile.moe && raw.e < profile.moe.numExperts) s.e = raw.e;
   if (raw.h !== undefined && raw.h < profile.hq) s.h = raw.h;
@@ -137,7 +138,7 @@ export function normalizeExplorer(raw: Partial<ExplorerState>): { state: Explore
   };
   const resolved = maxDepth();
   if (resolved !== lv) {
-    warnings.push(`Level ${lv} needs a deeper selection; showing level ${resolved}.`);
+    warnings.push(W(`Level ${lv} needs a deeper selection; showing level ${resolved}.`, `Úroveň ${lv} potrebuje hlbší výber; zobrazuje sa úroveň ${resolved}.`));
     lv = resolved;
   }
   s.lv = lv;

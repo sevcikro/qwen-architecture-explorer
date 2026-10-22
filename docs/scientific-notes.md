@@ -72,7 +72,8 @@ Byte-level BPE, 151,643 regular + 26 added ids (151643–151668: `<|endoftext|>`
 
 ## Known limitations
 
-- No real Qwen activations, attention maps, routing decisions or recurrent states are shown. All such numbers come from the toy simulator (d = 8, 2 blocks, 2 Q / 1 KV heads, dh = 4, FFN 16 / 4 experts × 8 top-2, vocab 12, θ = 10,000) and are labelled.
-- Real weight values: only seven tiles (rows 0–15 × cols 0–15 or elements 0–15) of seven tensors.
+- Real activations, attention maps and a recorded chat turn are shown only for Qwen3-0.6B (three prompts, one chat message; float32 on CPU; pinned revision and file hash). No real activations, routing decisions or recurrent states of Qwen3-8B, Qwen3-30B-A3B or the hybrid models are shown. Those numbers come from the toy simulator (d = 8, 2 blocks, 2 Q / 1 KV heads, dh = 4, FFN 16 / 4 experts × 8 top-2, vocab 12, θ = 10,000) and are labelled.
+- Real weight values: only 26 tiles (rows 0–15 × cols 0–15 or elements 0–15) of 26 tensors.
+- Course Python outputs are real runs (Python 3.11.9, numpy 2.4.6, torch 2.14.1+cpu, transformers 5.20.2); timings printed by them describe one CPU only. `16_api_client.py` needs a server and was not executed.
 - The training toy is attention-free and uses SGD; it is not Qwen's recipe.
 - Qwen3-Next and Qwen3.5 are structural views from model cards/configs; their headers were not analysed.

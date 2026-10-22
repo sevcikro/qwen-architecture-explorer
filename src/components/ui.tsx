@@ -90,7 +90,7 @@ export function Tex({ children, block = false }: { children: string; block?: boo
       return children;
     }
   }, [children, block]);
-  return block ? <div className="eq" dangerouslySetInnerHTML={{ __html: html }} /> : <span dangerouslySetInnerHTML={{ __html: html }} />;
+  return block ? <div className="eq" tabIndex={0} dangerouslySetInnerHTML={{ __html: html }} /> : <span dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 // ---------- controls ----------
@@ -200,7 +200,8 @@ export function ProbRow({ label, p, off = false, extra }: { label: ReactNode; p:
 }
 
 /** Download a JSON export that always carries provenance labels. */
-export function ExportButton({ data, filename, label = 'Export JSON' }: { data: () => unknown; filename: string; label?: string }) {
+export function ExportButton({ data, filename, label }: { data: () => unknown; filename: string; label?: string }) {
+  const { lang } = useLang();
   return (
     <button
       className="small"
@@ -217,7 +218,7 @@ export function ExportButton({ data, filename, label = 'Export JSON' }: { data: 
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       }}
     >
-      ⭳ {label}
+      ⭳ {label ?? (lang === 'sk' ? 'Exportovať JSON' : 'Export JSON')}
     </button>
   );
 }

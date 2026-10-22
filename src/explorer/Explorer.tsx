@@ -9,19 +9,19 @@ import { blockGraph, moduleGraph, modelGraph, type NodeSpec } from './graph';
 import { ExecutionView, MatrixView, ScalarView, UnitView } from './DeepViews';
 import { Inspector } from './Inspector';
 import { Outline } from './Outline';
-import { EnglishOnlyNotice, useLang } from '../i18n/i18n';
+import { useLang } from '../i18n/i18n';
 
 const MOD_LABEL: Record<string, string> = { embedding: 'Embedding', attn_norm: 'RMSNorm (attn)', attention: 'Attention', residual1: 'Residual +', ffn_norm: 'RMSNorm (FFN)', ffn: 'SwiGLU FFN', moe: 'MoE', residual2: 'Residual +', final_norm: 'Final norm', lm_head: 'LM head', sampling: 'Sampling' };
 
 export function Explorer({ route, nav }: { route: Route; nav: (href: string, replace?: boolean) => void }) {
+  const { t, lang } = useLang();
   const raw = useMemo(() => explorerFromQuery(route.query), [route.query]);
-  const { state: s, profile: p, warnings } = useMemo(() => normalizeExplorer(raw), [raw]);
+  const { state: s, profile: p, warnings } = useMemo(() => normalizeExplorer(raw, lang), [raw, lang]);
   const [focus, setFocus] = useState<string | undefined>();
   const [compressed, setCompressed] = useState(false);
   const [outline, setOutline] = useState(false);
   const [sheet, setSheet] = useState(false);
   const [notice, setNotice] = useState<string[]>([]);
-  const { t } = useLang();
 
   useEffect(() => setFocus(undefined), [s.lv, s.m, s.b, s.mod]);
   useEffect(() => {
@@ -39,16 +39,16 @@ export function Explorer({ route, nav }: { route: Route; nav: (href: string, rep
   };
   const openNode = (n: NodeSpec) => n.open && (setNotice([]), nav(explorerHref({ ...n.open, m: p.id })));
   const switchModel = (m: string) => {
-    const { state, warnings: w } = normalizeExplorer({ ...s, m });
+    const { state, warnings: w } = normalizeExplorer({ ...s, m }, lang);
     const nm = ALL_CORE.find((x) => x.id === m)?.name;
     setNotice(w.length ? [`${t('ex_switched')} ${nm}. ${t('ex_translated')}`, ...w] : [`${t('ex_switched')} ${nm}; ${t('ex_switched_kept')}`]);
     nav(explorerHref(state));
   };
 
   const fam = s.t ? famByKey(p, s.t) : undefined;
-  const graph = s.lv === 5 ? modelGraph(p, { compressed, selectedBlock: s.b }) : s.lv === 4 ? blockGraph(p, s.b ?? 0) : s.lv === 3 ? moduleGraph(p, s.mod ?? 'attention', s.b ?? 0, s.e) : null;
+  const graph = s.lv === 5 ? modelGraph(p, { compressed, selectedBlock: s.b }, lang) : s.lv === 4 ? blockGraph(p, s.b ?? 0, lang) : s.lv === 3 ? moduleGraph(p, s.mod ?? 'attention', s.b ?? 0, s.e, lang) : null;
   const defaultId = s.lv === 5 ? (s.b !== undefined ? `block:${s.b}` : 'model') : s.lv === 4 ? `block:${s.b}` : s.lv === 3 ? (s.mod === 'moe' && s.e !== undefined ? `expert:${s.e}` : s.mod ?? 'model') : s.t ? `tensor:${s.t}` : 'model';
-  const info: InspectorInfo = describeElement(p, focus ?? defaultId, s);
+  const info: InspectorInfo = describeElement(p, focus ?? defaultId, s, lang);
   const selectNode = (id: string) => {
     setFocus(id);
     if (id.startsWith('block:') && s.lv === 5) nav(explorerHref({ ...s, b: Number(id.slice(6)) }), true);
@@ -123,13 +123,12 @@ export function Explorer({ route, nav }: { route: Route; nav: (href: string, rep
         {outline && <Outline p={p} s={s} onClose={() => setOutline(false)} />}
         {graph && (
           <>
-            <GraphCanvas spec={graph} selected={focus ?? defaultId} onSelect={selectNode} onOpen={openNode} fitKey={`${p.id}|${s.lv}|${s.b}|${s.mod}|${compressed}`} />
-            <div className="ex-legend" style={{ padding: '6px 12px', borderTop: '1px solid var(--line-soft)' }}><RoleLegend /></div>
+            <GraphCanvas spec={graph} selected={focus ?? defaultId} onSelect={selectNode} onOpen={openNode} fitKey={`${p.id}|${s.lv}|${s.b}|${s.mod}|${compressed}|${lang}`} />
+            <div className="ex-legend" tabIndex={0} style={{ padding: '6px 12px', borderTop: '1px solid var(--line-soft)' }}><RoleLegend /></div>
           </>
         )}
         {!graph && (
           <div className="ex-scroll">
-            <div className="page" style={{ paddingBottom: 0 }}><EnglishOnlyNotice /></div>
             {s.lv === 6 && <ExecutionView p={p} />}
             {fam && s.lv === 2 && <MatrixView key={`${p.id}${s.t}${s.b}${s.e}`} p={p} f={fam} s={s} go={go} />}
             {fam && s.lv === 1 && <UnitView p={p} f={fam} s={s} go={go} />}

@@ -1,0 +1,74 @@
+{
+ "01_neuron.py": {
+  "ran": true,
+  "stdout": "weighted sum z = -0.3\nSiLU(z)        = -0.1277\nReLU(z)        = 0.0\nlayer output y = [ 1.4758  1.3113 -1.7026  0.0732]\nrow 0 by hand  = 1.4758 (same as y[0])\nparameters     = 16"
+ },
+ "02_vectors.py": {
+  "ran": true,
+  "stdout": "cat · dog  dot = 1.460   cosine = 0.990\ncar · cat  dot = 0.340   cosine = 0.303\ncar · dog  dot = 0.440   cosine = 0.389\n\na = [3. 0.]  b = [2. 2.]\na · b               = 6.0\n|a| |b| cos(angle)  = 6.0\nangle between them  = 45.0 degrees"
+ },
+ "03_softmax_xent.py": {
+  "ran": true,
+  "stdout": "Paris   p = 0.7325\nLondon  p = 0.1634\nRome    p = 0.0991\nbanana  p = 0.0049\nsum = 1.0\n\ntemperature changes how peaked the distribution is:\n  T = 0.5: [0.9362 0.0466 0.0171 0.    ]\n  T = 1.0: [0.7325 0.1634 0.0991 0.0049]\n  T = 2.0: [0.5202 0.2457 0.1914 0.0427]\n\nloss if the answer is 'Paris'  = 0.3113\nloss if the answer is 'banana' = 5.3113\na model that guesses uniformly over 151,936 tokens has loss ln(151936) = 11.931"
+ },
+ "04_tokenizer.py": {
+  "ran": true,
+  "stdout": "ids   : [39, 75, 30597, 963, 296, 51425, 25603, 21097, 4554, 4759, 3240, 3605, 75, 2907, 13]\npieces: ['H', 'l', 'avn', 'é', ' m', 'esto', ' Slo', 'vens', 'ka', ' je', ' Br', 'atis', 'l', 'ava', '.']\ncount : 15 tokens for 37 characters\nback  : Hlavné mesto Slovenska je Bratislava.\n\nchat template output:\n<|im_start|>user\nWhat is 2+2?<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n\nspecial tokens used: ['<|im_start|>', '<|im_end|>', '<|im_start|>', '<think>', '</think>']\nvocabulary size (tokenizer): 151669"
+ },
+ "05_embedding_rmsnorm.py": {
+  "ran": true,
+  "stdout": "lookup     : [ 0.2136  0.2173  2.1178 -1.112 ]\none-hot @ E: [ 0.2136  0.2173  2.1178 -1.112 ] (identical, but wasteful)\n\nx          : [12.  -3.   0.5 40. ]  rms = 20.9359\nRMSNorm(x) : [ 0.5732 -0.1433  0.0239  1.9106]  rms = 1.0\nscale-free : True (multiplying x by 10 gives the same output)"
+ },
+ "06_attention.py": {
+  "ran": true,
+  "stdout": "attention weights (row = query position, column = key position):\n[[1.    0.    0.    0.   ]\n [0.093 0.907 0.    0.   ]\n [0.164 0.557 0.279 0.   ]\n [0.006 0.135 0.02  0.839]]\nrow sums: [1. 1. 1. 1.]\n\noutput for the last token = weighted average of V rows:\n[ 1.474  0.726  0.118 -0.765]\ncheck by hand: [ 1.474  0.726  0.118 -0.765]"
+ },
+ "07_gqa_rope.py": {
+  "ran": true,
+  "stdout": "stored K per layer : (8, 5, 128)\nK seen by queries  : (32, 5, 128) (each K/V head serves 4 query heads)\nquery head 13 uses K/V head 3\n\nRoPE keeps lengths: 11.577187 -> 11.577187\nq at    5, k at    3 (distance 2):  score = 16.971153\nq at  105, k at  103 (distance 2):  score = 16.971153\nq at 1005, k at 1003 (distance 2):  score = 16.971153\ndistance 10 instead:                       score = 12.633176"
+ },
+ "08_ffn_moe.py": {
+  "ran": true,
+  "stdout": "dense FFN output: [ 0.5796 -0.0951 -0.0403  0.8077  0.2875  0.9787  0.0758 -0.5644]\ndense FFN parameters: 384\n\nrouter probabilities: [0.0143 0.049  0.0034 0.8489 0.0678 0.0054 0.0003 0.0108]\nchosen experts: [3 4]  mixture weights: [0.9261 0.0739]  sum: 1.0\nMoE output: [-0.656   0.8868 -0.4036  0.2622  0.0322 -0.9692  0.0747  0.231 ]\nparameters stored: 1600, used for this token: 448"
+ },
+ "09_tiny_transformer.py": {
+  "ran": true,
+  "stdout": "generated token ids: [1, 4, 2, 11, 4, 4, 4, 4]\nparameters: 5088\ncache path == full recomputation: True"
+ },
+ "10_backprop.py": {
+  "ran": true,
+  "stdout": "forward : z = 0.500000, y = 0.311230, loss = 0.238896\nby hand : dL/dw = -1.085013, dL/db = -0.723342\nautograd: dL/dw = -1.085013, dL/db = -0.723342\nnumeric : dL/dw = -1.085013\n\nlr = 0.1: loss 0.238896 -> 0.091894  (lower)\nlr = 0.5: loss 0.238896 -> 0.373582  (HIGHER: the step overshot)"
+ },
+ "11_train_tiny_lm.py": {
+  "ran": true,
+  "stdout": "parameters: 103936\nstep   0  loss 2.755\nstep 100  loss 0.058\nstep 200  loss 0.067\nstep 300  loss 0.058\nsample: the dog sat on the log. the ca"
+ },
+ "12_hf_generate.py": {
+  "ran": true,
+  "stdout": "prompt tokens: 24\nanswer: A neural network weight is a parameter that determines how much each neuron in a particular layer contributes to the output of the network.\ngenerated 26 tokens; stopped on <|im_end|>\n(timing depends entirely on your hardware: 7.3 s here)"
+ },
+ "13_hf_inspect.py": {
+  "ran": true,
+  "stdout": "Qwen3DecoderLayer(\n  (self_attn): Qwen3Attention(\n    (q_proj): Linear(in_features=1024, out_features=2048, bias=False)\n    (k_proj): Linear(in_features=1024, out_features=1024, bias=False)\n    (v_proj): Linear(in_features=1024, out_features=1024, bias=False)\n    (o_proj): Linear(in_features=2048, out_features=1024, bias=False)\n    (q_norm): Qwen3RMSNorm((128,), eps=1e-06)\n    (k_norm): Qwen3RMSNorm((128,), eps=1e-06)\n  )\n  (mlp): Qwen3MLP(\n    (gate_proj): Linear(in_features=1024, out_features=3072, bias=False)\n    (up_proj): Linear(in_features=1024, out_features=3072, bias=False)\n    (down_proj): Linear(in_features=3072, out_features=1024, bias=False)\n    (act_fn): SiLUActivation()\n  )\n  (input_layernorm): Qwen3RMSNorm((1024,), eps=1e-06)\n  (post_attention_layernorm): Qwen3RMSNorm((1024,), eps=1e-06)\n)\n\ninput ids      : [785, 6722, 315, 9625, 374]\nlogits shape   : (1, 5, 151936) = [batch, positions, vocabulary rows]\n   next token ' Paris'   p = 0.657\n   next token ' located' p = 0.028\n   next token ' the'     p = 0.024\n   next token '...'      p = 0.016\n   next token ' ____'    p = 0.014\n\nhidden states  : 29 tensors of shape (1, 5, 1024)\n   after embedding  RMS of last position = 0.024\n   after block 0    RMS of last position = 0.240\n   after block 13   RMS of last position = 1.564\n   after block 26   RMS of last position = 17.180\n   after final norm RMS of last position = 3.540\n\nattention block 13 head 0 (rows sum to 1, upper triangle is 0 = causal):\n[[1.    0.    0.    0.    0.   ]\n [0.992 0.008 0.    0.    0.   ]\n [0.989 0.001 0.01  0.    0.   ]\n [0.907 0.    0.001 0.092 0.   ]\n [0.942 0.004 0.003 0.007 0.044]]"
+ },
+ "14_safetensors.py": {
+  "ran": true,
+  "stdout": "header bytes: 35552  tensors: 311\n   lm_head.weight                                   BF16 [151936, 1024]\n   model.embed_tokens.weight                        BF16 [151936, 1024]\n   model.layers.0.input_layernorm.weight            BF16 [1024]\n   model.layers.0.mlp.down_proj.weight              BF16 [1024, 3072]\nstored elements: 751,632,384\n\nmodel.layers.0.self_attn.q_proj.weight[0:4, 0:4] (shape 2048 x 1024):\n[[ 0.00340271 -0.00346375 -0.01269531  0.02038574]\n [-0.02441406  0.00811768  0.00062943  0.02087402]\n [ 0.01843262  0.00239563 -0.00140381  0.00595093]\n [-0.00765991  0.01245117  0.00964355 -0.01672363]]\nmatches the safetensors library: True"
+ },
+ "15_quantize.py": {
+  "ran": true,
+  "stdout": "8-bit:   66.0 KiB (BF16 would be 128.0 KiB), mean |weight error| = 1.01e-04, relative output error = 0.60%\n4-bit:   34.0 KiB (BF16 would be 128.0 KiB), mean |weight error| = 1.82e-03, relative output error = 10.72%\n3-bit:   26.0 KiB (BF16 would be 128.0 KiB), mean |weight error| = 4.24e-03, relative output error = 26.40%\nfirst weights: [ 0.02106231  0.03552983 -0.05106584 -0.0027593 ] \n4-bit version: [ 0.0218811   0.03646851 -0.05105591  0.        ]"
+ },
+ "16_api_client.py": {
+  "ran": false,
+  "note": "needs a running OpenAI-compatible server; not executed"
+ },
+ "_env": {
+  "python": "3.11.9",
+  "numpy": "2.4.6",
+  "torch": "2.14.1+cpu",
+  "transformers": "5.20.2",
+  "date": "2026-10-22",
+  "device": "CPU"
+ }
+}

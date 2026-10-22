@@ -1,17 +1,21 @@
 import { describe, expect, it } from 'vitest';
-import { CHAPTERS, type Block } from '../../src/content/chapters';
+import { CHAPTERS, PARTS, type Block } from '../../src/content/chapters';
+import { FIGURE_IDS } from '../../src/learn/figures';
+import { CODE } from '../../src/content/code';
 import { GLOSSARY } from '../../src/content/glossary';
 import { TOURS } from '../../src/content/tours';
 import { UI } from '../../src/i18n/ui';
 import type { L10n } from '../../src/i18n/i18n';
 
-const ROUTES = ['', 'learn', 'explore', 'labs', 'parameters', 'catalog', 'pipeline', 'family', 'hybrid', 'tours', 'sources', 'glossary', 'about'];
+const ROUTES = ['', 'learn', 'trace', 'explore', 'labs', 'parameters', 'catalog', 'pipeline', 'family', 'hybrid', 'tours', 'sources', 'glossary', 'about'];
 const LABS = ['weight', 'unit', 'matrix', 'attention', 'rope', 'compare', 'router', 'layers', 'cache', 'sampling', 'training', 'memory'];
-const WIDGETS = ['next-token', 'real-weight', 'neuron', 'silu', 'matvec', 'tokens', 'rms', 'attention', 'gated', 'router', 'stack', 'sampling', 'train1d', 'memory'];
+const WIDGETS = ['next-token', 'real-weight', 'neuron', 'silu', 'matvec', 'tokens', 'rms', 'attention', 'gated', 'router', 'stack', 'sampling', 'train1d', 'memory', 'dot2d', 'xent', 'rope2d', 'gqa', 'kvcost', 'journey', 'backprop', 'quant'];
 
 function texts(b: Block): L10n[] {
   switch (b.k) {
     case 'p': case 'h': case 'key': case 'analogy': case 'qwen': return [b.t];
+    case 'figure': return b.cap ? [b.cap] : [];
+    case 'code': return b.t ? [b.t] : [];
     case 'list': return b.items;
     case 'math': return b.t ? [b.t] : [];
     case 'quiz': return [b.q, ...b.options, b.explain];
@@ -23,7 +27,6 @@ function texts(b: Block): L10n[] {
 describe('Slovak translation completeness', () => {
   it('every UI string has non-empty English and Slovak text', () => {
     for (const [k, v] of Object.entries(UI)) {
-      if (k === 'in_sk_note') { expect(v.sk.length).toBeGreaterThan(0); continue; }
       expect(v.en.trim(), k).not.toBe('');
       expect(v.sk.trim(), k).not.toBe('');
     }
@@ -50,12 +53,16 @@ describe('Slovak translation completeness', () => {
     expect(all).not.toMatch(/\d,\d{3},\d{3}/); // no English thousands separators leaked into Slovak
   });
 
-  it('course structure: 14 chapters, unique ids, every chapter has a demo and a quick check, quiz answers valid', () => {
-    expect(CHAPTERS.length).toBe(14);
-    expect(new Set(CHAPTERS.map((c) => c.id)).size).toBe(14);
+  it('course structure: 27 chapters in 5 parts, unique ids, every chapter has a visual or demo and a quick check, quiz answers valid', () => {
+    expect(CHAPTERS.length).toBe(27);
+    expect(new Set(CHAPTERS.map((c) => c.id)).size).toBe(27);
+    expect(PARTS.map((p) => p.n)).toEqual([1, 2, 3, 4, 5]);
+    expect(PARTS.flatMap((p) => p.chapters)).toEqual(CHAPTERS.map((c) => c.id));
+    expect(CHAPTERS[1].id).toBe('weight'); // the first steps keep their place
     CHAPTERS.forEach((c, i) => {
       expect(c.n).toBe(i + 1);
-      expect(c.blocks.some((b) => b.k === 'widget' || c.id === 'beyond')).toBe(true);
+      expect(c.part).toBeGreaterThan(0);
+      expect(c.blocks.some((b) => b.k === 'widget' || b.k === 'figure' || b.k === 'code' || c.id === 'beyond')).toBe(true);
       const quizzes = c.blocks.filter((b) => b.k === 'quiz');
       expect(quizzes.length).toBeGreaterThan(0);
       for (const q of quizzes) if (q.k === 'quiz') expect(q.correct).toBeLessThan(q.options.length);
@@ -63,6 +70,26 @@ describe('Slovak translation completeness', () => {
     const used = CHAPTERS.flatMap((c) => c.blocks).filter((b) => b.k === 'widget').map((b) => (b as { w: string }).w);
     for (const w of used) expect(WIDGETS).toContain(w);
     expect(new Set(used).size).toBe(WIDGETS.length); // every demo is used
+    const figs = CHAPTERS.flatMap((c) => c.blocks).filter((b) => b.k === 'figure').map((b) => (b as { f: string }).f);
+    for (const f of figs) expect(FIGURE_IDS).toContain(f);
+    expect(new Set(figs)).toEqual(new Set(FIGURE_IDS)); // every diagram is used
+    const codes = CHAPTERS.flatMap((c) => c.blocks).filter((b) => b.k === 'code').map((b) => (b as { c: string }).c);
+    expect(new Set(codes)).toEqual(new Set(Object.keys(CODE))); // every Python example is used
+  });
+
+  it('every Python example has a recorded real run, except the one that needs a server', () => {
+    for (const ex of Object.values(CODE)) {
+      expect(ex.source.length, ex.file).toBeGreaterThan(100);
+      if (ex.id === 'api-client') { expect(ex.ran).toBe(false); continue; }
+      expect(ex.ran, ex.file).toBe(true);
+      expect(ex.output, ex.file).not.toBe('');
+      expect(ex.output, ex.file).not.toMatch(/Traceback|Error:/);
+    }
+    expect(CODE['tiny-transformer'].output).toContain('cache path == full recomputation: True');
+    expect(CODE.backprop.output).toMatch(/by hand : dL\/dw = (-[\d.]+).*\nautograd: dL\/dw = \1/s);
+    expect(CODE.safetensors.output).toContain('matches the safetensors library: True');
+    expect(CODE.safetensors.output).toContain('751,632,384');
+    expect(CODE['hf-inspect'].output).toContain("next token ' Paris'   p = 0.657");
   });
 
   it('every chapter link points to an existing route', () => {

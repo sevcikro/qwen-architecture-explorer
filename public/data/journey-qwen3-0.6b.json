@@ -1,0 +1,3811 @@
+{
+ "model": "Qwen/Qwen3-0.6B",
+ "revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+ "modelSha256": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b",
+ "library": "transformers 5.20.2, torch 2.14.1+cpu",
+ "dtype": "float32",
+ "decoding": "greedy (argmax), K/V cache",
+ "recorded": "2026-10-22",
+ "messages": [
+  {
+   "role": "user",
+   "content": "What is a parameter?"
+  }
+ ],
+ "renderedPrompt": "<|im_start|>user\nWhat is a parameter?<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+ "promptIds": [
+  151644,
+  872,
+  198,
+  3838,
+  374,
+  264,
+  5733,
+  30,
+  151645,
+  198,
+  151644,
+  77091,
+  198,
+  151667,
+  271,
+  151668,
+  271
+ ],
+ "promptPieces": [
+  "<|im_start|>",
+  "user",
+  "\n",
+  "What",
+  " is",
+  " a",
+  " parameter",
+  "?",
+  "<|im_end|>",
+  "\n",
+  "<|im_start|>",
+  "assistant",
+  "\n",
+  "<think>",
+  "\n\n",
+  "</think>",
+  "\n\n"
+ ],
+ "steps": [
+  {
+   "id": 32,
+   "piece": "A",
+   "p": 0.9849,
+   "top": [
+    {
+     "piece": "A",
+     "p": 0.9849
+    },
+    {
+     "piece": "In",
+     "p": 0.014
+    },
+    {
+     "piece": "**",
+     "p": 0.0009
+    },
+    {
+     "piece": "*A",
+     "p": 0.0
+    },
+    {
+     "piece": "Parameter",
+     "p": 0.0
+    }
+   ]
+  },
+  {
+   "id": 3070,
+   "piece": " **",
+   "p": 0.6538,
+   "top": [
+    {
+     "piece": " **",
+     "p": 0.6538
+    },
+    {
+     "piece": " parameter",
+     "p": 0.343
+    },
+    {
+     "piece": " *",
+     "p": 0.0012
+    },
+    {
+     "piece": "**",
+     "p": 0.0006
+    },
+    {
+     "piece": " \"",
+     "p": 0.0005
+    }
+   ]
+  },
+  {
+   "id": 16181,
+   "piece": "parameter",
+   "p": 0.9998,
+   "top": [
+    {
+     "piece": "parameter",
+     "p": 0.9998
+    },
+    {
+     "piece": "param",
+     "p": 0.0001
+    },
+    {
+     "piece": " parameter",
+     "p": 0.0
+    },
+    {
+     "piece": "parameters",
+     "p": 0.0
+    },
+    {
+     "piece": "Parameter",
+     "p": 0.0
+    }
+   ]
+  },
+  {
+   "id": 334,
+   "piece": "**",
+   "p": 0.9994,
+   "top": [
+    {
+     "piece": "**",
+     "p": 0.9994
+    },
+    {
+     "piece": "**,",
+     "p": 0.0003
+    },
+    {
+     "piece": " is",
+     "p": 0.0002
+    },
+    {
+     "piece": " in",
+     "p": 0.0001
+    },
+    {
+     "piece": " (",
+     "p": 0.0
+    }
+   ]
+  },
+  {
+   "id": 374,
+   "piece": " is",
+   "p": 0.9503,
+   "top": [
+    {
+     "piece": " is",
+     "p": 0.9503
+    },
+    {
+     "piece": " in",
+     "p": 0.0309
+    },
+    {
+     "piece": " refers",
+     "p": 0.0153
+    },
+    {
+     "piece": " (",
+     "p": 0.0031
+    },
+    {
+     "piece": " typically",
+     "p": 0.0002
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.9945,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.9945
+    },
+    {
+     "piece": " an",
+     "p": 0.0015
+    },
+    {
+     "piece": " **",
+     "p": 0.0015
+    },
+    {
+     "piece": " any",
+     "p": 0.0014
+    },
+    {
+     "piece": " typically",
+     "p": 0.0004
+    }
+   ]
+  },
+  {
+   "id": 897,
+   "piece": " value",
+   "p": 0.5033,
+   "top": [
+    {
+     "piece": " value",
+     "p": 0.5033
+    },
+    {
+     "piece": " variable",
+     "p": 0.3444
+    },
+    {
+     "piece": " **",
+     "p": 0.1219
+    },
+    {
+     "piece": " quantity",
+     "p": 0.0104
+    },
+    {
+     "piece": " numerical",
+     "p": 0.0034
+    }
+   ]
+  },
+  {
+   "id": 476,
+   "piece": " or",
+   "p": 0.4742,
+   "top": [
+    {
+     "piece": " or",
+     "p": 0.4742
+    },
+    {
+     "piece": " that",
+     "p": 0.2777
+    },
+    {
+     "piece": " used",
+     "p": 0.2318
+    },
+    {
+     "piece": " **",
+     "p": 0.0045
+    },
+    {
+     "piece": " (",
+     "p": 0.003
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.6692,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.6692
+    },
+    {
+     "piece": " variable",
+     "p": 0.175
+    },
+    {
+     "piece": " characteristic",
+     "p": 0.0342
+    },
+    {
+     "piece": " set",
+     "p": 0.0203
+    },
+    {
+     "piece": " quantity",
+     "p": 0.0195
+    }
+   ]
+  },
+  {
+   "id": 3890,
+   "piece": " variable",
+   "p": 0.6927,
+   "top": [
+    {
+     "piece": " variable",
+     "p": 0.6927
+    },
+    {
+     "piece": " quantity",
+     "p": 0.0622
+    },
+    {
+     "piece": " characteristic",
+     "p": 0.05
+    },
+    {
+     "piece": " set",
+     "p": 0.0492
+    },
+    {
+     "piece": " condition",
+     "p": 0.0191
+    }
+   ]
+  },
+  {
+   "id": 429,
+   "piece": " that",
+   "p": 0.6598,
+   "top": [
+    {
+     "piece": " that",
+     "p": 0.6598
+    },
+    {
+     "piece": " used",
+     "p": 0.3248
+    },
+    {
+     "piece": " in",
+     "p": 0.0066
+    },
+    {
+     "piece": " whose",
+     "p": 0.0019
+    },
+    {
+     "piece": " defined",
+     "p": 0.0009
+    }
+   ]
+  },
+  {
+   "id": 374,
+   "piece": " is",
+   "p": 0.7741,
+   "top": [
+    {
+     "piece": " is",
+     "p": 0.7741
+    },
+    {
+     "piece": " can",
+     "p": 0.0723
+    },
+    {
+     "piece": " determines",
+     "p": 0.0415
+    },
+    {
+     "piece": " defines",
+     "p": 0.0224
+    },
+    {
+     "piece": " controls",
+     "p": 0.0153
+    }
+   ]
+  },
+  {
+   "id": 1483,
+   "piece": " used",
+   "p": 0.9797,
+   "top": [
+    {
+     "piece": " used",
+     "p": 0.9797
+    },
+    {
+     "piece": " introduced",
+     "p": 0.0036
+    },
+    {
+     "piece": " **",
+     "p": 0.0034
+    },
+    {
+     "piece": " passed",
+     "p": 0.0021
+    },
+    {
+     "piece": " shared",
+     "p": 0.0016
+    }
+   ]
+  },
+  {
+   "id": 311,
+   "piece": " to",
+   "p": 0.7467,
+   "top": [
+    {
+     "piece": " to",
+     "p": 0.7467
+    },
+    {
+     "piece": " in",
+     "p": 0.2423
+    },
+    {
+     "piece": " within",
+     "p": 0.0032
+    },
+    {
+     "piece": " as",
+     "p": 0.0031
+    },
+    {
+     "piece": " **",
+     "p": 0.0012
+    }
+   ]
+  },
+  {
+   "id": 6979,
+   "piece": " define",
+   "p": 0.3612,
+   "top": [
+    {
+     "piece": " define",
+     "p": 0.3612
+    },
+    {
+     "piece": " describe",
+     "p": 0.2807
+    },
+    {
+     "piece": " represent",
+     "p": 0.2198
+    },
+    {
+     "piece": " specify",
+     "p": 0.0343
+    },
+    {
+     "piece": " control",
+     "p": 0.0216
+    }
+   ]
+  },
+  {
+   "id": 279,
+   "piece": " the",
+   "p": 0.3269,
+   "top": [
+    {
+     "piece": " the",
+     "p": 0.3269
+    },
+    {
+     "piece": " or",
+     "p": 0.3052
+    },
+    {
+     "piece": " a",
+     "p": 0.2794
+    },
+    {
+     "piece": " something",
+     "p": 0.0221
+    },
+    {
+     "piece": " some",
+     "p": 0.0128
+    }
+   ]
+  },
+  {
+   "id": 7709,
+   "piece": " behavior",
+   "p": 0.3118,
+   "top": [
+    {
+     "piece": " behavior",
+     "p": 0.3118
+    },
+    {
+     "piece": " input",
+     "p": 0.1073
+    },
+    {
+     "piece": " state",
+     "p": 0.0912
+    },
+    {
+     "piece": " characteristics",
+     "p": 0.0684
+    },
+    {
+     "piece": " scope",
+     "p": 0.0558
+    }
+   ]
+  },
+  {
+   "id": 476,
+   "piece": " or",
+   "p": 0.5964,
+   "top": [
+    {
+     "piece": " or",
+     "p": 0.5964
+    },
+    {
+     "piece": ",",
+     "p": 0.2072
+    },
+    {
+     "piece": " of",
+     "p": 0.1884
+    },
+    {
+     "piece": " and",
+     "p": 0.0074
+    },
+    {
+     "piece": " (",
+     "p": 0.0003
+    }
+   ]
+  },
+  {
+   "id": 17452,
+   "piece": " characteristics",
+   "p": 0.284,
+   "top": [
+    {
+     "piece": " characteristics",
+     "p": 0.284
+    },
+    {
+     "piece": " state",
+     "p": 0.1983
+    },
+    {
+     "piece": " properties",
+     "p": 0.0889
+    },
+    {
+     "piece": " parameters",
+     "p": 0.0767
+    },
+    {
+     "piece": " input",
+     "p": 0.0526
+    }
+   ]
+  },
+  {
+   "id": 315,
+   "piece": " of",
+   "p": 0.9994,
+   "top": [
+    {
+     "piece": " of",
+     "p": 0.9994
+    },
+    {
+     "piece": " in",
+     "p": 0.0002
+    },
+    {
+     "piece": " within",
+     "p": 0.0001
+    },
+    {
+     "piece": " (",
+     "p": 0.0001
+    },
+    {
+     "piece": " or",
+     "p": 0.0
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.9509,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.9509
+    },
+    {
+     "piece": " an",
+     "p": 0.032
+    },
+    {
+     "piece": " something",
+     "p": 0.0119
+    },
+    {
+     "piece": " the",
+     "p": 0.0023
+    },
+    {
+     "piece": " some",
+     "p": 0.0013
+    }
+   ]
+  },
+  {
+   "id": 1849,
+   "piece": " system",
+   "p": 0.692,
+   "top": [
+    {
+     "piece": " system",
+     "p": 0.692
+    },
+    {
+     "piece": " mathematical",
+     "p": 0.0909
+    },
+    {
+     "piece": " process",
+     "p": 0.0572
+    },
+    {
+     "piece": " function",
+     "p": 0.0394
+    },
+    {
+     "piece": " model",
+     "p": 0.0326
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "piece": ",",
+   "p": 0.7147,
+   "top": [
+    {
+     "piece": ",",
+     "p": 0.7147
+    },
+    {
+     "piece": " or",
+     "p": 0.2508
+    },
+    {
+     "piece": ".",
+     "p": 0.0294
+    },
+    {
+     "piece": " in",
+     "p": 0.0023
+    },
+    {
+     "piece": " during",
+     "p": 0.0008
+    }
+   ]
+  },
+  {
+   "id": 1882,
+   "piece": " process",
+   "p": 0.6738,
+   "top": [
+    {
+     "piece": " process",
+     "p": 0.6738
+    },
+    {
+     "piece": " model",
+     "p": 0.1962
+    },
+    {
+     "piece": " a",
+     "p": 0.0346
+    },
+    {
+     "piece": " object",
+     "p": 0.0312
+    },
+    {
+     "piece": " function",
+     "p": 0.0238
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "piece": ",",
+   "p": 0.9998,
+   "top": [
+    {
+     "piece": ",",
+     "p": 0.9998
+    },
+    {
+     "piece": " or",
+     "p": 0.0002
+    },
+    {
+     "piece": " model",
+     "p": 0.0
+    },
+    {
+     "piece": " (",
+     "p": 0.0
+    },
+    {
+     "piece": ".",
+     "p": 0.0
+    }
+   ]
+  },
+  {
+   "id": 476,
+   "piece": " or",
+   "p": 0.984,
+   "top": [
+    {
+     "piece": " or",
+     "p": 0.984
+    },
+    {
+     "piece": " model",
+     "p": 0.01
+    },
+    {
+     "piece": " object",
+     "p": 0.0014
+    },
+    {
+     "piece": " function",
+     "p": 0.0013
+    },
+    {
+     "piece": " algorithm",
+     "p": 0.0006
+    }
+   ]
+  },
+  {
+   "id": 1614,
+   "piece": " model",
+   "p": 0.5314,
+   "top": [
+    {
+     "piece": " model",
+     "p": 0.5314
+    },
+    {
+     "piece": " object",
+     "p": 0.2263
+    },
+    {
+     "piece": " function",
+     "p": 0.0291
+    },
+    {
+     "piece": " data",
+     "p": 0.023
+    },
+    {
+     "piece": " structure",
+     "p": 0.0229
+    }
+   ]
+  },
+  {
+   "id": 13,
+   "piece": ".",
+   "p": 0.9293,
+   "top": [
+    {
+     "piece": ".",
+     "p": 0.9293
+    },
+    {
+     "piece": " in",
+     "p": 0.0439
+    },
+    {
+     "piece": ",",
+     "p": 0.0064
+    },
+    {
+     "piece": " during",
+     "p": 0.006
+    },
+    {
+     "piece": " when",
+     "p": 0.0047
+    }
+   ]
+  },
+  {
+   "id": 1084,
+   "piece": " It",
+   "p": 0.7469,
+   "top": [
+    {
+     "piece": " It",
+     "p": 0.7469
+    },
+    {
+     "piece": " In",
+     "p": 0.2055
+    },
+    {
+     "piece": " Parameters",
+     "p": 0.0361
+    },
+    {
+     "piece": " For",
+     "p": 0.0054
+    },
+    {
+     "piece": " Unlike",
+     "p": 0.0011
+    }
+   ]
+  },
+  {
+   "id": 374,
+   "piece": " is",
+   "p": 0.5171,
+   "top": [
+    {
+     "piece": " is",
+     "p": 0.5171
+    },
+    {
+     "piece": " can",
+     "p": 0.3597
+    },
+    {
+     "piece": " typically",
+     "p": 0.0171
+    },
+    {
+     "piece": " serves",
+     "p": 0.0148
+    },
+    {
+     "piece": " provides",
+     "p": 0.0114
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.4421,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.4421
+    },
+    {
+     "piece": " often",
+     "p": 0.2904
+    },
+    {
+     "piece": " typically",
+     "p": 0.1287
+    },
+    {
+     "piece": " used",
+     "p": 0.0682
+    },
+    {
+     "piece": " usually",
+     "p": 0.0256
+    }
+   ]
+  },
+  {
+   "id": 897,
+   "piece": " value",
+   "p": 0.2465,
+   "top": [
+    {
+     "piece": " value",
+     "p": 0.2465
+    },
+    {
+     "piece": " variable",
+     "p": 0.105
+    },
+    {
+     "piece": " specific",
+     "p": 0.1041
+    },
+    {
+     "piece": " quantity",
+     "p": 0.0964
+    },
+    {
+     "piece": " **",
+     "p": 0.0484
+    }
+   ]
+  },
+  {
+   "id": 429,
+   "piece": " that",
+   "p": 0.674,
+   "top": [
+    {
+     "piece": " that",
+     "p": 0.674
+    },
+    {
+     "piece": " or",
+     "p": 0.2346
+    },
+    {
+     "piece": " used",
+     "p": 0.0313
+    },
+    {
+     "piece": " assigned",
+     "p": 0.008
+    },
+    {
+     "piece": ",",
+     "p": 0.0057
+    }
+   ]
+  },
+  {
+   "id": 646,
+   "piece": " can",
+   "p": 0.4517,
+   "top": [
+    {
+     "piece": " can",
+     "p": 0.4517
+    },
+    {
+     "piece": " is",
+     "p": 0.232
+    },
+    {
+     "piece": " changes",
+     "p": 0.1013
+    },
+    {
+     "piece": " determines",
+     "p": 0.0402
+    },
+    {
+     "piece": ",",
+     "p": 0.0212
+    }
+   ]
+  },
+  {
+   "id": 387,
+   "piece": " be",
+   "p": 0.5049,
+   "top": [
+    {
+     "piece": " be",
+     "p": 0.5049
+    },
+    {
+     "piece": " change",
+     "p": 0.3282
+    },
+    {
+     "piece": " take",
+     "p": 0.0917
+    },
+    {
+     "piece": " vary",
+     "p": 0.0722
+    },
+    {
+     "piece": " have",
+     "p": 0.0007
+    }
+   ]
+  },
+  {
+   "id": 5497,
+   "piece": " changed",
+   "p": 0.6749,
+   "top": [
+    {
+     "piece": " changed",
+     "p": 0.6749
+    },
+    {
+     "piece": " adjusted",
+     "p": 0.1333
+    },
+    {
+     "piece": " modified",
+     "p": 0.0862
+    },
+    {
+     "piece": " altered",
+     "p": 0.0203
+    },
+    {
+     "piece": " used",
+     "p": 0.0199
+    }
+   ]
+  },
+  {
+   "id": 476,
+   "piece": " or",
+   "p": 0.6965,
+   "top": [
+    {
+     "piece": " or",
+     "p": 0.6965
+    },
+    {
+     "piece": ",",
+     "p": 0.091
+    },
+    {
+     "piece": " to",
+     "p": 0.0616
+    },
+    {
+     "piece": " in",
+     "p": 0.0264
+    },
+    {
+     "piece": " by",
+     "p": 0.0254
+    }
+   ]
+  },
+  {
+   "id": 23368,
+   "piece": " adjusted",
+   "p": 0.6857,
+   "top": [
+    {
+     "piece": " adjusted",
+     "p": 0.6857
+    },
+    {
+     "piece": " modified",
+     "p": 0.1308
+    },
+    {
+     "piece": " altered",
+     "p": 0.0846
+    },
+    {
+     "piece": " set",
+     "p": 0.0292
+    },
+    {
+     "piece": " manipulated",
+     "p": 0.0192
+    }
+   ]
+  },
+  {
+   "id": 311,
+   "piece": " to",
+   "p": 0.4768,
+   "top": [
+    {
+     "piece": " to",
+     "p": 0.4768
+    },
+    {
+     "piece": " in",
+     "p": 0.1235
+    },
+    {
+     "piece": " according",
+     "p": 0.0887
+    },
+    {
+     "piece": " depending",
+     "p": 0.0676
+    },
+    {
+     "piece": " within",
+     "p": 0.0482
+    }
+   ]
+  },
+  {
+   "id": 10173,
+   "piece": " influence",
+   "p": 0.3436,
+   "top": [
+    {
+     "piece": " influence",
+     "p": 0.3436
+    },
+    {
+     "piece": " affect",
+     "p": 0.1794
+    },
+    {
+     "piece": " alter",
+     "p": 0.1358
+    },
+    {
+     "piece": " modify",
+     "p": 0.1089
+    },
+    {
+     "piece": " achieve",
+     "p": 0.0326
+    }
+   ]
+  },
+  {
+   "id": 279,
+   "piece": " the",
+   "p": 0.8662,
+   "top": [
+    {
+     "piece": " the",
+     "p": 0.8662
+    },
+    {
+     "piece": " how",
+     "p": 0.0735
+    },
+    {
+     "piece": " or",
+     "p": 0.0558
+    },
+    {
+     "piece": " what",
+     "p": 0.0008
+    },
+    {
+     "piece": " its",
+     "p": 0.0007
+    }
+   ]
+  },
+  {
+   "id": 15274,
+   "piece": " outcome",
+   "p": 0.5952,
+   "top": [
+    {
+     "piece": " outcome",
+     "p": 0.5952
+    },
+    {
+     "piece": " output",
+     "p": 0.0988
+    },
+    {
+     "piece": " behavior",
+     "p": 0.0908
+    },
+    {
+     "piece": " results",
+     "p": 0.0646
+    },
+    {
+     "piece": " result",
+     "p": 0.0617
+    }
+   ]
+  },
+  {
+   "id": 315,
+   "piece": " of",
+   "p": 0.5281,
+   "top": [
+    {
+     "piece": " of",
+     "p": 0.5281
+    },
+    {
+     "piece": " or",
+     "p": 0.4233
+    },
+    {
+     "piece": ".",
+     "p": 0.0357
+    },
+    {
+     "piece": ".\n\n",
+     "p": 0.0063
+    },
+    {
+     "piece": ",",
+     "p": 0.0044
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.6186,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.6186
+    },
+    {
+     "piece": " the",
+     "p": 0.271
+    },
+    {
+     "piece": " an",
+     "p": 0.0816
+    },
+    {
+     "piece": " that",
+     "p": 0.0131
+    },
+    {
+     "piece": " something",
+     "p": 0.0078
+    }
+   ]
+  },
+  {
+   "id": 1882,
+   "piece": " process",
+   "p": 0.2492,
+   "top": [
+    {
+     "piece": " process",
+     "p": 0.2492
+    },
+    {
+     "piece": " system",
+     "p": 0.2133
+    },
+    {
+     "piece": " particular",
+     "p": 0.1537
+    },
+    {
+     "piece": " specific",
+     "p": 0.0942
+    },
+    {
+     "piece": " simulation",
+     "p": 0.0878
+    }
+   ]
+  },
+  {
+   "id": 476,
+   "piece": " or",
+   "p": 0.4382,
+   "top": [
+    {
+     "piece": " or",
+     "p": 0.4382
+    },
+    {
+     "piece": ".",
+     "p": 0.3906
+    },
+    {
+     "piece": ".\n\n",
+     "p": 0.0964
+    },
+    {
+     "piece": ",",
+     "p": 0.0719
+    },
+    {
+     "piece": " and",
+     "p": 0.0007
+    }
+   ]
+  },
+  {
+   "id": 1614,
+   "piece": " model",
+   "p": 0.3336,
+   "top": [
+    {
+     "piece": " model",
+     "p": 0.3336
+    },
+    {
+     "piece": " system",
+     "p": 0.2541
+    },
+    {
+     "piece": " to",
+     "p": 0.1532
+    },
+    {
+     "piece": " simulation",
+     "p": 0.0716
+    },
+    {
+     "piece": " the",
+     "p": 0.0472
+    }
+   ]
+  },
+  {
+   "id": 13,
+   "piece": ".",
+   "p": 0.7386,
+   "top": [
+    {
+     "piece": ".",
+     "p": 0.7386
+    },
+    {
+     "piece": ".\n\n",
+     "p": 0.2501
+    },
+    {
+     "piece": ",",
+     "p": 0.0076
+    },
+    {
+     "piece": " in",
+     "p": 0.0014
+    },
+    {
+     "piece": " without",
+     "p": 0.0002
+    }
+   ]
+  },
+  {
+   "id": 4710,
+   "piece": " \n\n",
+   "p": 0.3819,
+   "top": [
+    {
+     "piece": " \n\n",
+     "p": 0.3819
+    },
+    {
+     "piece": " Parameters",
+     "p": 0.3632
+    },
+    {
+     "piece": " For",
+     "p": 0.1387
+    },
+    {
+     "piece": " In",
+     "p": 0.056
+    },
+    {
+     "piece": "  \n\n",
+     "p": 0.0213
+    }
+   ]
+  },
+  {
+   "id": 2461,
+   "piece": "For",
+   "p": 0.6013,
+   "top": [
+    {
+     "piece": "For",
+     "p": 0.6013
+    },
+    {
+     "piece": "In",
+     "p": 0.2596
+    },
+    {
+     "piece": "Parameters",
+     "p": 0.0767
+    },
+    {
+     "piece": "###",
+     "p": 0.0453
+    },
+    {
+     "piece": "**",
+     "p": 0.0049
+    }
+   ]
+  },
+  {
+   "id": 3110,
+   "piece": " example",
+   "p": 0.9998,
+   "top": [
+    {
+     "piece": " example",
+     "p": 0.9998
+    },
+    {
+     "piece": " **",
+     "p": 0.0001
+    },
+    {
+     "piece": " instance",
+     "p": 0.0001
+    },
+    {
+     "piece": " examples",
+     "p": 0.0
+    },
+    {
+     "piece": " Example",
+     "p": 0.0
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "piece": ",",
+   "p": 0.5943,
+   "top": [
+    {
+     "piece": ",",
+     "p": 0.5943
+    },
+    {
+     "piece": ":\n",
+     "p": 0.348
+    },
+    {
+     "piece": ":\n\n",
+     "p": 0.0492
+    },
+    {
+     "piece": ":",
+     "p": 0.0083
+    },
+    {
+     "piece": " in",
+     "p": 0.0003
+    }
+   ]
+  },
+  {
+   "id": 304,
+   "piece": " in",
+   "p": 0.9658,
+   "top": [
+    {
+     "piece": " in",
+     "p": 0.9658
+    },
+    {
+     "piece": " if",
+     "p": 0.0256
+    },
+    {
+     "piece": " a",
+     "p": 0.0025
+    },
+    {
+     "piece": " parameters",
+     "p": 0.0023
+    },
+    {
+     "piece": " when",
+     "p": 0.0012
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.9014,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.9014
+    },
+    {
+     "piece": " the",
+     "p": 0.0285
+    },
+    {
+     "piece": " mathematics",
+     "p": 0.0221
+    },
+    {
+     "piece": " an",
+     "p": 0.0106
+    },
+    {
+     "piece": " programming",
+     "p": 0.0085
+    }
+   ]
+  },
+  {
+   "id": 35972,
+   "piece": " mathematical",
+   "p": 0.5979,
+   "top": [
+    {
+     "piece": " mathematical",
+     "p": 0.5979
+    },
+    {
+     "piece": " physics",
+     "p": 0.072
+    },
+    {
+     "piece": " function",
+     "p": 0.0527
+    },
+    {
+     "piece": " simple",
+     "p": 0.0386
+    },
+    {
+     "piece": " scientific",
+     "p": 0.0377
+    }
+   ]
+  },
+  {
+   "id": 729,
+   "piece": " function",
+   "p": 0.5303,
+   "top": [
+    {
+     "piece": " function",
+     "p": 0.5303
+    },
+    {
+     "piece": " equation",
+     "p": 0.278
+    },
+    {
+     "piece": " model",
+     "p": 0.1425
+    },
+    {
+     "piece": " expression",
+     "p": 0.0167
+    },
+    {
+     "piece": " formula",
+     "p": 0.0094
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "piece": ",",
+   "p": 0.6466,
+   "top": [
+    {
+     "piece": ",",
+     "p": 0.6466
+    },
+    {
+     "piece": " or",
+     "p": 0.1647
+    },
+    {
+     "piece": " like",
+     "p": 0.1245
+    },
+    {
+     "piece": ":\n",
+     "p": 0.033
+    },
+    {
+     "piece": " $",
+     "p": 0.0093
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.7797,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.7797
+    },
+    {
+     "piece": " the",
+     "p": 0.1315
+    },
+    {
+     "piece": " parameters",
+     "p": 0.0751
+    },
+    {
+     "piece": " if",
+     "p": 0.0019
+    },
+    {
+     "piece": " you",
+     "p": 0.0018
+    }
+   ]
+  },
+  {
+   "id": 5733,
+   "piece": " parameter",
+   "p": 0.9969,
+   "top": [
+    {
+     "piece": " parameter",
+     "p": 0.9969
+    },
+    {
+     "piece": " **",
+     "p": 0.0024
+    },
+    {
+     "piece": " variable",
+     "p": 0.0003
+    },
+    {
+     "piece": " function",
+     "p": 0.0001
+    },
+    {
+     "piece": " \"",
+     "p": 0.0001
+    }
+   ]
+  },
+  {
+   "id": 374,
+   "piece": " is",
+   "p": 0.3397,
+   "top": [
+    {
+     "piece": " is",
+     "p": 0.3397
+    },
+    {
+     "piece": " might",
+     "p": 0.2751
+    },
+    {
+     "piece": " could",
+     "p": 0.1532
+    },
+    {
+     "piece": " can",
+     "p": 0.1091
+    },
+    {
+     "piece": " determines",
+     "p": 0.0633
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.9281,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.9281
+    },
+    {
+     "piece": " like",
+     "p": 0.0176
+    },
+    {
+     "piece": " something",
+     "p": 0.0169
+    },
+    {
+     "piece": " used",
+     "p": 0.0108
+    },
+    {
+     "piece": " an",
+     "p": 0.0091
+    }
+   ]
+  },
+  {
+   "id": 6783,
+   "piece": " constant",
+   "p": 0.4817,
+   "top": [
+    {
+     "piece": " constant",
+     "p": 0.4817
+    },
+    {
+     "piece": " value",
+     "p": 0.2971
+    },
+    {
+     "piece": " number",
+     "p": 0.1371
+    },
+    {
+     "piece": " variable",
+     "p": 0.0395
+    },
+    {
+     "piece": " coefficient",
+     "p": 0.0093
+    }
+   ]
+  },
+  {
+   "id": 429,
+   "piece": " that",
+   "p": 0.6673,
+   "top": [
+    {
+     "piece": " that",
+     "p": 0.6673
+    },
+    {
+     "piece": " value",
+     "p": 0.16
+    },
+    {
+     "piece": " or",
+     "p": 0.0879
+    },
+    {
+     "piece": " used",
+     "p": 0.0237
+    },
+    {
+     "piece": " number",
+     "p": 0.0187
+    }
+   ]
+  },
+  {
+   "id": 26569,
+   "piece": " determines",
+   "p": 0.4573,
+   "top": [
+    {
+     "piece": " determines",
+     "p": 0.4573
+    },
+    {
+     "piece": " affects",
+     "p": 0.1719
+    },
+    {
+     "piece": " is",
+     "p": 0.0854
+    },
+    {
+     "piece": " modifies",
+     "p": 0.0804
+    },
+    {
+     "piece": " you",
+     "p": 0.0359
+    }
+   ]
+  },
+  {
+   "id": 1246,
+   "piece": " how",
+   "p": 0.8378,
+   "top": [
+    {
+     "piece": " how",
+     "p": 0.8378
+    },
+    {
+     "piece": " the",
+     "p": 0.157
+    },
+    {
+     "piece": " its",
+     "p": 0.0031
+    },
+    {
+     "piece": " what",
+     "p": 0.001
+    },
+    {
+     "piece": " certain",
+     "p": 0.0004
+    }
+   ]
+  },
+  {
+   "id": 279,
+   "piece": " the",
+   "p": 0.9847,
+   "top": [
+    {
+     "piece": " the",
+     "p": 0.9847
+    },
+    {
+     "piece": " a",
+     "p": 0.0076
+    },
+    {
+     "piece": " that",
+     "p": 0.0013
+    },
+    {
+     "piece": " much",
+     "p": 0.0011
+    },
+    {
+     "piece": " it",
+     "p": 0.001
+    }
+   ]
+  },
+  {
+   "id": 729,
+   "piece": " function",
+   "p": 0.8815,
+   "top": [
+    {
+     "piece": " function",
+     "p": 0.8815
+    },
+    {
+     "piece": " output",
+     "p": 0.1093
+    },
+    {
+     "piece": " graph",
+     "p": 0.0035
+    },
+    {
+     "piece": " result",
+     "p": 0.0016
+    },
+    {
+     "piece": " outcome",
+     "p": 0.0013
+    }
+   ]
+  },
+  {
+   "id": 73057,
+   "piece": " behaves",
+   "p": 0.7297,
+   "top": [
+    {
+     "piece": " behaves",
+     "p": 0.7297
+    },
+    {
+     "piece": " changes",
+     "p": 0.1865
+    },
+    {
+     "piece": " looks",
+     "p": 0.0115
+    },
+    {
+     "piece": " operates",
+     "p": 0.0092
+    },
+    {
+     "piece": " will",
+     "p": 0.008
+    }
+   ]
+  },
+  {
+   "id": 13,
+   "piece": ".",
+   "p": 0.8325,
+   "top": [
+    {
+     "piece": ".",
+     "p": 0.8325
+    },
+    {
+     "piece": " based",
+     "p": 0.0403
+    },
+    {
+     "piece": ",",
+     "p": 0.0365
+    },
+    {
+     "piece": " when",
+     "p": 0.0263
+    },
+    {
+     "piece": ".\n\n",
+     "p": 0.0103
+    }
+   ]
+  },
+  {
+   "id": 758,
+   "piece": " In",
+   "p": 0.9777,
+   "top": [
+    {
+     "piece": " In",
+     "p": 0.9777
+    },
+    {
+     "piece": " Similarly",
+     "p": 0.008
+    },
+    {
+     "piece": " \n\n",
+     "p": 0.003
+    },
+    {
+     "piece": " It",
+     "p": 0.0029
+    },
+    {
+     "piece": " For",
+     "p": 0.0016
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.7926,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.7926
+    },
+    {
+     "piece": " an",
+     "p": 0.0641
+    },
+    {
+     "piece": " statistics",
+     "p": 0.0332
+    },
+    {
+     "piece": " physics",
+     "p": 0.0269
+    },
+    {
+     "piece": " statistical",
+     "p": 0.0216
+    }
+   ]
+  },
+  {
+   "id": 28464,
+   "piece": " statistical",
+   "p": 0.4433,
+   "top": [
+    {
+     "piece": " statistical",
+     "p": 0.4433
+    },
+    {
+     "piece": " physical",
+     "p": 0.1379
+    },
+    {
+     "piece": " scientific",
+     "p": 0.1319
+    },
+    {
+     "piece": " physics",
+     "p": 0.0829
+    },
+    {
+     "piece": " graph",
+     "p": 0.0347
+    }
+   ]
+  },
+  {
+   "id": 1614,
+   "piece": " model",
+   "p": 0.9543,
+   "top": [
+    {
+     "piece": " model",
+     "p": 0.9543
+    },
+    {
+     "piece": " analysis",
+     "p": 0.0331
+    },
+    {
+     "piece": " context",
+     "p": 0.0045
+    },
+    {
+     "piece": " regression",
+     "p": 0.0013
+    },
+    {
+     "piece": " study",
+     "p": 0.0011
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "piece": ",",
+   "p": 0.9845,
+   "top": [
+    {
+     "piece": ",",
+     "p": 0.9845
+    },
+    {
+     "piece": " or",
+     "p": 0.0103
+    },
+    {
+     "piece": " like",
+     "p": 0.0036
+    },
+    {
+     "piece": " (",
+     "p": 0.0013
+    },
+    {
+     "piece": " such",
+     "p": 0.0001
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.9254,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.9254
+    },
+    {
+     "piece": " parameters",
+     "p": 0.0422
+    },
+    {
+     "piece": " it",
+     "p": 0.0301
+    },
+    {
+     "piece": " the",
+     "p": 0.0011
+    },
+    {
+     "piece": " like",
+     "p": 0.0002
+    }
+   ]
+  },
+  {
+   "id": 5733,
+   "piece": " parameter",
+   "p": 0.9999,
+   "top": [
+    {
+     "piece": " parameter",
+     "p": 0.9999
+    },
+    {
+     "piece": " **",
+     "p": 0.0
+    },
+    {
+     "piece": " parameters",
+     "p": 0.0
+    },
+    {
+     "piece": " variable",
+     "p": 0.0
+    },
+    {
+     "piece": " param",
+     "p": 0.0
+    }
+   ]
+  },
+  {
+   "id": 374,
+   "piece": " is",
+   "p": 0.8676,
+   "top": [
+    {
+     "piece": " is",
+     "p": 0.8676
+    },
+    {
+     "piece": " might",
+     "p": 0.0412
+    },
+    {
+     "piece": " could",
+     "p": 0.0281
+    },
+    {
+     "piece": " can",
+     "p": 0.0246
+    },
+    {
+     "piece": " represents",
+     "p": 0.0138
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.9671,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.9671
+    },
+    {
+     "piece": " the",
+     "p": 0.0094
+    },
+    {
+     "piece": " an",
+     "p": 0.009
+    },
+    {
+     "piece": " used",
+     "p": 0.0045
+    },
+    {
+     "piece": " one",
+     "p": 0.0042
+    }
+   ]
+  },
+  {
+   "id": 897,
+   "piece": " value",
+   "p": 0.7758,
+   "top": [
+    {
+     "piece": " value",
+     "p": 0.7758
+    },
+    {
+     "piece": " constant",
+     "p": 0.0643
+    },
+    {
+     "piece": " variable",
+     "p": 0.0291
+    },
+    {
+     "piece": " parameter",
+     "p": 0.0214
+    },
+    {
+     "piece": " coefficient",
+     "p": 0.0204
+    }
+   ]
+  },
+  {
+   "id": 429,
+   "piece": " that",
+   "p": 0.8257,
+   "top": [
+    {
+     "piece": " that",
+     "p": 0.8257
+    },
+    {
+     "piece": " used",
+     "p": 0.1406
+    },
+    {
+     "piece": " estimated",
+     "p": 0.0127
+    },
+    {
+     "piece": " (",
+     "p": 0.0027
+    },
+    {
+     "piece": " associated",
+     "p": 0.0025
+    }
+   ]
+  },
+  {
+   "id": 374,
+   "piece": " is",
+   "p": 0.3504,
+   "top": [
+    {
+     "piece": " is",
+     "p": 0.3504
+    },
+    {
+     "piece": " influences",
+     "p": 0.125
+    },
+    {
+     "piece": " represents",
+     "p": 0.1063
+    },
+    {
+     "piece": " affects",
+     "p": 0.074
+    },
+    {
+     "piece": " controls",
+     "p": 0.0576
+    }
+   ]
+  },
+  {
+   "id": 12943,
+   "piece": " estimated",
+   "p": 0.6716,
+   "top": [
+    {
+     "piece": " estimated",
+     "p": 0.6716
+    },
+    {
+     "piece": " used",
+     "p": 0.208
+    },
+    {
+     "piece": " adjusted",
+     "p": 0.0724
+    },
+    {
+     "piece": " part",
+     "p": 0.009
+    },
+    {
+     "piece": " fixed",
+     "p": 0.0052
+    }
+   ]
+  },
+  {
+   "id": 476,
+   "piece": " or",
+   "p": 0.5769,
+   "top": [
+    {
+     "piece": " or",
+     "p": 0.5769
+    },
+    {
+     "piece": " from",
+     "p": 0.1278
+    },
+    {
+     "piece": " based",
+     "p": 0.0936
+    },
+    {
+     "piece": " to",
+     "p": 0.0852
+    },
+    {
+     "piece": " and",
+     "p": 0.0755
+    }
+   ]
+  },
+  {
+   "id": 10838,
+   "piece": " determined",
+   "p": 0.3801,
+   "top": [
+    {
+     "piece": " determined",
+     "p": 0.3801
+    },
+    {
+     "piece": " adjusted",
+     "p": 0.1687
+    },
+    {
+     "piece": " set",
+     "p": 0.0869
+    },
+    {
+     "piece": " fixed",
+     "p": 0.0565
+    },
+    {
+     "piece": " calculated",
+     "p": 0.0562
+    }
+   ]
+  },
+  {
+   "id": 504,
+   "piece": " from",
+   "p": 0.338,
+   "top": [
+    {
+     "piece": " from",
+     "p": 0.338
+    },
+    {
+     "piece": " based",
+     "p": 0.274
+    },
+    {
+     "piece": " to",
+     "p": 0.2029
+    },
+    {
+     "piece": " through",
+     "p": 0.0472
+    },
+    {
+     "piece": " by",
+     "p": 0.0394
+    }
+   ]
+  },
+  {
+   "id": 821,
+   "piece": " data",
+   "p": 0.7555,
+   "top": [
+    {
+     "piece": " data",
+     "p": 0.7555
+    },
+    {
+     "piece": " the",
+     "p": 0.1201
+    },
+    {
+     "piece": " observed",
+     "p": 0.0514
+    },
+    {
+     "piece": " a",
+     "p": 0.0197
+    },
+    {
+     "piece": " observations",
+     "p": 0.0159
+    }
+   ]
+  },
+  {
+   "id": 13,
+   "piece": ".",
+   "p": 0.5488,
+   "top": [
+    {
+     "piece": ".",
+     "p": 0.5488
+    },
+    {
+     "piece": ".\n\n",
+     "p": 0.2276
+    },
+    {
+     "piece": " to",
+     "p": 0.1908
+    },
+    {
+     "piece": ",",
+     "p": 0.0136
+    },
+    {
+     "piece": " and",
+     "p": 0.0125
+    }
+   ]
+  },
+  {
+   "id": 758,
+   "piece": " In",
+   "p": 0.6397,
+   "top": [
+    {
+     "piece": " In",
+     "p": 0.6397
+    },
+    {
+     "piece": " \n\n",
+     "p": 0.3008
+    },
+    {
+     "piece": "<|im_end|>",
+     "p": 0.0205
+    },
+    {
+     "piece": " Parameters",
+     "p": 0.017
+    },
+    {
+     "piece": " It",
+     "p": 0.0063
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.5917,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.5917
+    },
+    {
+     "piece": " physics",
+     "p": 0.1027
+    },
+    {
+     "piece": " an",
+     "p": 0.0724
+    },
+    {
+     "piece": " machine",
+     "p": 0.0593
+    },
+    {
+     "piece": " engineering",
+     "p": 0.035
+    }
+   ]
+  },
+  {
+   "id": 6961,
+   "piece": " physical",
+   "p": 0.4268,
+   "top": [
+    {
+     "piece": " physical",
+     "p": 0.4268
+    },
+    {
+     "piece": " scientific",
+     "p": 0.1557
+    },
+    {
+     "piece": " machine",
+     "p": 0.1437
+    },
+    {
+     "piece": " physics",
+     "p": 0.0732
+    },
+    {
+     "piece": " control",
+     "p": 0.041
+    }
+   ]
+  },
+  {
+   "id": 1849,
+   "piece": " system",
+   "p": 0.7982,
+   "top": [
+    {
+     "piece": " system",
+     "p": 0.7982
+    },
+    {
+     "piece": " model",
+     "p": 0.0832
+    },
+    {
+     "piece": " or",
+     "p": 0.0503
+    },
+    {
+     "piece": " process",
+     "p": 0.0348
+    },
+    {
+     "piece": " simulation",
+     "p": 0.0091
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "piece": ",",
+   "p": 0.9107,
+   "top": [
+    {
+     "piece": ",",
+     "p": 0.9107
+    },
+    {
+     "piece": " like",
+     "p": 0.0406
+    },
+    {
+     "piece": " or",
+     "p": 0.0279
+    },
+    {
+     "piece": " (",
+     "p": 0.0124
+    },
+    {
+     "piece": " such",
+     "p": 0.0031
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.8695,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.8695
+    },
+    {
+     "piece": " parameters",
+     "p": 0.1081
+    },
+    {
+     "piece": " it",
+     "p": 0.0117
+    },
+    {
+     "piece": " such",
+     "p": 0.0047
+    },
+    {
+     "piece": " like",
+     "p": 0.0029
+    }
+   ]
+  },
+  {
+   "id": 5733,
+   "piece": " parameter",
+   "p": 0.9999,
+   "top": [
+    {
+     "piece": " parameter",
+     "p": 0.9999
+    },
+    {
+     "piece": " physical",
+     "p": 0.0
+    },
+    {
+     "piece": " param",
+     "p": 0.0
+    },
+    {
+     "piece": " parameters",
+     "p": 0.0
+    },
+    {
+     "piece": " **",
+     "p": 0.0
+    }
+   ]
+  },
+  {
+   "id": 1410,
+   "piece": " could",
+   "p": 0.4566,
+   "top": [
+    {
+     "piece": " could",
+     "p": 0.4566
+    },
+    {
+     "piece": " might",
+     "p": 0.2302
+    },
+    {
+     "piece": " can",
+     "p": 0.1886
+    },
+    {
+     "piece": " is",
+     "p": 0.0916
+    },
+    {
+     "piece": " may",
+     "p": 0.0268
+    }
+   ]
+  },
+  {
+   "id": 387,
+   "piece": " be",
+   "p": 0.3941,
+   "top": [
+    {
+     "piece": " be",
+     "p": 0.3941
+    },
+    {
+     "piece": " refer",
+     "p": 0.3791
+    },
+    {
+     "piece": " represent",
+     "p": 0.1914
+    },
+    {
+     "piece": " describe",
+     "p": 0.0174
+    },
+    {
+     "piece": " relate",
+     "p": 0.0122
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.8185,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.8185
+    },
+    {
+     "piece": " an",
+     "p": 0.061
+    },
+    {
+     "piece": " the",
+     "p": 0.0567
+    },
+    {
+     "piece": " something",
+     "p": 0.0483
+    },
+    {
+     "piece": " related",
+     "p": 0.0045
+    }
+   ]
+  },
+  {
+   "id": 6783,
+   "piece": " constant",
+   "p": 0.3628,
+   "top": [
+    {
+     "piece": " constant",
+     "p": 0.3628
+    },
+    {
+     "piece": " temperature",
+     "p": 0.0885
+    },
+    {
+     "piece": " property",
+     "p": 0.0782
+    },
+    {
+     "piece": " time",
+     "p": 0.0643
+    },
+    {
+     "piece": " variable",
+     "p": 0.0639
+    }
+   ]
+  },
+  {
+   "id": 429,
+   "piece": " that",
+   "p": 0.5464,
+   "top": [
+    {
+     "piece": " that",
+     "p": 0.5464
+    },
+    {
+     "piece": " related",
+     "p": 0.0828
+    },
+    {
+     "piece": " of",
+     "p": 0.0633
+    },
+    {
+     "piece": " such",
+     "p": 0.0574
+    },
+    {
+     "piece": " like",
+     "p": 0.0558
+    }
+   ]
+  },
+  {
+   "id": 18653,
+   "piece": " defines",
+   "p": 0.188,
+   "top": [
+    {
+     "piece": " defines",
+     "p": 0.188
+    },
+    {
+     "piece": " affects",
+     "p": 0.1435
+    },
+    {
+     "piece": " controls",
+     "p": 0.1245
+    },
+    {
+     "piece": " govern",
+     "p": 0.1145
+    },
+    {
+     "piece": " influences",
+     "p": 0.0698
+    }
+   ]
+  },
+  {
+   "id": 279,
+   "piece": " the",
+   "p": 0.4308,
+   "top": [
+    {
+     "piece": " the",
+     "p": 0.4308
+    },
+    {
+     "piece": " how",
+     "p": 0.2835
+    },
+    {
+     "piece": " its",
+     "p": 0.0938
+    },
+    {
+     "piece": " certain",
+     "p": 0.0774
+    },
+    {
+     "piece": " some",
+     "p": 0.035
+    }
+   ]
+  },
+  {
+   "id": 1849,
+   "piece": " system",
+   "p": 0.4493,
+   "top": [
+    {
+     "piece": " system",
+     "p": 0.4493
+    },
+    {
+     "piece": " behavior",
+     "p": 0.1277
+    },
+    {
+     "piece": " relationship",
+     "p": 0.0718
+    },
+    {
+     "piece": " properties",
+     "p": 0.071
+    },
+    {
+     "piece": " state",
+     "p": 0.0456
+    }
+   ]
+  },
+  {
+   "id": 594,
+   "piece": "'s",
+   "p": 0.9327,
+   "top": [
+    {
+     "piece": "'s",
+     "p": 0.9327
+    },
+    {
+     "piece": "’s",
+     "p": 0.0592
+    },
+    {
+     "piece": " behavior",
+     "p": 0.0029
+    },
+    {
+     "piece": " or",
+     "p": 0.0011
+    },
+    {
+     "piece": " in",
+     "p": 0.0008
+    }
+   ]
+  },
+  {
+   "id": 7709,
+   "piece": " behavior",
+   "p": 0.5728,
+   "top": [
+    {
+     "piece": " behavior",
+     "p": 0.5728
+    },
+    {
+     "piece": " properties",
+     "p": 0.2771
+    },
+    {
+     "piece": " characteristics",
+     "p": 0.0334
+    },
+    {
+     "piece": " state",
+     "p": 0.0312
+    },
+    {
+     "piece": " parameters",
+     "p": 0.0193
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "piece": ",",
+   "p": 0.2768,
+   "top": [
+    {
+     "piece": ",",
+     "p": 0.2768
+    },
+    {
+     "piece": ".\n\n",
+     "p": 0.2293
+    },
+    {
+     "piece": ".",
+     "p": 0.168
+    },
+    {
+     "piece": " under",
+     "p": 0.1264
+    },
+    {
+     "piece": " or",
+     "p": 0.0698
+    }
+   ]
+  },
+  {
+   "id": 1741,
+   "piece": " such",
+   "p": 0.9132,
+   "top": [
+    {
+     "piece": " such",
+     "p": 0.9132
+    },
+    {
+     "piece": " like",
+     "p": 0.0827
+    },
+    {
+     "piece": " even",
+     "p": 0.0005
+    },
+    {
+     "piece": " or",
+     "p": 0.0005
+    },
+    {
+     "piece": " temperature",
+     "p": 0.0004
+    }
+   ]
+  },
+  {
+   "id": 438,
+   "piece": " as",
+   "p": 1.0,
+   "top": [
+    {
+     "piece": " as",
+     "p": 1.0
+    },
+    {
+     "piece": " a",
+     "p": 0.0
+    },
+    {
+     "piece": " in",
+     "p": 0.0
+    },
+    {
+     "piece": " the",
+     "p": 0.0
+    },
+    {
+     "piece": " that",
+     "p": 0.0
+    }
+   ]
+  },
+  {
+   "id": 279,
+   "piece": " the",
+   "p": 0.6774,
+   "top": [
+    {
+     "piece": " the",
+     "p": 0.6774
+    },
+    {
+     "piece": " temperature",
+     "p": 0.1367
+    },
+    {
+     "piece": " a",
+     "p": 0.1051
+    },
+    {
+     "piece": " mass",
+     "p": 0.0122
+    },
+    {
+     "piece": " time",
+     "p": 0.0076
+    }
+   ]
+  },
+  {
+   "id": 3072,
+   "piece": " mass",
+   "p": 0.3115,
+   "top": [
+    {
+     "piece": " mass",
+     "p": 0.3115
+    },
+    {
+     "piece": " speed",
+     "p": 0.156
+    },
+    {
+     "piece": " temperature",
+     "p": 0.1529
+    },
+    {
+     "piece": " position",
+     "p": 0.0917
+    },
+    {
+     "piece": " spring",
+     "p": 0.0433
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "piece": ",",
+   "p": 0.7262,
+   "top": [
+    {
+     "piece": ",",
+     "p": 0.7262
+    },
+    {
+     "piece": " of",
+     "p": 0.1452
+    },
+    {
+     "piece": " or",
+     "p": 0.1237
+    },
+    {
+     "piece": " and",
+     "p": 0.0031
+    },
+    {
+     "piece": " in",
+     "p": 0.001
+    }
+   ]
+  },
+  {
+   "id": 9315,
+   "piece": " temperature",
+   "p": 0.257,
+   "top": [
+    {
+     "piece": " temperature",
+     "p": 0.257
+    },
+    {
+     "piece": " velocity",
+     "p": 0.1584
+    },
+    {
+     "piece": " charge",
+     "p": 0.1406
+    },
+    {
+     "piece": " acceleration",
+     "p": 0.1045
+    },
+    {
+     "piece": " speed",
+     "p": 0.0484
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "piece": ",",
+   "p": 0.9999,
+   "top": [
+    {
+     "piece": ",",
+     "p": 0.9999
+    },
+    {
+     "piece": " or",
+     "p": 0.0001
+    },
+    {
+     "piece": " of",
+     "p": 0.0
+    },
+    {
+     "piece": " in",
+     "p": 0.0
+    },
+    {
+     "piece": " range",
+     "p": 0.0
+    }
+   ]
+  },
+  {
+   "id": 476,
+   "piece": " or",
+   "p": 0.9823,
+   "top": [
+    {
+     "piece": " or",
+     "p": 0.9823
+    },
+    {
+     "piece": " pressure",
+     "p": 0.0049
+    },
+    {
+     "piece": " and",
+     "p": 0.0028
+    },
+    {
+     "piece": " etc",
+     "p": 0.0018
+    },
+    {
+     "piece": " acceleration",
+     "p": 0.0012
+    }
+   ]
+  },
+  {
+   "id": 30803,
+   "piece": " acceleration",
+   "p": 0.1491,
+   "top": [
+    {
+     "piece": " acceleration",
+     "p": 0.1491
+    },
+    {
+     "piece": " initial",
+     "p": 0.1455
+    },
+    {
+     "piece": " pressure",
+     "p": 0.1325
+    },
+    {
+     "piece": " time",
+     "p": 0.074
+    },
+    {
+     "piece": " speed",
+     "p": 0.0623
+    }
+   ]
+  },
+  {
+   "id": 382,
+   "piece": ".\n\n",
+   "p": 0.4925,
+   "top": [
+    {
+     "piece": ".\n\n",
+     "p": 0.4925
+    },
+    {
+     "piece": ".",
+     "p": 0.2852
+    },
+    {
+     "piece": " of",
+     "p": 0.1991
+    },
+    {
+     "piece": " in",
+     "p": 0.0165
+    },
+    {
+     "piece": " involved",
+     "p": 0.001
+    }
+   ]
+  },
+  {
+   "id": 641,
+   "piece": "In",
+   "p": 0.6223,
+   "top": [
+    {
+     "piece": "In",
+     "p": 0.6223
+    },
+    {
+     "piece": "Parameters",
+     "p": 0.2575
+    },
+    {
+     "piece": "The",
+     "p": 0.0253
+    },
+    {
+     "piece": "###",
+     "p": 0.0222
+    },
+    {
+     "piece": "It",
+     "p": 0.019
+    }
+   ]
+  },
+  {
+   "id": 12126,
+   "piece": " summary",
+   "p": 0.2601,
+   "top": [
+    {
+     "piece": " summary",
+     "p": 0.2601
+    },
+    {
+     "piece": " programming",
+     "p": 0.2545
+    },
+    {
+     "piece": " computer",
+     "p": 0.0593
+    },
+    {
+     "piece": " more",
+     "p": 0.0501
+    },
+    {
+     "piece": " machine",
+     "p": 0.0297
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "piece": ",",
+   "p": 0.9301,
+   "top": [
+    {
+     "piece": ",",
+     "p": 0.9301
+    },
+    {
+     "piece": ":",
+     "p": 0.0559
+    },
+    {
+     "piece": ":\n",
+     "p": 0.0108
+    },
+    {
+     "piece": ":\n\n",
+     "p": 0.0031
+    },
+    {
+     "piece": ",\n",
+     "p": 0.0
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.9563,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.9563
+    },
+    {
+     "piece": " parameters",
+     "p": 0.0275
+    },
+    {
+     "piece": " **",
+     "p": 0.0083
+    },
+    {
+     "piece": " the",
+     "p": 0.0056
+    },
+    {
+     "piece": " in",
+     "p": 0.0011
+    }
+   ]
+  },
+  {
+   "id": 5733,
+   "piece": " parameter",
+   "p": 0.8933,
+   "top": [
+    {
+     "piece": " parameter",
+     "p": 0.8933
+    },
+    {
+     "piece": " **",
+     "p": 0.1059
+    },
+    {
+     "piece": " *",
+     "p": 0.0004
+    },
+    {
+     "piece": " \"",
+     "p": 0.0001
+    },
+    {
+     "piece": " parameters",
+     "p": 0.0
+    }
+   ]
+  },
+  {
+   "id": 374,
+   "piece": " is",
+   "p": 0.9732,
+   "top": [
+    {
+     "piece": " is",
+     "p": 0.9732
+    },
+    {
+     "piece": " can",
+     "p": 0.0161
+    },
+    {
+     "piece": " serves",
+     "p": 0.0024
+    },
+    {
+     "piece": " refers",
+     "p": 0.0013
+    },
+    {
+     "piece": " plays",
+     "p": 0.0013
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.9025,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.9025
+    },
+    {
+     "piece": " any",
+     "p": 0.0664
+    },
+    {
+     "piece": " an",
+     "p": 0.0057
+    },
+    {
+     "piece": " simply",
+     "p": 0.0042
+    },
+    {
+     "piece": " generally",
+     "p": 0.0039
+    }
+   ]
+  },
+  {
+   "id": 897,
+   "piece": " value",
+   "p": 0.641,
+   "top": [
+    {
+     "piece": " value",
+     "p": 0.641
+    },
+    {
+     "piece": " variable",
+     "p": 0.2196
+    },
+    {
+     "piece": " **",
+     "p": 0.034
+    },
+    {
+     "piece": " quantity",
+     "p": 0.0226
+    },
+    {
+     "piece": " key",
+     "p": 0.0097
+    }
+   ]
+  },
+  {
+   "id": 429,
+   "piece": " that",
+   "p": 0.6203,
+   "top": [
+    {
+     "piece": " that",
+     "p": 0.6203
+    },
+    {
+     "piece": " or",
+     "p": 0.2496
+    },
+    {
+     "piece": " used",
+     "p": 0.089
+    },
+    {
+     "piece": " (",
+     "p": 0.0299
+    },
+    {
+     "piece": ",",
+     "p": 0.0025
+    }
+   ]
+  },
+  {
+   "id": 374,
+   "piece": " is",
+   "p": 0.2112,
+   "top": [
+    {
+     "piece": " is",
+     "p": 0.2112
+    },
+    {
+     "piece": " can",
+     "p": 0.1582
+    },
+    {
+     "piece": " allows",
+     "p": 0.0995
+    },
+    {
+     "piece": " influences",
+     "p": 0.0965
+    },
+    {
+     "piece": " plays",
+     "p": 0.0735
+    }
+   ]
+  },
+  {
+   "id": 1483,
+   "piece": " used",
+   "p": 0.8901,
+   "top": [
+    {
+     "piece": " used",
+     "p": 0.8901
+    },
+    {
+     "piece": " essential",
+     "p": 0.0242
+    },
+    {
+     "piece": " part",
+     "p": 0.012
+    },
+    {
+     "piece": " flexible",
+     "p": 0.0082
+    },
+    {
+     "piece": " crucial",
+     "p": 0.0044
+    }
+   ]
+  },
+  {
+   "id": 311,
+   "piece": " to",
+   "p": 0.9385,
+   "top": [
+    {
+     "piece": " to",
+     "p": 0.9385
+    },
+    {
+     "piece": " in",
+     "p": 0.0508
+    },
+    {
+     "piece": " as",
+     "p": 0.0079
+    },
+    {
+     "piece": " for",
+     "p": 0.0005
+    },
+    {
+     "piece": " with",
+     "p": 0.0004
+    }
+   ]
+  },
+  {
+   "id": 6979,
+   "piece": " define",
+   "p": 0.434,
+   "top": [
+    {
+     "piece": " define",
+     "p": 0.434
+    },
+    {
+     "piece": " describe",
+     "p": 0.2155
+    },
+    {
+     "piece": " specify",
+     "p": 0.1363
+    },
+    {
+     "piece": " control",
+     "p": 0.0352
+    },
+    {
+     "piece": " adjust",
+     "p": 0.0239
+    }
+   ]
+  },
+  {
+   "id": 476,
+   "piece": " or",
+   "p": 0.4952,
+   "top": [
+    {
+     "piece": " or",
+     "p": 0.4952
+    },
+    {
+     "piece": " the",
+     "p": 0.2642
+    },
+    {
+     "piece": " a",
+     "p": 0.0933
+    },
+    {
+     "piece": " and",
+     "p": 0.0812
+    },
+    {
+     "piece": " how",
+     "p": 0.0223
+    }
+   ]
+  },
+  {
+   "id": 5602,
+   "piece": " modify",
+   "p": 0.3374,
+   "top": [
+    {
+     "piece": " modify",
+     "p": 0.3374
+    },
+    {
+     "piece": " control",
+     "p": 0.176
+    },
+    {
+     "piece": " adjust",
+     "p": 0.0927
+    },
+    {
+     "piece": " influence",
+     "p": 0.0895
+    },
+    {
+     "piece": " change",
+     "p": 0.0845
+    }
+   ]
+  },
+  {
+   "id": 279,
+   "piece": " the",
+   "p": 0.8675,
+   "top": [
+    {
+     "piece": " the",
+     "p": 0.8675
+    },
+    {
+     "piece": " a",
+     "p": 0.1259
+    },
+    {
+     "piece": " an",
+     "p": 0.0022
+    },
+    {
+     "piece": " how",
+     "p": 0.0011
+    },
+    {
+     "piece": " something",
+     "p": 0.0008
+    }
+   ]
+  },
+  {
+   "id": 7709,
+   "piece": " behavior",
+   "p": 0.813,
+   "top": [
+    {
+     "piece": " behavior",
+     "p": 0.813
+    },
+    {
+     "piece": " characteristics",
+     "p": 0.0848
+    },
+    {
+     "piece": " properties",
+     "p": 0.032
+    },
+    {
+     "piece": " parameters",
+     "p": 0.0255
+    },
+    {
+     "piece": " attributes",
+     "p": 0.0081
+    }
+   ]
+  },
+  {
+   "id": 315,
+   "piece": " of",
+   "p": 0.8868,
+   "top": [
+    {
+     "piece": " of",
+     "p": 0.8868
+    },
+    {
+     "piece": " or",
+     "p": 0.1046
+    },
+    {
+     "piece": ",",
+     "p": 0.0052
+    },
+    {
+     "piece": " (",
+     "p": 0.0017
+    },
+    {
+     "piece": " and",
+     "p": 0.0014
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "piece": " a",
+   "p": 0.9273,
+   "top": [
+    {
+     "piece": " a",
+     "p": 0.9273
+    },
+    {
+     "piece": " something",
+     "p": 0.0379
+    },
+    {
+     "piece": " an",
+     "p": 0.03
+    },
+    {
+     "piece": " some",
+     "p": 0.0022
+    },
+    {
+     "piece": " any",
+     "p": 0.0017
+    }
+   ]
+  },
+  {
+   "id": 1849,
+   "piece": " system",
+   "p": 0.9088,
+   "top": [
+    {
+     "piece": " system",
+     "p": 0.9088
+    },
+    {
+     "piece": " model",
+     "p": 0.0359
+    },
+    {
+     "piece": " process",
+     "p": 0.0261
+    },
+    {
+     "piece": " mathematical",
+     "p": 0.0071
+    },
+    {
+     "piece": " given",
+     "p": 0.0059
+    }
+   ]
+  },
+  {
+   "id": 476,
+   "piece": " or",
+   "p": 0.4971,
+   "top": [
+    {
+     "piece": " or",
+     "p": 0.4971
+    },
+    {
+     "piece": ",",
+     "p": 0.4037
+    },
+    {
+     "piece": ".",
+     "p": 0.0813
+    },
+    {
+     "piece": " in",
+     "p": 0.0095
+    },
+    {
+     "piece": " by",
+     "p": 0.0013
+    }
+   ]
+  },
+  {
+   "id": 1614,
+   "piece": " model",
+   "p": 0.5625,
+   "top": [
+    {
+     "piece": " model",
+     "p": 0.5625
+    },
+    {
+     "piece": " process",
+     "p": 0.4238
+    },
+    {
+     "piece": " a",
+     "p": 0.004
+    },
+    {
+     "piece": " object",
+     "p": 0.0016
+    },
+    {
+     "piece": " function",
+     "p": 0.0015
+    }
+   ]
+  },
+  {
+   "id": 13,
+   "piece": ".",
+   "p": 0.8927,
+   "top": [
+    {
+     "piece": ".",
+     "p": 0.8927
+    },
+    {
+     "piece": ",",
+     "p": 0.0651
+    },
+    {
+     "piece": " in",
+     "p": 0.0292
+    },
+    {
+     "piece": " through",
+     "p": 0.0017
+    },
+    {
+     "piece": " during",
+     "p": 0.0015
+    }
+   ]
+  },
+  {
+   "id": 151645,
+   "piece": "<|im_end|>",
+   "p": 0.7536,
+   "top": [
+    {
+     "piece": "<|im_end|>",
+     "p": 0.7536
+    },
+    {
+     "piece": " It",
+     "p": 0.2005
+    },
+    {
+     "piece": " Its",
+     "p": 0.0314
+    },
+    {
+     "piece": " The",
+     "p": 0.0037
+    },
+    {
+     "piece": " Whether",
+     "p": 0.0028
+    }
+   ]
+  }
+ ],
+ "stoppedOnEnd": true,
+ "answer": "A **parameter** is a value or a variable that is used to define the behavior or characteristics of a system, process, or model. It is a value that can be changed or adjusted to influence the outcome of a process or model. \n\nFor example, in a mathematical function, a parameter is a constant that determines how the function behaves. In a statistical model, a parameter is a value that is estimated or determined from data. In a physical system, a parameter could be a constant that defines the system's behavior, such as the mass, temperature, or acceleration.\n\nIn summary, a parameter is a value that is used to define or modify the behavior of a system or model."
+}

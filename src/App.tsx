@@ -10,6 +10,7 @@ import { version as APP_VERSION } from '../package.json';
 
 const Labs = lazy(() => import('./labs/Labs'));
 const Learn = lazy(() => import('./pages/Learn'));
+const Trace = lazy(() => import('./pages/Trace'));
 const Parameters = lazy(() => import('./pages/Parameters'));
 const Catalog = lazy(() => import('./pages/Catalog'));
 const Pipeline = lazy(() => import('./pages/Pipeline'));
@@ -25,6 +26,7 @@ const NAV: [string, UiKey][] = [
   ['learn', 'nav_learn'],
   ['explore', 'nav_explore'],
   ['labs', 'nav_labs'],
+  ['trace', 'nav_trace'],
   ['parameters', 'nav_parameters'],
   ['catalog', 'nav_catalog'],
   ['pipeline', 'nav_pipeline'],
@@ -70,6 +72,7 @@ export function App() {
     case 'explore': page = <Explorer route={route} nav={nav} />; break;
     case 'labs': page = <Labs lab={route.path[1]} />; break;
     case 'learn': page = <Learn id={route.path[1]} />; break;
+    case 'trace': page = <Trace />; break;
     case 'parameters': page = <Parameters route={route} />; break;
     case 'catalog': page = <Catalog route={route} />; break;
     case 'pipeline': page = <Pipeline />; break;

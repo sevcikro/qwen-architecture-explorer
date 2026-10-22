@@ -103,6 +103,35 @@ export const QWEN3_30B_A3B: CoreProfile = CoreProfileSchema.parse({
   sources: ['q30-config', 'q30-card', 'q30-index', 'tf-qwen3moe', 'tf-convmap', 'qwen3-report'],
 });
 
+// Smaller member of the same dense family, used ONLY for the measured-trace page (not a reference preset).
+export const QWEN3_0_6B: CoreProfile = CoreProfileSchema.parse({
+  id: 'qwen3-0.6b',
+  name: 'Qwen3-0.6B',
+  kind: 'dense',
+  status: 'official',
+  repo: 'Qwen/Qwen3-0.6B',
+  revision: 'c1899de289a04d12100db370d81485cdf75e47ca',
+  hfClass: 'Qwen3ForCausalLM',
+  d: 1024,
+  layers: 28,
+  hq: 16,
+  hkv: 8,
+  headDim: 128,
+  vocabRows: 151936,
+  ffnWidth: 3072,
+  configIntermediateSize: 3072,
+  moe: null,
+  tiedEmbeddings: true,
+  linearBias: false,
+  rmsEps: 1e-6,
+  ropeTheta: 1_000_000,
+  context: { native: 32768, yarn: null, maxPositionEmbeddings: 40960 },
+  tokenizerVocab: 151669,
+  advertised: { total: '0.6B', activated: null, nonEmbedding: '0.44B' },
+  dtype: 'BF16',
+  sources: ['q06-config', 'q06-card', 'q06-trace'],
+});
+
 // Toy simulator: deliberately tiny. Its counts are NOT Qwen's (4 experts / top-2, not 128 / top-8).
 export const TOY_DENSE: CoreProfile = CoreProfileSchema.parse({
   id: 'toy-dense',

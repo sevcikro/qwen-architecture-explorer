@@ -3,7 +3,7 @@
 Script: `scripts/extract_checkpoint_metadata.py` (Python standard library only; run with `python -I`).
 
 ```bash
-python -I scripts/extract_checkpoint_metadata.py --out /tmp/qa-extract            # headers of all 3 models + 7 tiles
+python -I scripts/extract_checkpoint_metadata.py --out /tmp/qa-extract            # headers of all 3 models + the tiles in SAMPLE_TILES
 python -I scripts/extract_checkpoint_metadata.py --out /tmp/qa-extract --no-samples --models qwen3-8b
 python -I scripts/compact_offsets.py /tmp/qa-extract public/data qwen3-8b qwen3-30b-a3b
 ```
@@ -24,6 +24,14 @@ python -I scripts/compact_offsets.py /tmp/qa-extract public/data qwen3-8b qwen3-
 - Qwen3.8-Flash-Next: 1,658 tensors / 131 shards / 179,999,981,459 elements (metadata only).
 - Tiles: q_proj, gate_proj, embed_tokens, input_layernorm of 8B block 0; q_proj, router (mlp.gate), expert 0 gate_proj of 30B block 0.
 - A re-run produced byte-identical catalogs and identical tile hashes.
+
+## v1.2 run (2026-10-22): more tiles
+
+- `SAMPLE_TILES` extended to 26 tiles; run with `--models qwen3-8b,qwen3-30b-a3b`.
+- Bytes transferred: 4,120,004 (2 index files + 21 shard headers + 26 tiles) of the 100 MB budget.
+- The 7 tiles of v1.0 came back with identical tensors, values and SHA-256 hashes.
+- New tiles: Qwen3-8B block 0 k_proj, v_proj, o_proj, q_norm, k_norm, up_proj, down_proj, post_attention_layernorm; q_proj of blocks 17 and 35; model.norm; lm_head. Qwen3-30B-A3B block 0 expert 0 up_proj and down_proj, experts 1 and 127 gate_proj, k_proj, embed_tokens; the router of block 47.
+- Only `samples.json` was copied into `public/data/checkpoint-samples.json`; catalogs and offsets were left unchanged.
 
 ## Sample record
 

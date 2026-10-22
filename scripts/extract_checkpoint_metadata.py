@@ -48,6 +48,26 @@ SAMPLE_TILES = [
     ("qwen3-30b-a3b", "model.layers.0.self_attn.q_proj.weight", 0, 0),
     ("qwen3-30b-a3b", "model.layers.0.mlp.gate.weight", 0, 0),
     ("qwen3-30b-a3b", "model.layers.0.mlp.experts.0.gate_proj.weight", 0, 0),
+    # v1.2: one tile of every Qwen3-8B tensor family in block 0, q_proj across depth, and more experts.
+    ("qwen3-8b", "model.layers.0.self_attn.k_proj.weight", 0, 0),
+    ("qwen3-8b", "model.layers.0.self_attn.v_proj.weight", 0, 0),
+    ("qwen3-8b", "model.layers.0.self_attn.o_proj.weight", 0, 0),
+    ("qwen3-8b", "model.layers.0.self_attn.q_norm.weight", 0, 0),
+    ("qwen3-8b", "model.layers.0.self_attn.k_norm.weight", 0, 0),
+    ("qwen3-8b", "model.layers.0.mlp.up_proj.weight", 0, 0),
+    ("qwen3-8b", "model.layers.0.mlp.down_proj.weight", 0, 0),
+    ("qwen3-8b", "model.layers.0.post_attention_layernorm.weight", 0, 0),
+    ("qwen3-8b", "model.layers.17.self_attn.q_proj.weight", 0, 0),
+    ("qwen3-8b", "model.layers.35.self_attn.q_proj.weight", 0, 0),
+    ("qwen3-8b", "model.norm.weight", 0, 0),
+    ("qwen3-8b", "lm_head.weight", 0, 0),
+    ("qwen3-30b-a3b", "model.layers.0.mlp.experts.0.up_proj.weight", 0, 0),
+    ("qwen3-30b-a3b", "model.layers.0.mlp.experts.0.down_proj.weight", 0, 0),
+    ("qwen3-30b-a3b", "model.layers.0.mlp.experts.1.gate_proj.weight", 0, 0),
+    ("qwen3-30b-a3b", "model.layers.0.mlp.experts.127.gate_proj.weight", 0, 0),
+    ("qwen3-30b-a3b", "model.layers.47.mlp.gate.weight", 0, 0),
+    ("qwen3-30b-a3b", "model.layers.0.self_attn.k_proj.weight", 0, 0),
+    ("qwen3-30b-a3b", "model.embed_tokens.weight", 0, 0),
 ]
 TILE = 16
 DTYPE_BYTES = {"BF16": 2, "F16": 2, "F32": 4, "F64": 8, "I64": 8, "I32": 4, "U8": 1, "I8": 1, "F8_E4M3": 1, "BOOL": 1}

@@ -9,7 +9,7 @@ export function Inspector({ info, open, onToggle }: { info: InspectorInfo; open:
   const ref = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(open);
-  const { t, lang } = useLang();
+  const { t } = useLang();
   useEffect(() => {
     if (open && !wasOpen.current) ref.current?.querySelector<HTMLElement>('h2')?.focus();
     if (!open && wasOpen.current) toggleRef.current?.focus();
@@ -26,7 +26,6 @@ export function Inspector({ info, open, onToggle }: { info: InspectorInfo; open:
         <span className="coverage">{t(`role_${info.role}` as UiKey)}</span>
         {info.evidence.map((e, i) => <Evidence key={i} kind={e.kind} title={e.note} />)}
       </div>
-      {lang === 'sk' && <p className="faint" lang="sk" style={{ fontSize: '0.82rem' }}>{t('in_sk_note')} <a href="#/learn">{t('english_only_link')}</a></p>}
       <h3>{t('in_what')}</h3>
       <p>{info.what}</p>
       {info.notes?.map((n, i) => <div key={i} className="callout warn" style={{ fontSize: '0.9rem' }}>{n}</div>)}

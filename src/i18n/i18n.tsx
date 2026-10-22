@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { UI, type UiKey } from './ui';
+import { GB, GiB, fmtBytes } from '../math/memory';
 
 export type Lang = 'en' | 'sk';
 export const LANGS: Lang[] = ['en', 'sk'];
@@ -24,6 +25,38 @@ interface LangApi {
   tr: (x: L10n) => string;
   /** locale-aware integer / decimal formatting (Slovak uses spaces and a decimal comma) */
   num: (n: number, digits?: number) => string;
+  /** compact scientific-style number (like fmtNum) with the locale's decimal separator */
+  fnum: (x: number, digits?: number) => string;
+  /** shape [a, b] with locale grouping */
+  shape: (s: number[]) => string;
+  /** byte size like fmtBytes, localized */
+  bytes: (b: number) => string;
+  /** compact parameter count like fmtB (8.191B), localized (8,191 mld.) */
+  big: (n: number) => string;
+}
+
+export function fmtNumL(lang: Lang, x: number, digits = 4): string {
+  let out: string;
+  if (!Number.isFinite(x)) out = String(x);
+  else if (x === 0) out = '0';
+  else if (Math.abs(x) >= 1e4 || Math.abs(x) < 1e-3) out = x.toExponential(digits - 1);
+  else out = x.toFixed(digits);
+  return lang === 'sk' ? out.replace('.', ',') : out;
+}
+
+export function fmtBytesL(lang: Lang, b: number): string {
+  if (lang !== 'sk') return fmtBytes(b);
+  const gb = b / GB, gib = b / GiB;
+  const c = (x: string) => x.replace('.', ',');
+  if (b < 1e6) return `${c((b / 1024).toFixed(b < 1e4 ? 2 : 1))} KiB (${formatNum('sk', b)} bajtov)`;
+  return `${c(gb.toFixed(gb < 10 ? 3 : 2))} GB = ${c(gib.toFixed(gib < 10 ? 3 : 2))} GiB`;
+}
+
+/** Same thresholds as fmtB in components/ui. */
+export function fmtBL(lang: Lang, n: number): string {
+  const sk = lang === 'sk';
+  const c = (x: string) => (sk ? x.replace('.', ',') : x);
+  return n >= 1e9 ? `${c((n / 1e9).toFixed(3))}${sk ? ' mld.' : 'B'}` : n >= 1e6 ? `${c((n / 1e6).toFixed(2))}${sk ? ' mil.' : 'M'}` : n >= 1e3 ? `${c((n / 1e3).toFixed(1))}${sk ? ' tis.' : 'K'}` : String(n);
 }
 
 const Ctx = createContext<LangApi | null>(null);
@@ -44,6 +77,10 @@ export function LangProvider({ children }: { children: ReactNode }) {
     t: (k) => UI[k][lang],
     tr: (x) => x[lang],
     num: (n, d) => formatNum(lang, n, d),
+    fnum: (x, d) => fmtNumL(lang, x, d),
+    shape: (sh) => `[${sh.map((v) => formatNum(lang, v)).join(', ')}]`,
+    bytes: (b) => fmtBytesL(lang, b),
+    big: (n) => fmtBL(lang, n),
   }), [lang, setLang]);
   return <Ctx.Provider value={api}>{children}</Ctx.Provider>;
 }
@@ -92,13 +129,3 @@ export function LangSwitch() {
   );
 }
 
-/** Shown in Slovak mode on detailed technical pages whose body text is still English. */
-export function EnglishOnlyNotice() {
-  const { lang, t } = useLang();
-  if (lang !== 'sk') return null;
-  return (
-    <div className="callout" lang="sk" role="note" style={{ fontSize: '0.9rem' }}>
-      {t('english_only')} <a href="#/learn">{t('english_only_link')}</a>
-    </div>
-  );
-}

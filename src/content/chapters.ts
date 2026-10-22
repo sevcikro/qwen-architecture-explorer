@@ -3,6 +3,10 @@ import { QWEN3_30B_A3B, QWEN3_8B } from '../models/profiles';
 import { accounting } from '../models/shapes';
 import { kvBytesPerToken } from '../math/memory';
 import { explorerHref } from '../state/route';
+import type { WidgetId2 } from '../learn/widgets2';
+import type { FigureId } from '../learn/figures';
+import type { CodeId } from './code';
+import { EXTRA, NEW_CHAPTERS, PARTS } from './course';
 
 // ---------------------------------------------------------------------------
 // The "Learn" course: from one weight and one neuron to the whole model.
@@ -11,7 +15,7 @@ import { explorerHref } from '../state/route';
 
 export type WidgetId =
   | 'next-token' | 'real-weight' | 'neuron' | 'silu' | 'matvec' | 'tokens' | 'rms' | 'attention'
-  | 'gated' | 'router' | 'stack' | 'sampling' | 'train1d' | 'memory';
+  | 'gated' | 'router' | 'stack' | 'sampling' | 'train1d' | 'memory' | WidgetId2;
 
 export type Block =
   | { k: 'p'; t: L10n }
@@ -23,9 +27,11 @@ export type Block =
   | { k: 'math'; tex: string; t?: L10n }
   | { k: 'widget'; w: WidgetId }
   | { k: 'quiz'; q: L10n; options: L10n[]; correct: number; explain: L10n }
-  | { k: 'links'; items: { href: string; label: L10n }[] };
+  | { k: 'links'; items: { href: string; label: L10n }[] }
+  | { k: 'figure'; f: FigureId; cap?: L10n }
+  | { k: 'code'; c: CodeId; t?: L10n };
 
-export interface Chapter { id: string; n: number; title: L10n; summary: L10n; minutes: number; blocks: Block[] }
+export interface Chapter { id: string; n: number; part?: number; title: L10n; summary: L10n; minutes: number; blocks: Block[] }
 
 const b = (en: string, sk: string): L10n => ({ en, sk });
 const A8 = accounting(QWEN3_8B);
@@ -39,7 +45,7 @@ const FFN_SHARE = Math.round(((A8.ffnPerBlock * L8) / A8.total) * 100);
 const ATT_SHARE = Math.round(((A8.attentionPerBlock * L8) / A8.total) * 100);
 const KV8 = kvBytesPerToken(QWEN3_8B) / 1024;
 
-export const CHAPTERS: Chapter[] = [
+const BASE: Chapter[] = [
   {
     id: 'what', n: 1, minutes: 4,
     title: b('What a language model actually does', 'Čo jazykový model v skutočnosti robí'),
@@ -66,7 +72,7 @@ export const CHAPTERS: Chapter[] = [
       { k: 'p', t: b('Where does such a number live? In a file on disk called a **checkpoint**, at an exact byte position. When the model runs, the file is loaded into memory (RAM or the memory of a graphics card).', 'Kde také číslo „býva“? V súbore na disku, ktorý sa nazýva **checkpoint**, na presnej pozícii v bajtoch. Keď model beží, súbor sa načíta do pamäte (RAM alebo pamäte grafickej karty).') },
       { k: 'key', t: b('**Parameter** = a learned number, stored permanently. **Activation** = a temporary number computed while the model processes one particular input. Parameters are the same for every question; activations differ for every question.', '**Parameter** = naučené číslo, uložené natrvalo. **Aktivácia** = dočasné číslo vypočítané počas spracovania konkrétneho vstupu. Parametre sú rovnaké pre každú otázku; aktivácie sú pre každú otázku iné.') },
       { k: 'qwen', t: b(`Qwen3-8B has ${E(A8.total)} such numbers. At 2 bytes each that is about ${EB(A8.total * 2)} GB of weights.`, `Qwen3-8B má ${S(A8.total)} takýchto čísel. Pri 2 bajtoch na číslo je to približne ${SB(A8.total * 2)} GB váh.`) },
-      { k: 'quiz', q: b('What does the “8B” in Qwen3-8B count?', 'Čo počíta označenie „8B“ v názve Qwen3-8B?'), options: [b('About 8 billion neurons', 'Približne 8 miliárd neurónov'), b('About 8 billion stored numbers (parameters)', 'Približne 8 miliárd uložených čísel (parametrov)'), b('8 billion words it knows', '8 miliárd slov, ktoré pozná')], correct: 1, explain: b(`“B” means billion parameters: ${E(A8.total)} learned numbers, rounded. Neurons are a different, smaller quantity (chapter 8).`, `„B“ znamená miliardy parametrov: ${S(A8.total)} naučených čísel po zaokrúhlení. Neuróny sú iná, menšia veličina (kapitola 8).`) },
+      { k: 'quiz', q: b('What does the “8B” in Qwen3-8B count?', 'Čo počíta označenie „8B“ v názve Qwen3-8B?'), options: [b('About 8 billion neurons', 'Približne 8 miliárd neurónov'), b('About 8 billion stored numbers (parameters)', 'Približne 8 miliárd uložených čísel (parametrov)'), b('8 billion words it knows', '8 miliárd slov, ktoré pozná')], correct: 1, explain: b(`“B” means billion parameters: ${E(A8.total)} learned numbers, rounded. Neurons are a different, smaller quantity ([the feed-forward chapter](#/learn/ffn)).`, `„B“ znamená miliardy parametrov: ${S(A8.total)} naučených čísel po zaokrúhlení. Neuróny sú iná, menšia veličina ([kapitola o doprednej sieti](#/learn/ffn)).`) },
       { k: 'links', items: [{ href: explorerHref({ m: 'qwen3-8b', lv: 0, b: 0, t: 'q_proj', r: 0, c: 0 }), label: b('Open this exact weight in the explorer', 'Otvoriť túto konkrétnu váhu v prieskumníku') }] },
     ],
   },
@@ -147,7 +153,7 @@ export const CHAPTERS: Chapter[] = [
       { k: 'key', t: b('The attention percentages are **computed anew for every input**. The learned weights are the four matrices W_Q, W_K, W_V and W_O that produce queries, keys, values and the final mix.', 'Percentá pozornosti sa **počítajú nanovo pre každý vstup**. Naučenými váhami sú štyri matice W_Q, W_K, W_V a W_O, ktoré vytvárajú dopyty, kľúče, hodnoty a výslednú zmes.') },
       { k: 'qwen', t: b(`Qwen3-8B: 32 query heads share 8 key/value heads (groups of 4), each head 128 numbers wide; ${E(A8.attentionPerBlock)} attention weights per block, about ${ATT_SHARE}% of the whole model.`, `Qwen3-8B: 32 hláv dopytov zdieľa 8 hláv kľúčov a hodnôt (skupiny po 4), každá hlava má šírku 128 čísel; ${S(A8.attentionPerBlock)} váh pozornosti na blok, približne ${ATT_SHARE} % celého modelu.`) },
       { k: 'quiz', q: b('Are the attention percentages for your sentence stored in the model file?', 'Sú percentá pozornosti pre vašu vetu uložené v súbore modelu?'), options: [b('Yes, for every possible sentence', 'Áno, pre každú možnú vetu'), b('No, they are computed from your text each time', 'Nie, vždy sa vypočítajú z vášho textu')], correct: 1, explain: b('Only the matrices are stored. The percentages are activations: they exist only while your text is being processed.', 'Uložené sú len matice. Percentá sú aktivácie: existujú len počas spracovania vášho textu.') },
-      { k: 'links', items: [{ href: '#/labs/attention', label: b('Attention lab: every number of the computation', 'Laboratórium pozornosti: každé číslo výpočtu') }, { href: '#/labs/rope', label: b('RoPE: rotating vectors by position', 'RoPE: otáčanie vektorov podľa pozície') }] },
+      { k: 'links', items: [{ href: '#/trace', label: b('Real attention maps measured in Qwen3-0.6B', 'Skutočné mapy pozornosti namerané v Qwen3-0.6B') }, { href: '#/labs/attention', label: b('Attention lab: every number of the computation', 'Laboratórium pozornosti: každé číslo výpočtu') }, { href: '#/labs/rope', label: b('RoPE: rotating vectors by position', 'RoPE: otáčanie vektorov podľa pozície') }] },
     ],
   },
   {
@@ -192,7 +198,7 @@ export const CHAPTERS: Chapter[] = [
       { k: 'p', t: b('After the last block comes one more normalization and the **output head**: a matrix with one row per vocabulary entry. It turns the final vector into one score (**logit**) per possible next token.', 'Za posledným blokom nasleduje ešte jedna normalizácia a **výstupná hlava**: matica s jedným riadkom pre každú položku slovníka. Premení výsledný vektor na jedno skóre (**logit**) pre každý možný ďalší token.') },
       { k: 'qwen', t: b(`Qwen3-8B: embedding ${E(A8.embedding)} + ${L8} blocks × ${E(A8.perBlock)} + final norm ${E(A8.finalNorm)} + output head ${E(A8.head)} = **${E(A8.total)}** parameters.`, `Qwen3-8B: embedding ${S(A8.embedding)} + ${L8} blokov × ${S(A8.perBlock)} + záverečná norma ${S(A8.finalNorm)} + výstupná hlava ${S(A8.head)} = **${S(A8.total)}** parametrov.`) },
       { k: 'quiz', q: b('Do all 36 blocks of Qwen3-8B use the same weights?', 'Používa všetkých 36 blokov Qwen3-8B tie isté váhy?'), options: [b('Yes, one block is reused 36 times', 'Áno, jeden blok sa použije 36-krát'), b('No, each block has its own weights of the same shape', 'Nie, každý blok má vlastné váhy rovnakého tvaru')], correct: 1, explain: b('Shapes repeat, values do not. What is reused is each block’s weights across all tokens of the text.', 'Tvary sa opakujú, hodnoty nie. Opakovane sa používajú váhy každého bloku pre všetky tokeny textu.') },
-      { k: 'links', items: [{ href: explorerHref({ m: 'qwen3-8b', lv: 5 }), label: b('Every block of Qwen3-8B in the explorer', 'Každý blok Qwen3-8B v prieskumníku') }, { href: '#/parameters', label: b('Where exactly all parameters are', 'Kde presne sú všetky parametre') }] },
+      { k: 'links', items: [{ href: '#/trace', label: b('A real model at work: measured activations', 'Skutočný model pri práci: namerané aktivácie') }, { href: explorerHref({ m: 'qwen3-8b', lv: 5 }), label: b('Every block of Qwen3-8B in the explorer', 'Každý blok Qwen3-8B v prieskumníku') }, { href: '#/parameters', label: b('Where exactly all parameters are', 'Kde presne sú všetky parametre') }] },
     ],
   },
   {
@@ -250,3 +256,17 @@ export const CHAPTERS: Chapter[] = [
     ],
   },
 ];
+
+// The course order: original chapters plus the v1.2 chapters, grouped into parts. Chapter numbers follow this order;
+// extra diagrams, experiments and code are inserted into the original chapters just before their quick check.
+const BY_ID = new Map<string, Chapter>([...BASE, ...NEW_CHAPTERS.map((c) => ({ ...c, n: 0 }))].map((c) => [c.id, c]));
+export const CHAPTERS: Chapter[] = PARTS.flatMap((p) => p.chapters.map((id) => ({ id, part: p.n }))).map(({ id, part }, i) => {
+  const c = BY_ID.get(id);
+  if (!c) throw new Error(`course: unknown chapter ${id}`);
+  const extra = EXTRA[id] ?? [];
+  const qi = c.blocks.findIndex((x) => x.k === 'quiz');
+  const blocks = extra.length ? [...c.blocks.slice(0, qi < 0 ? c.blocks.length : qi), ...extra, ...(qi < 0 ? [] : c.blocks.slice(qi))] : c.blocks;
+  return { ...c, n: i + 1, part, blocks };
+});
+export { PARTS };
+

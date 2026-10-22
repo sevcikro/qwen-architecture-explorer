@@ -78,3 +78,25 @@ test('Slovak: switch language, everything core is translated, choice persists, d
   await ctx.close();
   expect(problems).toEqual([]);
 });
+
+test('course extras: diagrams, Python code with its recorded output, and the real message journey', async ({ page }) => {
+  const problems = watch(page);
+  await page.goto('/#/learn');
+  await expect(page.getByRole('heading', { level: 2, name: /Part 3 · The model in action/ })).toBeVisible();
+  await page.goto('/#/learn/attention');
+  await expect(page.locator('figure.fig[data-figure="qkv"] svg')).toBeVisible();
+  await expect(page.locator('figure.code-card pre.out').first()).toContainText('row sums: [1. 1. 1. 1.]');
+  await page.goto('/#/learn/journey');
+  const w = page.locator('figure.widget').first();
+  await expect(w).toContainText('Real sample');
+  await w.getByRole('button', { name: /7 · Decode loop/ }).click();
+  await expect(w).toContainText('Decode step 1 of 139');
+  await w.getByRole('button', { name: /9 · Stop/ }).click();
+  await expect(w).toContainText('<|im_end|> after 139 tokens');
+  await expect(w).toContainText('A **parameter** is a value');
+  await page.goto('/#/learn/hf?lang=sk');
+  await page.reload();
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Spustenie a preskúmanie skutočného modelu Qwen');
+  await expect(page.locator('figure.code-card pre.out').first()).toContainText("next token ' Paris'   p = 0.657");
+  expect(problems).toEqual([]);
+});

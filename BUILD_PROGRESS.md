@@ -48,6 +48,15 @@ Execution environment: Claude Code (desktop, Windows 11), model Claude Opus 5.5 
 - Verified locally: tsc 0 errors; 63/63 unit tests; 41 passed + 3 skipped (by design) browser tests; screenshots reviewed (desktop dark / phone light, both languages).
 - Not translated (explicitly flagged in Slovak mode): the detailed body text of the 12 labs, inspector descriptions, catalog, pipeline, family/hybrid, sources and about pages.
 
+## Release 1.2.0 (interactive book, real runs, full Slovak, accessibility)
+
+- Course: 27 chapters in 5 parts (`src/content/course.ts` adds 13 chapters, extra blocks for the original ones and the part order); 26 SVG diagrams (`src/learn/figures.tsx`); 8 new experiments (`src/learn/widgets2.tsx`, shared kit in `src/learn/kit.tsx`); 16 Python examples (`examples/python`) shown by `src/learn/CodeBlock.tsx` with outputs recorded by `scripts/run_examples.py` (15 executed; the API client needs a server).
+- Real data: `scripts/record_traces.py` (Real run page) and `scripts/record_journey.py` (recorded chat turn, 139 greedy steps, top-5 per step), Qwen3-0.6B @ c1899de2, model file SHA-256 f47f7117… equal to the Hub LFS hash. Facts used in the text were checked against these outputs (two example labels were corrected: an overshooting learning rate, and the last hidden state being after the final norm).
+- 26 checkpoint tiles (was 7), 4,120,004 bytes transferred, old tiles byte-identical.
+- Slovak: every page and data text translated (`src/i18n/dataSk.ts` for claims, sources, family and hybrid texts); English-only notices removed.
+- Accessibility: `tests/e2e/a11y.spec.ts` (axe-core 4.13.0, WCAG 2.1 A/AA tags, 24 routes, both themes and languages); fixes in contrast tokens, ARIA structure and keyboard-scrollable regions.
+- Phone treemap fix (labels only where they fit, full segment list).
+
 ## Delivery
 
 - GitHub (private): https://github.com/sevcikro/qwen-architecture-explorer, branch `main`.
@@ -56,7 +65,6 @@ Execution environment: Claude Code (desktop, Windows 11), model Claude Opus 5.5 
 
 ## Remaining / optional
 
-- Optional: real samples for more tensors or blocks (re-run the extraction script with more `SAMPLE_TILES`).
 - Optional: header-level parameter breakdowns for Qwen3-Next and Qwen3.5.
 
 ## Blockers

@@ -29,19 +29,20 @@ export function toyCounterpart(p: CoreProfile, key: string, b = 0, e = 0, r = 0,
 }
 
 /** The input vector that the selected weight row multiplies, taken from a toy forward pass. */
-export function unitInput(cp: Counterpart, trace: PositionTrace[], w: ToyWeights, pos: number): { x: Vec; label: string } | null {
+export function unitInput(cp: Counterpart, trace: PositionTrace[], w: ToyWeights, pos: number, lang: 'en' | 'sk' = 'en'): { x: Vec; label: string } | null {
+  const T = (en: string, sk: string) => (lang === 'sk' ? sk : en);
   const P = trace[Math.min(pos, trace.length - 1)];
   const L = P.layers[cp.layer];
   switch (cp.family.key) {
-    case 'q_proj': case 'k_proj': case 'v_proj': return { x: L.ln1, label: `RMSNorm(x) at position ${P.pos}, block ${cp.layer}` };
-    case 'o_proj': return { x: L.attn.concat, label: `concatenated head outputs at position ${P.pos}, block ${cp.layer}` };
-    case 'gate_proj': case 'up_proj': case 'router': case 'expert_gate_proj': case 'expert_up_proj': return { x: L.ln2, label: `RMSNorm(h) at position ${P.pos}, block ${cp.layer}` };
-    case 'down_proj': return { x: L.ffn!.z, label: `gated channels z at position ${P.pos}, block ${cp.layer}` };
+    case 'q_proj': case 'k_proj': case 'v_proj': return { x: L.ln1, label: T(`RMSNorm(x) at position ${P.pos}, block ${cp.layer}`, `RMSNorm(x) na pozícii ${P.pos}, blok ${cp.layer}`) };
+    case 'o_proj': return { x: L.attn.concat, label: T(`concatenated head outputs at position ${P.pos}, block ${cp.layer}`, `spojené výstupy hláv na pozícii ${P.pos}, blok ${cp.layer}`) };
+    case 'gate_proj': case 'up_proj': case 'router': case 'expert_gate_proj': case 'expert_up_proj': return { x: L.ln2, label: T(`RMSNorm(h) at position ${P.pos}, block ${cp.layer}`, `RMSNorm(h) na pozícii ${P.pos}, blok ${cp.layer}`) };
+    case 'down_proj': return { x: L.ffn!.z, label: T(`gated channels z at position ${P.pos}, block ${cp.layer}`, `hradlované kanály z na pozícii ${P.pos}, blok ${cp.layer}`) };
     case 'expert_down_proj': {
       const ex = w.layers[cp.layer].experts![cp.expert];
-      return { x: swiglu(L.ln2, ex.gate, ex.up, ex.down).z, label: `expert ${cp.expert}'s gated channels at position ${P.pos} (computed even if the router did not select it, for illustration)` };
+      return { x: swiglu(L.ln2, ex.gate, ex.up, ex.down).z, label: T(`expert ${cp.expert}'s gated channels at position ${P.pos} (computed even if the router did not select it, for illustration)`, `hradlované kanály experta ${cp.expert} na pozícii ${P.pos} (vypočítané pre ilustráciu, aj keď ho smerovač nevybral)`) };
     }
-    case 'lm_head': return { x: P.finalNorm, label: `final RMSNorm output at position ${P.pos}` };
+    case 'lm_head': return { x: P.finalNorm, label: T(`final RMSNorm output at position ${P.pos}`, `výstup záverečnej RMSNorm na pozícii ${P.pos}`) };
     default: return null;
   }
 }
