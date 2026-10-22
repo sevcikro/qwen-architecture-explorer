@@ -5,12 +5,12 @@
 | Host | here.now (authenticated publish, personal account) |
 | Live URL | https://happy-bamboo-w7dk.here.now/ |
 | Persistence | permanent (provider: `persistence=permanent`, `expiresAt: null`, status `active`) |
-| Live version id | 01M5HSKMM7EH3H6PFAK7ES10T2 (update of first version 01M5HS1AS4170MV2CMMVDW15ZG) |
-| Deployed source commit | 8bd039119331b0cb3e84ee3e5558713992fdb19d (embedded in the bundle, clean tree) |
+| Live version id | 01M5J4TWC77M9HKBAQJAC48VMD (release 1.1.0; earlier versions 01M5HSKMM7EH3H6PFAK7ES10T2, 01M5HS1AS4170MV2CMMVDW15ZG) |
+| Deployed source commit | 4b8088861b9e0bba56e8f1483b1e0c81bebb4f2e — release v1.1.0 (embedded in the bundle, clean tree) |
 | Published directory | `dist/` only (80 files), SPA routing enabled |
 | Published | 2026-10-22 |
 
-Live checks (2026-10-22): `E2E_BASE_URL=https://happy-bamboo-w7dk.here.now npx playwright test` → 33 passed, 3 skipped by design;
+Live checks for v1.1.0 (2026-10-22): `E2E_BASE_URL=https://happy-bamboo-w7dk.here.now npx playwright test` → 41 passed, 3 skipped by design (incl. all 14 chapters and Slovak mode);
 `/`, a deep path (SPA fallback) and `/data/*.json` return 200; `/.herenow/state.json` returns 404; the live JS bundle contains
 the commit id above; no console errors, failed requests or horizontal overflow on the checked routes.
 
