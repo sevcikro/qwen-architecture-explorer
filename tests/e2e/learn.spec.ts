@@ -90,7 +90,7 @@ test('course extras: diagrams, Python code with its recorded output, and the rea
   const w = page.locator('figure.widget').first();
   await expect(w).toContainText('Real sample');
   await w.getByRole('button', { name: /7 · Decode loop/ }).click();
-  await expect(w).toContainText('Decode step 1 of 139');
+  await expect(w).toContainText('Answer token 1 of 139');
   await w.getByRole('button', { name: /9 · Stop/ }).click();
   await expect(w).toContainText('<|im_end|> after 139 tokens');
   await expect(w).toContainText('A **parameter** is a value');

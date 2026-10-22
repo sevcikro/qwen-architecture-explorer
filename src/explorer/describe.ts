@@ -1,6 +1,6 @@
 import type { EvidenceClass } from '../evidence/types';
 import type { CoreProfile } from '../models/profiles';
-import { accounting, prod, tensorFamilies, tensorName, type TensorFamily } from '../models/shapes';
+import { accounting, axesSk, prod, tensorFamilies, tensorName, type TensorFamily } from '../models/shapes';
 import { explorerHref, type ExplorerState } from '../state/route';
 import { formatNum, type Lang } from '../i18n/i18n';
 
@@ -99,7 +99,7 @@ export function describeTensor(p: CoreProfile, f: TensorFamily, s: Partial<Explo
     title: lang === 'sk' ? f.labelSk : f.label,
     role: f.kind === 'vector' ? 'norm' : 'param',
     what: lang === 'sk' ? f.roleSk : f.role,
-    where: `${f.scope === 'model' ? T('Model-level component (one copy)', 'Súčasť na úrovni modelu (jedna kópia)') : f.scope === 'expert' ? T(`Expert ${s.e ?? 0} of ${p.moe!.numExperts} in ${blockLabel(s.b)}`, `Expert ${s.e ?? 0} z ${p.moe!.numExperts} v časti ${blockLabel(s.b)}`) : T(`Inside ${blockLabel(s.b)}`, `V časti ${blockLabel(s.b)}`)}. ${T('Logical shape', 'Logický tvar')} ${shape(f.shape)} (${f.axes.join(' × ')}).`,
+    where: `${f.scope === 'model' ? T('Model-level component (one copy)', 'Súčasť na úrovni modelu (jedna kópia)') : f.scope === 'expert' ? T(`Expert ${s.e ?? 0} of ${p.moe!.numExperts} in ${blockLabel(s.b)}`, `Expert ${s.e ?? 0} z ${p.moe!.numExperts} v časti ${blockLabel(s.b)}`) : T(`Inside ${blockLabel(s.b)}`, `V časti ${blockLabel(s.b)}`)}. ${T('Logical shape', 'Logický tvar')} ${shape(f.shape)} (${(lang === 'sk' ? f.axes.map(axesSk) : f.axes).join(' × ')}).`,
     inputs: io[0],
     outputs: io[1],
     params: { count: n, formula: `${f.shape.map(F).join(' × ')} = ${F(n)}${f.multiplicity > 1 ? T(`  (× ${F(f.multiplicity)} such tensors = ${F(n * f.multiplicity)} in the whole model)`, `  (× ${F(f.multiplicity)} takých tenzorov = ${F(n * f.multiplicity)} v celom modeli)`) : ''}` },

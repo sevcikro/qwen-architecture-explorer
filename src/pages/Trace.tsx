@@ -9,6 +9,14 @@ import { accounting } from '../models/shapes';
 const heat = (v: number) => `color-mix(in srgb, var(--attn) ${Math.round(Math.max(0, Math.min(1, v)) * 100)}%, var(--bg-2))`;
 const signed = (v: number, m: number) => v >= 0 ? `color-mix(in srgb, var(--accent) ${Math.round(Math.min(1, v / m) * 90)}%, var(--bg-2))` : `color-mix(in srgb, var(--danger) ${Math.round(Math.min(1, -v / m) * 90)}%, var(--bg-2))`;
 
+const HOOKS_SK: Record<string, string> = {
+  embedding: 'výstup model.model.embed_tokens',
+  blocks: 'výstup model.model.layers[i] (reziduálny prúd po bloku)',
+  attention: 'druhý výstup model.model.layers[i].self_attn (pravdepodobnosti softmaxu v režime eager) pre bloky [0, 13, 27], hlavy [0, 1, 8, 15]',
+  gate: 'SiLU(x @ mlp.gate_proj.weight.T) prepočítané zo zachyteného vstupu MLP, bloky [0, 13, 27], prvých 32 kanálov',
+  finalNorm: 'výstup model.model.norm',
+};
+
 export default function TracePage() {
   const { lang, num } = useLang();
   const T = (en: string, sk: string) => (lang === 'sk' ? sk : en);
@@ -74,12 +82,14 @@ export default function TracePage() {
         </div>
         <div className="table-wrap" tabIndex={0} style={{ marginTop: 8 }}>
           <div className="matrix-grid" style={{ gridTemplateColumns: `70px repeat(${Tn}, minmax(30px, 1fr))` }} role="grid" aria-label={T('attention probabilities, rows = query positions, columns = key positions', 'pravdepodobnosti pozornosti, riadky = pozície dopytov, stĺpce = pozície kľúčov')}>
-            <div className="cell hdr">q \ k</div>
-            {p.pieces.map((s, j) => <div key={j} className="cell hdr" title={s}>{piece(s).slice(0, 4)}</div>)}
-            {att.probs.map((row, i) => [
-              <button key={`h${i}`} className={`cell hdr${i === q ? ' sel' : ''}`} onClick={() => setQpos(i)} style={{ cursor: 'pointer' }}>{piece(p.pieces[i]).slice(0, 6)}</button>,
+            <div role="row" style={{ display: 'contents' }}>
+              <div className="cell hdr" role="columnheader">q \ k</div>
+              {p.pieces.map((s, j) => <div key={j} className="cell hdr" role="columnheader" title={s}>{piece(s).slice(0, 4)}</div>)}
+            </div>
+            {att.probs.map((row, i) => <div key={`r${i}`} role="row" style={{ display: 'contents' }}>{[
+              <div key={`h${i}`} role="rowheader" style={{ display: 'contents' }}><button className={`cell hdr${i === q ? ' sel' : ''}`} onClick={() => setQpos(i)} style={{ cursor: 'pointer' }}>{piece(p.pieces[i]).slice(0, 6)}</button></div>,
               ...row.map((v, j) => <div key={`${i}-${j}`} role="gridcell" className={`cell${j > i ? ' na' : ''}`} style={{ background: j > i ? undefined : heat(v), color: v > 0.55 ? '#04121a' : undefined }} title={`${v}`}>{j > i ? '×' : v < 0.005 ? '·' : num(v, 2)}</div>),
-            ])}
+            ]}</div>)}
           </div>
         </div>
         <p className="faint" style={{ fontSize: '0.85rem' }}>{T('× = future position, probability exactly 0. In the deeper blocks recorded here (13 and 27), every recorded head puts most of its attention on the very first token for all three prompts, while block 0 spreads it more. This “attention sink” pattern is known in trained transformers and does not mean that token is semantically important. Attention maps alone are not a causal explanation of the answer.', '× = budúca pozícia, pravdepodobnosť presne 0. V hlbších zaznamenaných blokoch (13 a 27) dáva každá zaznamenaná hlava pri všetkých troch zadaniach väčšinu pozornosti úplne prvému tokenu, kým blok 0 ju rozkladá viac. Tento jav („attention sink“) je u natrénovaných transformerov známy a neznamená, že tento token je významovo dôležitý. Samotné mapy pozornosti nie sú príčinným vysvetlením odpovede.')}</p>
@@ -117,11 +127,11 @@ export default function TracePage() {
           <dt>model.safetensors</dt><dd className="mono">SHA-256 {d.fileSha256['model.safetensors']}</dd>
           <dt>{T('checkpoint file', 'súbor checkpointu')}</dt><dd>{T(`${d.checkpointHeader.tensors} tensors, ${num(d.checkpointHeader.elements)} stored elements (${d.checkpointHeader.dtypes.join(', ')}); it includes lm_head.weight as a byte-identical copy of the tied embedding, so the unique learned parameters are ${num(a.total)}.`, `${d.checkpointHeader.tensors} tenzorov, ${num(d.checkpointHeader.elements)} uložených prvkov (${d.checkpointHeader.dtypes.join(', ')}); obsahuje aj lm_head.weight ako bajtovo zhodnú kópiu viazaného embeddingu, takže jedinečných naučených parametrov je ${num(a.total)}.`)}</dd>
           <dt>{T('software', 'softvér')}</dt><dd className="mono">torch {d.runtime.torch}, transformers {d.runtime.transformers}, Python {d.runtime.python}</dd>
-          <dt>{T('precision', 'presnosť')}</dt><dd>{d.runtime.precision}; {d.runtime.attnImplementation}</dd>
+          <dt>{T('precision', 'presnosť')}</dt><dd>{T(`${d.runtime.precision}; ${d.runtime.attnImplementation}`, 'výpočet vo float32; váhy uložené v checkpointe ako BF16 a pri načítaní presne prevedené na float32; pozornosť v režime eager (potrebná na vrátenie pravdepodobností pozornosti)')}</dd>
           <dt>{T('machine', 'počítač')}</dt><dd className="mono">{d.runtime.platform}, {d.runtime.threads} {T('threads', 'vlákien')}; {T('forward passes took', 'priechody modelom trvali')} {num(d.runtime.forwardSeconds, 2)} s</dd>
-          <dt>{T('hooks', 'háčiky')}</dt><dd>{Object.entries(d.hooks).map(([k, v]) => <div key={k}><code>{k}</code>: {v}</div>)}</dd>
+          <dt>{T('hooks', 'háčiky')}</dt><dd>{Object.entries(d.hooks).map(([k, v]) => <div key={k}><code>{k}</code>: {lang === 'sk' ? HOOKS_SK[k] ?? v : v}</div>)}</dd>
           <dt>{T('prompt text', 'text zadania')}</dt><dd><pre className="mono" style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{p.renderedText}</pre></dd>
-          <dt>{T('recorded', 'zaznamenané')}</dt><dd>{d.recorded} · {d.rounding} · {d.license}</dd>
+          <dt>{T('recorded', 'zaznamenané')}</dt><dd>{d.recorded} · {T(d.rounding, 'čísla zaokrúhlené na 6 platných číslic')} · {T(d.license, 'Apache-2.0 (licencia repozitára modelu)')}</dd>
         </dl>
         <p className="faint" style={{ fontSize: '0.84rem' }}>{T('Reproduce with scripts/record_traces.py (see docs/checkpoint-extraction.md).', 'Zopakovať sa dá skriptom scripts/record_traces.py (pozri docs/checkpoint-extraction.md).')}<Cite ids={['q06-trace', 'q06-config', 'q06-card']} /></p>
       </Section>

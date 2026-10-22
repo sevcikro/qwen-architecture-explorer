@@ -135,7 +135,7 @@ const FIGS: Record<FigureId, (T: TT) => { h: number; label: string; body: (mk: s
         ))}
         <Arr x1={168} y1={100} x2={204} y2={100} mk={mk} />
         <Txt x={186} y={92} cls="fx-small">eˣ / Σ</Txt>
-        <Txt x={180} y={208} cls="fx-sub">{T('p_i = exp(z_i) / Σ_j exp(z_j)   ·   Σ p = 1', 'p_i = exp(z_i) / Σ_j exp(z_j)   ·   Σ p = 1')}</Txt>
+        <Txt x={180} y={208} cls="fx-sub">{T('p_i = exp(z_i) / Σ_j exp(z_j);  Σ p = 1', 'p_i = exp(z_i) / Σ_j exp(z_j);  Σ p = 1')}</Txt>
       </>);
     },
   }),
@@ -183,8 +183,9 @@ const FIGS: Record<FigureId, (T: TT) => { h: number; label: string; body: (mk: s
       <Txt x={90} y={248} cls="fx-sub">{T('embedding', 'embedding')}</Txt>
       {[[180, T('attention', 'pozornosť'), C.a], [100, T('feed-forward', 'dopredná sieť'), C.f]].map(([y, l, c], i) => (
         <g key={i}>
-          <Arr x1={90} y1={(y as number) + 36} x2={200} y2={(y as number) + 36} mk={mk} c={C.t3} />
+          <Arr x1={90} y1={(y as number) + 36} x2={148} y2={(y as number) + 36} mk={mk} c={C.t3} />
           <Box x={150} y={(y as number) + 22} w={70} h={28} c={C.n} label="RMSNorm" fs={11} />
+          <Arr x1={220} y1={(y as number) + 36} x2={238} y2={(y as number) + 36} mk={mk} />
           <Box x={240} y={(y as number) + 14} w={110} h={44} c={c as string} label={l as string} />
           <path d={`M295,${(y as number) + 14} L295,${(y as number) - 4} L104,${(y as number) - 4}`} fill="none" stroke={c as string} strokeWidth={1.6} markerEnd={`url(#${mk})`} />
           <Plus x={90} y={(y as number) - 4} />
@@ -215,7 +216,7 @@ const FIGS: Record<FigureId, (T: TT) => { h: number; label: string; body: (mk: s
     h: 300, label: T('Attention: each token makes a query, key and value; queries are compared with keys of earlier tokens, softmax gives weights, and the output is the weighted average of values.', 'Pozornosť: každý token vytvorí dopyt, kľúč a hodnotu; dopyty sa porovnajú s kľúčmi skorších tokenov, softmax dá váhy a výstup je vážený priemer hodnôt.'),
     body: (mk) => (<>
       <Box x={120} y={6} w={120} h={30} c={C.act} label={T('token vectors X', 'vektory tokenov X')} fs={12} />
-      {[['Q = X W_Qᵀ', 62, T('query: what am I looking for?', 'dopyt: čo hľadám?')], ['K = X W_Kᵀ', 180, T('key: what do I offer?', 'kľúč: čo ponúkam?')], ['V = X W_Vᵀ', 298, T('value: what I pass on', 'hodnota: čo odovzdám')]].map(([l, x, s], i) => (
+      {[['Q = X W_Qᵀ', 62, T('query: what I look for', 'dopyt: čo hľadám?')], ['K = X W_Kᵀ', 180, T('key: what do I offer?', 'kľúč: čo ponúkam?')], ['V = X W_Vᵀ', 298, T('value: what I pass on', 'hodnota: čo odovzdám')]].map(([l, x, s], i) => (
         <g key={i}>
           <Arr x1={180} y1={36} x2={x as number} y2={60} mk={mk} c={C.w} />
           <Box x={(x as number) - 52} y={62} w={104} h={30} c={C.a} label={l as string} fs={12} />
@@ -430,7 +431,7 @@ const FIGS: Record<FigureId, (T: TT) => { h: number; label: string; body: (mk: s
       <Arr x1={340} y1={166} x2={74} y2={166} mk={mk} c={C.r} dash />
       <Txt x={210} y={160} cls="fx-small" c={C.r}>{T('backward pass (chain rule)', 'spätný prechod (reťazové pravidlo)')}</Txt>
       <Txt x={180} y={188} cls="fx-sub" c={C.r}>{T('∂L/∂y = −0.98 → ∂L/∂z = −0.72', '∂L/∂y = −0,98 → ∂L/∂z = −0,72')}</Txt>
-      <Txt x={180} y={206} cls="fx-sub" c={C.r}>{T('∂L/∂w = ∂L/∂z · x = −1.09   ∂L/∂b = −0.72', '∂L/∂w = ∂L/∂z · x = −1,09   ∂L/∂b = −0,72')}</Txt>
+      <Txt x={180} y={206} cls="fx-sub" c={C.r}>{T('∂L/∂w = ∂L/∂z · x = −1.09;  ∂L/∂b = −0.72', '∂L/∂w = ∂L/∂z · x = −1,09;  ∂L/∂b = −0,72')}</Txt>
       <Txt x={180} y={228} cls="fx-small">{T('negative gradient → increasing w lowers the loss', 'záporný gradient → zväčšenie w zníži chybu')}</Txt>
     </>),
   }),
@@ -469,8 +470,9 @@ const FIGS: Record<FigureId, (T: TT) => { h: number; label: string; body: (mk: s
           const col = owner < 0 ? 'var(--bg-2)' : fillOf([C.a, C.f, C.act, C.r][owner], 45);
           return <g key={i}><rect x={8 + i * 29} y={162} width={26} height={30} rx={3} fill={col} stroke={owner < 0 ? C.line : [C.a, C.f, C.act, C.r][owner]} strokeDasharray={owner < 0 ? '3 3' : undefined} /><text x={21 + i * 29} y={181} textAnchor="middle" className="fx-small">{owner < 0 ? '' : 'ABCD'[owner]}</text></g>;
         })}
-        <Txt x={180} y={214} cls="fx-small">{T('a sequence’s blocks need not be adjacent; free blocks are reused at once', 'bloky jednej sekvencie nemusia byť vedľa seba; voľné bloky sa hneď znovu použijú')}</Txt>
-        <Txt x={180} y={232} cls="fx-small">{T('(schematic; real servers such as vLLM use the same idea)', '(schéma; skutočné servery ako vLLM používajú tú istú myšlienku)')}</Txt>
+        <Txt x={180} y={208} cls="fx-small">{T('a sequence’s blocks need not be adjacent;', 'bloky jednej sekvencie nemusia byť vedľa seba;')}</Txt>
+        <Txt x={180} y={221} cls="fx-small">{T('free blocks are reused at once', 'voľné bloky sa hneď znovu použijú')}</Txt>
+        <Txt x={180} y={238} cls="fx-small">{T('(schematic; real servers such as vLLM use the same idea)', '(schéma; skutočné servery ako vLLM používajú tú istú myšlienku)')}</Txt>
       </>);
     },
   }),

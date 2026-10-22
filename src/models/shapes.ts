@@ -192,3 +192,7 @@ export function matmulOpsPerToken(p: CoreProfile): number {
 export function attentionOpsPerToken(p: CoreProfile, contextT: number): number {
   return 2 * 2 * p.layers * p.hq * p.headDim * contextT;
 }
+
+/** Slovak wording of an axes label such as "out = Hq·dh = 4096". */
+export const axesSk = (a: string) => a.replace(/^out = /, 'výstup = ').replace(/^in = /, 'vstup = ').replace('expert width', 'šírka experta').replace('vocabulary rows', 'riadky slovníka').replace('experts', 'experti');
+

@@ -63,7 +63,7 @@ export const EXTRA: Record<string, Block[]> = {
     { k: 'code', c: 'ffn-moe', t: b('A SwiGLU feed-forward network and a small mixture-of-experts layer with top-2 routing and renormalization, the same rule Qwen3-30B-A3B uses with 128 experts and top-8.', 'Dopredná sieť SwiGLU a malá vrstva zmesi expertov so smerovaním top-2 a prepočtom, rovnaké pravidlo používa Qwen3-30B-A3B so 128 expertmi a top-8.') },
   ],
   block: [{ k: 'figure', f: 'block' }, { k: 'figure', f: 'model' }],
-  generate: [{ k: 'widget', w: 'journey' }],
+  generate: [{ k: 'p', t: b('Want to see this loop on a real model? The chapter [From your message to the answer](#/learn/journey) replays a recorded chat turn of Qwen3-0.6B token by token, with the five most likely candidates at every step.', 'Chcete vidieť túto slučku na skutočnom modeli? Kapitola [Od vašej správy k odpovedi](#/learn/journey) prehrá zaznamenaný ťah v chate s Qwen3-0.6B token po tokene, s piatimi najpravdepodobnejšími kandidátmi v každom kroku.') }, { k: 'figure', f: 'decode' }],
   learning: [{ k: 'figure', f: 'train-loop' }, { k: 'widget', w: 'xent' }],
   hardware: [{ k: 'widget', w: 'quant' }],
 };

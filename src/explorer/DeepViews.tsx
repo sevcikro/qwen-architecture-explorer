@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { CoreProfile } from '../models/profiles';
-import { packedExpertMapping, prod, tensorName, type TensorFamily } from '../models/shapes';
+import { axesSk, packedExpertMapping, prod, tensorName, type TensorFamily } from '../models/shapes';
 import { locateTensor } from './locate';
 export { locateTensor };
 import { Evidence, ExportButton, NumberField, SimBanner, Tex, VectorView } from '../components/ui';
@@ -74,7 +74,7 @@ export function MatrixView({ p, f, s, go }: DeepProps) {
       <div className="grid2" style={{ marginTop: 10 }}>
         <div className="card">
           <dl className="kv">
-            <dt>{T('Logical shape', 'Logický tvar')}</dt><dd className="mono">{shape(f.shape)} — {f.axes.join(' × ')}</dd>
+            <dt>{T('Logical shape', 'Logický tvar')}</dt><dd className="mono">{shape(f.shape)} — {(lang === 'sk' ? f.axes.map(axesSk) : f.axes).join(' × ')}</dd>
             <dt>{T('Parameters', 'Parametre')}</dt><dd className="mono">{f.shape.map((v) => N(v)).join(' × ')} = {N(prod(f.shape))}</dd>
             <dt>{T('Storage dtype', 'Typ uložených čísel')}</dt><dd>{p.status === 'official' ? T(`${p.dtype} (2 bytes per value) in the checkpoint`, `${p.dtype} (2 bajty na hodnotu) v checkpointe`) : T('float64 in the browser simulator', 'float64 v simulátore v prehliadači')}</dd>
             <dt>{T('Orientation', 'Orientácia')}</dt><dd>{isVec ? T('vector: one gain per feature', 'vektor: jeden zisk pre každú vlastnosť') : T('PyTorch [out, in]: row = output coordinate, column = input feature; Y = X Wᵀ', 'PyTorch [výstup, vstup]: riadok = výstupná súradnica, stĺpec = vstupná vlastnosť; Y = X Wᵀ')}</dd>
