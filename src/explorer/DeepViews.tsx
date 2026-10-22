@@ -63,7 +63,7 @@ export function MatrixView({ p, f, s, go }: DeepProps) {
         <div className="badge-row">
           <Evidence kind={isToy ? 'simulation' : 'verified'} title="Shape, dtype and name" />
           {anyReal && <Evidence kind="sample" />}
-          {!isToy && !anyReal && <Evidence kind="unknown" title="Numerical values in this window are not loaded" />}
+          {!isToy && !anyReal && (real.samples.status === 'loading' ? <span className="coverage">checking real samples…</span> : <Evidence kind="unknown" title="Numerical values in this window are not loaded" />)}
         </div>
       </div>
       {isToy && <SimBanner />}
@@ -279,7 +279,9 @@ export function ScalarView({ p, f, s, go }: DeepProps) {
         <div className="card">
           <p>A <strong>parameter</strong> is one learned scalar. This one sits at coordinate <code>[{r}{c === null ? '' : `, ${c}`}]</code> of <code>{name}</code> {isVec ? '' : `(row ${r} = output coordinate, column ${c} = input feature)`}.</p>
           {p.status === 'official' ? (
-            realVal !== null ? (
+            real.samples.status === 'loading' ? (
+              <p className="muted">Checking the shipped real samples for this coordinate…</p>
+            ) : realVal !== null ? (
               <>
                 <div className="row"><Evidence kind="sample" /><span className="big-num">{realVal}</span></div>
                 <p className="muted" style={{ fontSize: '0.88rem' }}>Actual value read from {hit!.sample.shard} of {hit!.sample.model} @ {hit!.sample.revision.slice(0, 12)} (raw-bytes SHA-256 {hit!.sample.rawSha256.slice(0, 16)}…), widened exactly from BF16. {hit!.sample.note}</p>
