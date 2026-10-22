@@ -1,0 +1,19 @@
+Qwen Atlas — third-party data notice
+
+This independent project is not affiliated with or endorsed by Alibaba Cloud or the Qwen team.
+
+public/data/checkpoint-samples.json contains seven small tiles (at most 16 x 16 values each) of weights
+read from the following Hugging Face repositories, which are licensed under the Apache License 2.0:
+
+  Qwen/Qwen3-8B        revision b968826d9c46dd6066d109eabc6255188de91218
+  Qwen/Qwen3-30B-A3B   revision ad44e777bcd18fa416d9da3bd8f70d33ebb85d39
+
+Copyright the Qwen team / Alibaba Cloud. The values are unmodified (BF16 widened exactly to float32).
+
+public/data/tokenizer-examples.json contains token ids produced with the tokenizer files of Qwen/Qwen3-8B
+(same revision, Apache-2.0).
+
+public/data/catalog-*.json and offsets-*.json contain tensor names, shapes, dtypes and byte offsets read from
+safetensors headers of the repositories above and of Qwen/Qwen3.8-Flash-Next
+(revision de4b8e4d43b917e7706784d8bb445c9af86a3540, license qwen-community-1.0). No weight values of
+Qwen3.8-Flash-Next are included.

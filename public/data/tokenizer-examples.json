@@ -1,0 +1,444 @@
+{
+ "evidence": "actual-tokenizer-output",
+ "model": "Qwen/Qwen3-8B",
+ "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+ "tokenizerJsonSha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+ "library": "tokenizers 0.22.1",
+ "chatTemplateSource": "tokenizer_config.json chat_template (pinned revision)",
+ "generated": "2026-10-22",
+ "baseVocabSize": 151643,
+ "vocabWithAddedTokens": 151669,
+ "addedTokens": [
+  {
+   "id": 151643,
+   "content": "<|endoftext|>",
+   "special": true
+  },
+  {
+   "id": 151644,
+   "content": "<|im_start|>",
+   "special": true
+  },
+  {
+   "id": 151645,
+   "content": "<|im_end|>",
+   "special": true
+  },
+  {
+   "id": 151646,
+   "content": "<|object_ref_start|>",
+   "special": true
+  },
+  {
+   "id": 151647,
+   "content": "<|object_ref_end|>",
+   "special": true
+  },
+  {
+   "id": 151648,
+   "content": "<|box_start|>",
+   "special": true
+  },
+  {
+   "id": 151649,
+   "content": "<|box_end|>",
+   "special": true
+  },
+  {
+   "id": 151650,
+   "content": "<|quad_start|>",
+   "special": true
+  },
+  {
+   "id": 151651,
+   "content": "<|quad_end|>",
+   "special": true
+  },
+  {
+   "id": 151652,
+   "content": "<|vision_start|>",
+   "special": true
+  },
+  {
+   "id": 151653,
+   "content": "<|vision_end|>",
+   "special": true
+  },
+  {
+   "id": 151654,
+   "content": "<|vision_pad|>",
+   "special": true
+  },
+  {
+   "id": 151655,
+   "content": "<|image_pad|>",
+   "special": true
+  },
+  {
+   "id": 151656,
+   "content": "<|video_pad|>",
+   "special": true
+  },
+  {
+   "id": 151657,
+   "content": "<tool_call>",
+   "special": false
+  },
+  {
+   "id": 151658,
+   "content": "</tool_call>",
+   "special": false
+  },
+  {
+   "id": 151659,
+   "content": "<|fim_prefix|>",
+   "special": false
+  },
+  {
+   "id": 151660,
+   "content": "<|fim_middle|>",
+   "special": false
+  },
+  {
+   "id": 151661,
+   "content": "<|fim_suffix|>",
+   "special": false
+  },
+  {
+   "id": 151662,
+   "content": "<|fim_pad|>",
+   "special": false
+  },
+  {
+   "id": 151663,
+   "content": "<|repo_name|>",
+   "special": false
+  },
+  {
+   "id": 151664,
+   "content": "<|file_sep|>",
+   "special": false
+  },
+  {
+   "id": 151665,
+   "content": "<tool_response>",
+   "special": false
+  },
+  {
+   "id": 151666,
+   "content": "</tool_response>",
+   "special": false
+  },
+  {
+   "id": 151667,
+   "content": "<think>",
+   "special": false
+  },
+  {
+   "id": 151668,
+   "content": "</think>",
+   "special": false
+  }
+ ],
+ "note": "Tokenizer output only. No Qwen model was run to produce these files.",
+ "examples": [
+  {
+   "id": "raw-capital",
+   "kind": "raw",
+   "text": "The capital of France is",
+   "renderedText": "The capital of France is",
+   "ids": [
+    785,
+    6722,
+    315,
+    9625,
+    374
+   ],
+   "tokens": [
+    "The",
+    "Ġcapital",
+    "Ġof",
+    "ĠFrance",
+    "Ġis"
+   ],
+   "decodedPieces": [
+    "The",
+    " capital",
+    " of",
+    " France",
+    " is"
+   ],
+   "special": [
+    false,
+    false,
+    false,
+    false,
+    false
+   ]
+  },
+  {
+   "id": "raw-weights",
+   "kind": "raw",
+   "text": "Where are the weights stored?",
+   "renderedText": "Where are the weights stored?",
+   "ids": [
+    9064,
+    525,
+    279,
+    14324,
+    9768,
+    30
+   ],
+   "tokens": [
+    "Where",
+    "Ġare",
+    "Ġthe",
+    "Ġweights",
+    "Ġstored",
+    "?"
+   ],
+   "decodedPieces": [
+    "Where",
+    " are",
+    " the",
+    " weights",
+    " stored",
+    "?"
+   ],
+   "special": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ]
+  },
+  {
+   "id": "raw-czech",
+   "kind": "raw",
+   "text": "Kde jsou uloženy váhy modelu?",
+   "renderedText": "Kde jsou uloženy váhy modelu?",
+   "ids": [
+    42,
+    450,
+    6994,
+    283,
+    8557,
+    78,
+    12176,
+    32395,
+    57297,
+    8503,
+    1614,
+    84,
+    30
+   ],
+   "tokens": [
+    "K",
+    "de",
+    "Ġjs",
+    "ou",
+    "Ġul",
+    "o",
+    "Å¾",
+    "eny",
+    "ĠvÃ¡",
+    "hy",
+    "Ġmodel",
+    "u",
+    "?"
+   ],
+   "decodedPieces": [
+    "K",
+    "de",
+    " js",
+    "ou",
+    " ul",
+    "o",
+    "ž",
+    "eny",
+    " vá",
+    "hy",
+    " model",
+    "u",
+    "?"
+   ],
+   "special": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ]
+  },
+  {
+   "id": "chat-nothink",
+   "kind": "chat",
+   "messages": [
+    {
+     "role": "user",
+     "content": "What is a parameter?"
+    }
+   ],
+   "enable_thinking": false,
+   "renderedText": "<|im_start|>user\nWhat is a parameter?<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+   "ids": [
+    151644,
+    872,
+    198,
+    3838,
+    374,
+    264,
+    5733,
+    30,
+    151645,
+    198,
+    151644,
+    77091,
+    198,
+    151667,
+    271,
+    151668,
+    271
+   ],
+   "tokens": [
+    "<|im_start|>",
+    "user",
+    "Ċ",
+    "What",
+    "Ġis",
+    "Ġa",
+    "Ġparameter",
+    "?",
+    "<|im_end|>",
+    "Ċ",
+    "<|im_start|>",
+    "assistant",
+    "Ċ",
+    "<think>",
+    "ĊĊ",
+    "</think>",
+    "ĊĊ"
+   ],
+   "decodedPieces": [
+    "<|im_start|>",
+    "user",
+    "\n",
+    "What",
+    " is",
+    " a",
+    " parameter",
+    "?",
+    "<|im_end|>",
+    "\n",
+    "<|im_start|>",
+    "assistant",
+    "\n",
+    "<think>",
+    "\n\n",
+    "</think>",
+    "\n\n"
+   ],
+   "special": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false
+   ]
+  },
+  {
+   "id": "chat-think",
+   "kind": "chat",
+   "messages": [
+    {
+     "role": "user",
+     "content": "What is a parameter?"
+    }
+   ],
+   "enable_thinking": true,
+   "renderedText": "<|im_start|>user\nWhat is a parameter?<|im_end|>\n<|im_start|>assistant\n",
+   "ids": [
+    151644,
+    872,
+    198,
+    3838,
+    374,
+    264,
+    5733,
+    30,
+    151645,
+    198,
+    151644,
+    77091,
+    198
+   ],
+   "tokens": [
+    "<|im_start|>",
+    "user",
+    "Ċ",
+    "What",
+    "Ġis",
+    "Ġa",
+    "Ġparameter",
+    "?",
+    "<|im_end|>",
+    "Ċ",
+    "<|im_start|>",
+    "assistant",
+    "Ċ"
+   ],
+   "decodedPieces": [
+    "<|im_start|>",
+    "user",
+    "\n",
+    "What",
+    " is",
+    " a",
+    " parameter",
+    "?",
+    "<|im_end|>",
+    "\n",
+    "<|im_start|>",
+    "assistant",
+    "\n"
+   ],
+   "special": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    false
+   ]
+  }
+ ]
+}

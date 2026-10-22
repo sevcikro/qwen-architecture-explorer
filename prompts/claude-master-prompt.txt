@@ -1,0 +1,792 @@
+QWEN ATLAS — MASTER BUILD PROMPT FOR CLAUDE CODE
+Prepared: 22 October 2026
+Deliverable requested: a working, verified, zoomable educational website; a live here.now deployment; and its complete source in GitHub.
+
+Read this entire brief, then execute it. Build the application, research and validate its scientific content, run it, test it, publish it, and verify the published result. Do not stop after writing a plan, a mockup, a specification, a single static diagram, or an explanation of what you could build.
+
+This brief is self-contained. If an accompanying bundle is present, also read START-HERE.txt and qwen-architecture-seed.json and inspect reference-diagrams/. The reference images illustrate the desired subject matter; reconstruct the architecture as interactive, data-driven graphics. The application must still be buildable if only this prompt is supplied.
+
+======================================================================
+1. MISSION, AUDIENCE, AND DEFINITION OF COMPLETE
+======================================================================
+
+Build “Qwen Atlas,” an independent, source-backed visual guide to how Qwen dense and mixture-of-experts language models operate. The user wants to understand the model from the bottom up, including the actual location and meaning of weights, parameters, neurons, activations, layers, experts, attention, training, and inference. Also support exploration from the complete model down to an individual scalar.
+
+The primary audience is an interested non-specialist who asks: “Where are the parameters and neurons?” Provide progressive depth so an ML engineer can continue into equations, tensor dimensions, checkpoint paths, numerical examples, and implementation details without switching to a different application.
+
+“Complete” means that the documented computational structure and the promised learning paths are covered coherently, with no missing links between scalar operations and full-model behavior. It does not mean that researchers know the meaning of every learned feature, that unpublished training details are available, or that the browser must load billions of weights. Explain those limits where they matter.
+
+The finished product must include:
+
+- A genuinely zoomable, navigable architecture explorer with semantic levels of detail.
+- A complete structural and parameter catalog for the two reference models.
+- Working numerical laboratories, driven by a deterministic small model.
+- Carefully labeled real checkpoint samples when they can be obtained within the bounded extraction policy below.
+- Side-by-side dense/MoE comparison, keeping different model versions distinct.
+- An accurate section on newer Qwen hybrid architectures, researched separately.
+- Plain-language descriptions, equations, tensor shapes, concrete examples, and primary sources throughout.
+- A production static build deployed to here.now, plus the complete GitHub source and reproducible instructions.
+
+Do not make a marketing landing page with a few animations. The explorer and the explanations are the product. Put a useful diagram and a clear “Start with one weight” action on the first screen.
+
+======================================================================
+2. EXECUTION DEFAULTS AND AUTHORIZATION
+======================================================================
+
+Use these defaults without asking the user to choose routine implementation details:
+
+- Product title: Qwen Atlas.
+- Repository name: qwen-architecture-explorer.
+- Interface language: English, with a glossary explaining technical vocabulary.
+- Primary hosting: https://here.now/ . “Here now” means this provider.
+- Source hosting: GitHub. If no repository is supplied, create a new PRIVATE repository in the active authenticated personal account. If that name already belongs to another project, choose a distinct new name.
+- Main execution environment: Claude Code with terminal, filesystem, browser testing, and available GitHub/hosting access.
+- Recommended model at preparation time: Claude Opus 5.5, exact ID claude-opus-5-5; xhigh effort for architectural reasoning and scientific review. Sonnet 5.5 is the lower-cost alternative. Check actual model availability and current official docs when starting.
+- Static, client-side educational application. A backend, paid database, or runtime AI subscription should not be needed for the required product.
+- New assets and source for this educational site may be published to the requested hosting service; the source repository remains private unless the user explicitly requests otherwise.
+
+You are authorized to implement, install ordinary project dependencies, test, create the new project repository, commit and push its source, and publish the finished educational site using available access. Preserve unrelated work, account settings, existing repository visibility, and existing sites. Do not force-push, overwrite unrelated content, purchase services, provision paid infrastructure, or expose credentials.
+
+Inspect the current directory, project instructions, git status, remotes, tool availability, and service authentication before modifying an existing project. Use a new directory or isolated branch/worktree when appropriate. Do not assume the current repository is the intended destination.
+
+Missing access must not stop research, implementation, testing, or packaging. Finish everything possible, make the result reviewable, and then identify the exact missing external step. Do not ask for permission repeatedly for actions already authorized here. Never invent repository URLs, deployment URLs, passing tests, downloaded weight values, or successful authentication.
+
+======================================================================
+3. SCIENTIFIC EVIDENCE AND LABELING
+======================================================================
+
+Create a source registry and a claim/evidence registry before substantial content writing. Use official Qwen model cards and configuration files, Qwen technical reports and repositories, the relevant official framework implementation, and original papers. Prefer these to secondary articles. Inspect actual source contents, not search snippets alone.
+
+Pin model and implementation revisions to immutable commit IDs when available. Record the model ID, source URL, document section or code symbol, revision, retrieval date, and claims supported. The seed data in this brief was checked on 22 October 2026 but deliberately does not invent immutable revisions. Resolve and record those during implementation. Do not silently replace a reference model with a newer or similarly named release.
+
+Every numerical view and export must distinguish these evidence classes:
+
+1. VERIFIED ARCHITECTURE: values and structures directly supported by an identified configuration or implementation.
+2. DERIVED CALCULATION: a result computed from those facts, with its formula and counting convention visible.
+3. ILLUSTRATIVE SIMULATION: a reproducible calculation using reduced dimensions and synthetic weights. Its result is true for that simulator, not an observed Qwen run.
+4. ACTUAL CHECKPOINT SAMPLE / MEASURED TRACE: data actually extracted from the named checkpoint or recorded from an identified model execution, with provenance.
+5. UNKNOWN / NOT VERIFIED: a meaningful information gap, explicitly explained rather than filled with plausible-looking data.
+
+Use readable labels and distinct visual treatment, not color alone. Keep provenance visible when changing models, tokens, layers, units, or zoom levels, and include it in exports.
+
+Never present fabricated tokenization, arbitrary attention heatmaps, random matrices, manually chosen expert routes, invented benchmark numbers, or canned generated sentences as observed Qwen behavior. A synthetic route animation must say “Illustrative simulation.” A real weight sample alone does not establish a real activation trace.
+
+Do not assign fixed labels such as “the mathematics expert,” “the English neuron,” or “the memory layer” unless a specific, appropriately qualified experiment supports the claim. Explain that features are often distributed and that attention visualization alone is not a complete causal explanation.
+
+When sources conflict, explain the distinction and scope. Architecture config fields, model-card capability claims, tokenizer size, runtime settings, and report terminology can refer to different things. Do not flatten them into one number.
+
+======================================================================
+4. MODEL COVERAGE AND REFERENCE MATERIAL
+======================================================================
+
+Provide deepest, fully functioning coverage for:
+
+A. Qwen/Qwen3-8B — dense decoder-only text model.
+B. Qwen/Qwen3-30B-A3B — original Qwen3 routed MoE text model.
+
+These two are fixed reference presets, not claims about the latest Qwen release. The dense/MoE comparison must acknowledge their different widths and depths; it is not a controlled experiment where only the FFN changes. Include an optional controlled toy comparison with matched dimensions to isolate the architectural difference.
+
+Add a sourced family map showing how these models relate to earlier Qwen generations and newer hybrid families. Include separate explanations for Qwen3-Next, Qwen3.5, and Qwen3.8-Flash-Next where official documentation supports them. Verify names and claims at execution time. Give each implemented profile a coverage badge: full numerical toy analogue, verified structural view, or explanatory overview. Do not label an unsupported module as an ordinary attention layer merely to fit the renderer.
+
+The accompanying reference-diagrams directory may contain:
+
+- qwen-01-stack.png / .svg: complete Qwen3-8B stack.
+- qwen-02-layer.png / .svg: one ordinary Qwen3 dense block.
+- qwen-03-experts.png / .svg: dense FFN versus original Qwen3 MoE.
+- qwen-04-hybrid.png / .svg: simplified newer hybrid stack.
+- qwen-parameters-and-neurons.png: weights and units close-up.
+- qwen-diagram-notes.txt: scope, omissions, and primary sources.
+
+Read the notes before reusing a figure. The hybrid reference omits details and is not a substitute for a verified graph. Existing pictures are useful as supplementary illustrations and design references; simply enlarging them is not sufficient interactivity.
+
+======================================================================
+5. SEMANTIC ZOOM: FROM ONE STORED NUMBER TO THE WHOLE MODEL
+======================================================================
+
+Provide an explicit bottom-up learning path, an overview-first path, and free exploration. Zoom must reveal relevant structure and descriptions. It must not merely scale identical boxes or text.
+
+Level 0 — Stored scalar / weight
+Show a selected numerical value, sign, precision, tensor coordinate, checkpoint location, and provenance. Explain that a parameter is one learned scalar. In a format view, illustrate a floating-point representation or quantized value with scale metadata. Do not imply a generic bit diagram is a literal checkpoint byte dump.
+
+Level 1 — Weighted sum / unit / gated channel
+Select an output coordinate, highlight the associated input vector and weight row, show each multiplication and accumulation, then the nonlinearity or gate. Distinguish incoming weights, computed preactivation, activation, and outgoing weights. For Qwen SwiGLU, show the two branches and multiplicative gate.
+
+Level 2 — Vector / matrix / tensor
+Show dimensions, axes, parameter counts, dtype, and storage orientation. Select a row, column, tile, or exact coordinate. Explain batched matrix multiplication and how the same weights apply at many token positions. Use virtualization, not one rendered element per real parameter.
+
+Level 3 — Functional module
+Explore embedding lookup, RMSNorm, linear projection, RoPE, causal attention, SwiGLU, router, expert, and vocabulary head. Link every module to input/output tensors and its mathematical operation. Visually separate parameter-owning modules from operations with no learned weights.
+
+Level 4 — Decoder block
+Show the complete pre-norm attention and FFN/MoE branches with residual additions and exact dimensions. Selecting a residual branch must reveal the values being added and show that the standard residual addition itself has no learned weights.
+
+Level 5 — Full model
+Show embeddings, every individually selectable decoder block, final normalization, vocabulary projection, and sampling. Expand or compress repeated blocks without losing the selected layer index. Make clear that block weights are distinct across depth, while the same block's weights are reused across token positions.
+
+Level 6 — Execution and learning
+Show tokenization, prompt prefill, token-by-token decoding, cache/state updates, next-token sampling, and a separate training path with targets, loss, gradients, and weight updates. Add memory and compute views connecting the abstract graph to arrays in RAM/VRAM and kernel operations.
+
+Support breadcrumbs and “Back to containing module,” fit view, reset, search, minimap where useful, selection persistence, and shareable deep links. Distinguish viewport zoom from opening a deeper semantic level so users do not accidentally lose their place.
+
+Suggested central layout: architecture canvas, compact model/level controls, and a contextual inspector. At narrow widths, use a bottom sheet or tabbed inspector with large touch targets. Never require hover or a desktop-only gesture to reveal essential information.
+
+Every inspected object should answer:
+
+- What is this, in ordinary language?
+- Where is it in this exact model?
+- What enters, what leaves, and what are the shapes?
+- Does it contain learned parameters? How many?
+- Which values are persistent weights and which are runtime activations or cache state?
+- What equation or operation computes its output?
+- Which checkpoint tensor or implementation symbol corresponds to it?
+- What evidence supports this view, and which values are illustrative?
+- What should I inspect immediately below or above it?
+
+======================================================================
+6. FOUNDATIONAL EXPLANATIONS: PARAMETERS, NEURONS, AND WEIGHTS
+======================================================================
+
+Make these distinctions visible in context, not buried in a glossary:
+
+- A PARAMETER is a learned scalar. Most are entries in weight matrices or embedding tables; normalization scale vectors and routers also contain parameters.
+- A WEIGHT MATRIX contains many parameters. “8B parameters” does not mean eight billion neurons.
+- An ACTIVATION is a value computed for a particular input during a forward pass. It changes when the input changes even when the weights stay fixed.
+- A NEURON/UNIT/CHANNEL is a computational coordinate. A transformer has several different widths and intermediate spaces, so there is no single convention-independent total neuron count.
+- A TOKEN is a tokenizer unit, not necessarily a word. Token count, residual width, head count, layer count, and parameter count measure different things.
+- ATTENTION WEIGHTS are computed mixing coefficients. The learned W_Q, W_K, W_V, and W_O matrices are different objects.
+- ROUTING WEIGHTS can refer to learned router parameters or token-dependent mixture coefficients. Name them explicitly to avoid ambiguity.
+- An EXPERT here is an FFN inside a decoder block, not a separate full language model or a separate chatbot.
+- Standard Qwen3 dense/MoE residual additions and RoPE have no learned scalar weights in the same sense as a linear matrix. Normalization scales are learned.
+- A model's units are not individual physical processor cores. Matrices are stored in memory and evaluated by software kernels on hardware.
+
+Include a tiny editable example with input x = [1, 2, 3] and stored W of shape [2, 3]:
+
+W = [[0.2, -0.5, 0.1], [0.4, 0.3, -0.2]]
+y = x W^T = [-0.5, 0.4]
+
+It has six trainable weight values in this illustration and two output coordinates, with no bias. These particular values were chosen for the example; do not claim they were learned from data. Explain that this is a teaching example, not extracted Qwen weights. Then connect the same operation to a real Qwen matrix shape. Do not add a learned bias to a Qwen3 projection when the verified model has none.
+
+Offer a “Change input” control and a “Change one weight” control. The former recomputes activations while retaining the weight values. The latter switches to an editable toy state and makes the changed model state explicit. A reset must restore the exact seeded fixture.
+
+======================================================================
+7. VERIFIED REFERENCE CONFIGURATION SEEDS
+======================================================================
+
+Revalidate these against the named official configurations and model cards before publishing. If a source revision differs, pin the original preset or document the discrepancy rather than silently changing it.
+
+Field                                  Qwen3-8B          Qwen3-30B-A3B
+Decoder blocks                         36                48
+Residual width d                       4096              2048
+Query heads Hq                         32                32
+K/V heads Hkv                          8                 4
+Head dimension dh                      128               128
+Concatenated query/head-output width    4096              4096
+Dense FFN intermediate width f          12288             not used in these MoE blocks
+Expert intermediate width              not applicable    768
+Routed experts per block               not applicable    128
+Selected experts per token per block   not applicable    8
+Shared expert                          not applicable    none
+Embedding/output table rows            151936            151936
+Tied input/output embeddings           false             false
+Linear projection biases               false             false
+RMSNorm epsilon                        0.000001          0.000001
+RoPE theta/base                         1000000           1000000
+Model-card native context              32768             32768
+Model-card YaRN extension               131072            131072
+Published max_position_embeddings      40960             40960
+
+Important distinctions:
+
+- For the MoE model, d=2048 but Hq*dh=4096. Its Q projection expands to 4096 and its output projection returns from 4096 to 2048. Never derive head_dim as hidden_size/num_attention_heads for this preset.
+- Its intermediate_size=6144 is a dense fallback configuration value. The actual expert FFNs in its 48 MoE blocks use moe_intermediate_size=768.
+- 151936 is the configured embedding/output row count, not automatically the tokenizer's count of meaningful token IDs. The Qwen3 report gives a tokenizer vocabulary figure of 151669; inspect the tokenizer assets before explaining unused, padded, additional, or special IDs.
+- max_position_embeddings=40960, native context=32768, and extended context=131072 are not interchangeable labels. Show the source and mechanism for each.
+- “36 layers” and “48 layers” here mean decoder blocks; input embedding, final norm, and output head are separate components.
+- Changes to architecture sliders must create a “custom educational configuration,” not modify a verified preset while retaining its official name.
+
+======================================================================
+8. TENSOR CONVENTIONS AND DECODER EQUATIONS
+======================================================================
+
+Use one consistent convention throughout: activations carry the feature axis last, stored linear weights follow PyTorch's [output, input] convention, and a projection is Y = X W^T. Explain alternate mathematical conventions only in a clearly marked note.
+
+For a batch B, sequence length T, residual width d, and input X:[B,T,d]:
+
+RMSNorm(x) = gamma * x / sqrt(mean(x^2) + epsilon)
+
+The multiplication by gamma is elementwise. RMSNorm does not subtract the mean. Show gamma's shape and parameter count. Explain numerical accumulation precision separately from storage dtype.
+
+An ordinary Qwen3 block is:
+
+h = x + Attention(RMSNorm_attention(x))
+y = h + FFN_or_MoE(RMSNorm_ffn(h))
+
+Show both residual additions, both pre-normalizations, and the internal Q/K norms in attention. Make graph edges and equations agree. Distinct blocks own distinct matrices and normalization scales.
+
+Use actual tensor/module names from the pinned checkpoint and implementation. Typical semantic paths include:
+
+model.embed_tokens.weight
+model.layers.{layer}.input_layernorm.weight
+model.layers.{layer}.self_attn.q_proj.weight
+model.layers.{layer}.self_attn.k_proj.weight
+model.layers.{layer}.self_attn.v_proj.weight
+model.layers.{layer}.self_attn.o_proj.weight
+model.layers.{layer}.self_attn.q_norm.weight
+model.layers.{layer}.self_attn.k_norm.weight
+model.layers.{layer}.post_attention_layernorm.weight
+model.layers.{layer}.mlp.gate_proj.weight
+model.layers.{layer}.mlp.up_proj.weight
+model.layers.{layer}.mlp.down_proj.weight
+model.norm.weight
+lm_head.weight
+
+For MoE, resolve the actual router and per-expert or packed-expert tensor paths from the checkpoint index. Framework versions may pack expert matrices differently. Provide a mapping between the logical expert matrices and the physical checkpoint tensors; do not invent exact file keys from a schematic path.
+
+======================================================================
+9. ATTENTION, GQA, QK NORMALIZATION, AND ROPE
+======================================================================
+
+The attention drill-down must reveal this sequence:
+
+1. Input pre-normalization at the block entrance.
+2. Learned Q, K, and V projections.
+3. Reshape into query heads and K/V heads.
+4. Head-wise Q and K RMS normalization.
+5. Rotary position transformation on Q and K.
+6. Causal, scaled dot-product attention with grouped-query sharing.
+7. Weighted sum of V, concatenation of query-head outputs, and O projection.
+8. Residual addition to the block input.
+
+Display these shapes:
+
+W_Q: [Hq*dh, d]
+W_K and W_V: [Hkv*dh, d]
+Q: [B,Hq,Tq,dh]
+K and V: [B,Hkv,Tk,dh]
+Logical attention scores: [B,Hq,Tq,Tk]
+W_O: [d,Hq*dh]
+
+A = softmax(Q K^T / sqrt(dh) + causal_mask)
+Z = A V
+
+For GQA, the appropriate K/V head is selected/shared for each query-head group. Dense 8B has four query heads per K/V pair; MoE 30B-A3B has eight. Their query vectors and attention score rows remain distinct.
+
+Q/K normalization contributes 128 Q scales plus 128 K scales per block, shared across heads. Do not multiply those scale parameter counts by the head count.
+
+The attention lab must allow selection of model, layer, query token, key token, and head. Show raw dot products, scale factor, masked entries, stable softmax probabilities, V vectors, and the resulting weighted sum. Future positions must have zero probability. Clearly distinguish a causal dependency graph from an observed attention-strength heatmap.
+
+Implement stable softmax, including a documented policy for invalid/all-masked rows. Do not pass NaNs into the visualization or silently normalize an empty distribution.
+
+Provide a RoPE subview showing position-dependent rotations and relative-position effects. The implementation must follow the pinned model's coordinate pairing and frequency convention. A simple two-coordinate rotation is useful but must be labeled as an illustration. Show that RoPE operates on Q and K here, not V, and is not a learned position vector added at the embedding entrance. Explain how cached decoding uses the correct absolute position offset.
+
+At an advanced level, distinguish the logical attention matrix from optimized kernels such as FlashAttention, which can compute the operation without storing the full square matrix. Do not present a mathematical T-by-T display as a literal allocation made by every runtime.
+
+======================================================================
+10. DENSE SWIGLU AND THE MEANING OF A GATED CHANNEL
+======================================================================
+
+For the normalized FFN input X:
+
+g = SiLU(X W_gate^T)
+u = X W_up^T
+z = g * u
+Y = z W_down^T
+
+SiLU(a) = a * sigmoid(a)
+
+W_gate and W_up: [f,d]
+W_down: [d,f]
+g, u, z: [B,T,f]
+Y: [B,T,d]
+
+In Qwen3-8B, f=12288 and d=4096. One gated channel z_j uses two weighted sums, a nonlinearity, and a multiplication. The down projection mixes those gated channels back into the residual vector.
+
+Selecting channel j must highlight row j of W_gate, row j of W_up, and column j of W_down, then show how it contributes to a selected output coordinate. Explain why the graphical circle convention for a simple neuron is only an analogy for this gated computation.
+
+The FFN parameter formula, with no biases, is 3*d*f. Show the three matrices individually and make the total update when a custom toy configuration changes. Do not show weights on a residual edge merely to imitate a generic neural-network diagram.
+
+======================================================================
+11. ORIGINAL QWEN3 MIXTURE OF EXPERTS
+======================================================================
+
+For Qwen3-30B-A3B, the attention mechanism remains shared within each block and the FFN sublayer is replaced by a routed set of expert FFNs. Routing is done separately for each token and each block.
+
+For normalized FFN input x:
+
+r = x W_router^T
+p = softmax(r)
+S = TopK(p, 8)
+alpha_e = p_e / sum(p_j for j in S)
+y = sum(alpha_e * Expert_e(x) for e in S)
+
+W_router has shape [128,2048]. Each expert has its own gate, up, and down matrices with intermediate width 768. The preset uses norm_topk_prob=true. Explain the difference between raw router logits, probabilities over all experts, selection, and the renormalized mixture coefficients.
+
+The MoE lab must compute the router scores, select experts, evaluate their outputs in the toy model, and combine them. Show all experts as a virtualized overview with selected experts highlighted; inspect any expert's structural metadata. Do not draw all 128 full networks simultaneously.
+
+Make these facts explicit:
+
+- All 128 router scores are computed for a token, and eight expert FFNs are selected in each block.
+- Different tokens and different blocks may select different experts.
+- A batch can collectively use many more than eight experts.
+- Unselected experts still exist and require storage.
+- The original reference model has NO shared expert.
+- “A3B” refers to an approximate activated-parameter convention; it is not the total stored parameter count.
+- Expert specialization is learned and may be distributed; expert IDs must not be assigned invented human job descriptions.
+
+Add a router distribution view, selected-probability renormalization view, expert output mixture view, and a comparison of total parameter storage versus per-token expert work. Include an advanced explanatory section on expert parallelism, dispatch/gather communication, load balancing, and why MoE latency is not obtained by simply dividing dense latency by the active-parameter ratio. Cite the applicable implementation or report for model-specific training claims.
+
+A slider for top-k in the simulator changes an educational configuration. It must not silently claim that the official pretrained model was evaluated with an arbitrary new routing rule.
+
+======================================================================
+12. EXACT PARAMETER ACCOUNTING AND “WHERE ARE THEY?”
+======================================================================
+
+Build a parameter inventory whose values come from shared shape calculations. Provide a treemap or stacked view linked to the graph and tensor catalog. Selecting a segment must reveal the tensors and formula behind it.
+
+Expected counts derived from the reference configuration and implementation:
+
+Quantity                                Qwen3-8B         Qwen3-30B-A3B
+Input embedding                         622329856        311164928
+Untied output head                      622329856        311164928
+Attention projections per block         41943040         18874368
+One expert FFN                          not applicable   4718592
+All FFN/expert weights per block         150994944        603979776
+Router weights per block                0                262144
+Norm scales per block                   8448             4352
+Complete parameters per block           192946432        623120640
+Final norm                              4096             2048
+TOTAL                                   8190735360       30532122624
+
+Dense per-block matrix checks:
+
+W_Q: 4096*4096 = 16777216
+W_K: 1024*4096 = 4194304
+W_V: 1024*4096 = 4194304
+W_O: 4096*4096 = 16777216
+Each FFN matrix: 4096*12288 = 50331648
+Norms: 2*4096 + 2*128 = 8448
+
+MoE per-block checks:
+
+Attention projections: 2048*4096 + 2*(512*2048) + 2048*4096 = 18874368
+One expert: 3*2048*768 = 4718592
+All experts: 128*4718592 = 603979776
+Router: 128*2048 = 262144
+Norms: 2*2048 + 2*128 = 4352
+
+Explain the difference between these exact structural calculations and the rounded advertised 8.2B and 30.5B model-card figures.
+
+For MoE, preserve the official approximate 3.3B activated figure with its source. The selected experts across all layers contain 48*8*4718592 = 1811939328 parameters. A convention that adds the entire shared parameter inventory gives 3353032704, but that includes a whole input embedding table even though a token lookup uses one row. Do not present a convention-dependent active count as a universal exact number of scalars read, FLOPs, memory traffic, or latency.
+
+Provide a direct answer panel: “The learned parameters are the stored numbers in these matrices and vectors. The changing highlighted values flowing between modules are activations.” Let a user click from that sentence to an actual tensor coordinate.
+
+======================================================================
+13. TOKENIZATION, FULL FORWARD PASS, AND OUTPUT GENERATION
+======================================================================
+
+Show the entire pipeline:
+
+text/chat messages -> model-specific chat template -> tokenizer -> token IDs -> embedding row lookup -> decoder blocks -> final RMSNorm -> untied vocabulary projection -> logits -> sampling/filtering -> next token -> repeat
+
+Explain special tokens, message roles, token pieces, embedding lookup, and the difference between vocabulary logits and probabilities. Show that the output head has its own weights in the two reference models. Compute logits for all vocabulary entries conceptually, but visualize a filtered/virtualized subset with a clear “showing selected entries” label.
+
+If real tokenization is offered, use the pinned Qwen tokenizer assets and chat template or a verified compatible library. Do not call whitespace splitting “Qwen tokenization.” A toy tokenizer is acceptable in the simulator when conspicuously labeled. Keep real tokenizer output and toy-model activation output separate.
+
+The sampling lab must support temperature, greedy selection, top-k, top-p, renormalization after filtering, and a seeded random draw. Define temperature zero as an explicit greedy mode. Show the order of transformations and their impact on the probability distribution. Do not claim sampling is a trained neural-network layer.
+
+Add a short model-specific explanation of thinking versus non-thinking behavior where supported. It must not imply that changing a prompt or mode inserts extra physical layers into the checkpoint.
+
+For a real trace, retain the exact prompt, token IDs, tokenizer revision, chat template, model revision, layer/hook location, runtime/library versions, precision, and generation settings. Never infer a trace merely from a model architecture diagram.
+
+======================================================================
+14. PREFILL, DECODE, KV CACHE, AND RECURRENT STATE
+======================================================================
+
+Provide a step-through timeline with play/pause, previous/next, speed, and reduced-motion controls.
+
+During PREFILL, the prompt's positions are processed with a causal mask within each block, progressing through the stack. Explain the distinction between parallel work across prompt positions and sequential dependency across blocks. Store the applicable per-layer K and V representations.
+
+During DECODE, process a new token through all blocks, reuse earlier cached K/V, and append new K/V. Show the length and shape of each cache, the absolute position for RoPE, and which calculations are reused. The cache is computed runtime state, not newly trained parameter storage.
+
+Implement two toy routes: full-prefix recomputation and cached incremental decoding. Display their equivalent outputs within a stated tolerance. This is a concrete correctness check, not just an animation.
+
+Changing weights, model configuration, RoPE settings, seed, or an earlier prompt token must invalidate incompatible cached K/V and dependent traces before recomputation. Inspection-only selections must not mutate weights, advance the sampling random-number generator, or execute another training step.
+
+For newer recurrent/hybrid profiles, separate recurrent state from attention caches and from learned n-gram tables. Do not apply the ordinary full-attention cache formula to a different architecture without deriving the appropriate components.
+
+======================================================================
+15. TRAINING: HOW THE WEIGHTS CHANGE
+======================================================================
+
+Add a separate training view using a small deterministic dense computation. Show:
+
+- Teacher-forced next-token targets shifted relative to the input sequence.
+- Logits, probability of the target, and cross-entropy loss.
+- The computational graph traversed backward by the chain rule.
+- A selected gradient, its sign and magnitude, and which weight it belongs to.
+- A transparent SGD update w_new = w_old - learning_rate * gradient.
+- Recomputed output and loss after the update.
+- Reset to the original seed and comparison of different learning rates.
+
+State that the simulator's small training step is not the complete Qwen training recipe. Explain optimizer states and Adam-style updates conceptually with sources if included. Do not claim a large learning-rate step always reduces the loss; show the actual computed result.
+
+Connect derivatives to the same units used in the forward view, including linear projections, RMSNorm where implemented, SiLU, the multiplicative gate, and softmax/cross-entropy. Use independent finite-difference checks for the implemented toy gradients. Avoid claiming smooth derivatives through discontinuous top-k choices; qualify MoE routing-gradient explanations.
+
+Provide a source-backed overview of pretraining and post-training stages for the chosen release: next-token learning, instruction tuning, preference/reinforcement methods where documented, and the distinction between parameter changes and prompt/context changes. Mark unpublished data mixtures, exact optimizer settings, or neuron interpretations as unknown. Never invent confidential training details to make a page look complete.
+
+======================================================================
+16. REAL CHECKPOINTS, TENSOR CATALOG, AND BOUNDED WEIGHT INSPECTION
+======================================================================
+
+The required catalog must cover every learned tensor family for both core models: embeddings, both block norms, Q/K norms, Q/K/V/O projections, dense FFN matrices or router/experts, final norm, and output head. Expand all layer/expert indices virtually. Display exact logical shapes and counts even when numerical weight values are not loaded.
+
+Resolve physical tensor names and shard mappings from the pinned checkpoint index and headers. Explain how a saved scalar belongs to a tensor, how the collection of tensors is distributed across checkpoint shards, and how a runtime loads arrays into memory. Standard Safetensors sharding normally places complete tensors in individual shard files; do not imply that every tensor is fragmented across files. Do not treat file byte offsets, tensor coordinates, and GPU memory addresses as interchangeable.
+
+Attempt to include a small genuine checkpoint tile for each core model, such as a 16-by-16 projection sample, only if it can be safely and legally extracted with a small bounded transfer. Do not download full 8B/30B checkpoints just to obtain a visualization. Set a default aggregate extraction budget of 100 MB and enforce it before accepting responses; allow the user to opt in to larger work separately.
+
+For Safetensors range extraction, first validate the index/header and server support, confirm HTTP range/206 behavior and response lengths, and prevent an accidental full-file transfer. Implement request timeouts and a hard byte limit. If the endpoint ignores range requests or the extraction cannot be verified, stop that path and keep the complete metadata catalog plus an explicit “actual values not loaded” state. Provide an optional extraction script with documented inputs instead of fabricating values.
+
+Each real sample must record:
+
+- Model repository ID and immutable revision.
+- Checkpoint shard and exact tensor name.
+- Logical shape, index ranges, and original dtype.
+- Any dequantization, conversion, clipping, or downsampling.
+- Retrieval date and source/checksum information sufficient to reproduce it.
+- A clear statement that the sample is not a complete model or inference trace.
+
+Honor the model/data license and required attribution before redistributing sample values. Keep credentials out of downloaded metadata, browser code, GitHub, logs, and exports. Serve compact precomputed sample JSON/static assets; the public site must not need a private token or unrestricted checkpoint proxy.
+
+A failed sample extraction is a documented data limitation, not grounds to stop the rest of the site. Empty sample views must explain the limitation and offer the toy microscope and real structural catalog. Do not hide them behind a dead button.
+
+======================================================================
+17. MEMORY, PRECISION, COMPUTE, AND HARDWARE
+======================================================================
+
+Include a calculator driven by the same model profiles. Keep weight storage, KV storage, runtime overhead, and training memory separate.
+
+Raw theoretical weight payload:
+
+weight_bytes = number_of_parameters * bits_per_parameter / 8
+
+Show decimal GB and binary GiB with unambiguous units. For quantization, separate ideal payload from scale/zero-point/block metadata, unquantized tensors, and runtime overhead. A 4-bit estimate is not a guaranteed GGUF or Safetensors file size. Quantization changes numerical representation, not the underlying architecture's parameter count. GGUF is a container format and is not synonymous with one quantization level.
+
+For the ordinary reference models, a simple unquantized KV cache estimate is:
+
+KV_bytes = 2 * B * L * T * Hkv * dh * bytes_per_cached_scalar
+
+At batch one and BF16 cache precision:
+
+- Qwen3-8B: 147456 bytes per token, or 144 KiB; at 32768 tokens, 4.5 GiB.
+- Qwen3-30B-A3B: 98304 bytes per token, or 96 KiB; at 32768 tokens, 3 GiB.
+
+Label these as K/V-only estimates excluding allocator overhead, workspaces, and other tensors. Weight precision and cache precision are independent controls. Do not count query heads instead of K/V heads.
+
+Explain why a model with a small active expert count can still require much more stored weight memory. Distinguish parameter counts, matrix multiply operation estimates, memory traffic, measured latency, and hardware utilization. Do not display invented tokens-per-second benchmarks. Any performance demonstration in the toy browser engine must say which browser/device/test conditions it measured.
+
+At an advanced level, illustrate matrix tiling, accumulation precision, tensor/model/expert parallelism, and the movement of token activations to experts. Tie these to primary runtime or research sources. Explain what is model architecture versus a serving implementation choice.
+
+======================================================================
+18. NEWER HYBRID ARCHITECTURES — SEPARATE, VERIFIED PROFILES
+======================================================================
+
+The user has also seen a simplified Qwen3.8-Flash-Next diagram. Include a separate deeper explanation after verifying the current official model card, configuration, report, and implementation. Do not import its properties into the two original Qwen3 reference presets.
+
+Research seed for Qwen3.8-Flash-Next, to be revalidated and pinned:
+
+- 48 text blocks arranged as 12 repetitions of three Gated DeltaNet blocks and one Qwen Sparse Attention block: 36 recurrent blocks and 12 sparse-attention blocks.
+- Base hidden dimension 2560; the gated residual stream has four branches. Record the actual branch and flattened tensor shapes from the implementation rather than assuming the whole residual state is a single vector of width 2560.
+- Each MoE block has 512 routed experts, selects 10 per token, and includes one shared expert.
+- Four gated branches in place of the ordinary single residual stream, which has attention and FFN residual additions within each decoder block.
+- Learned bigram/trigram lookup tables applied at layer 2 only; confirm the source's layer-index convention and expose both human and code indices correctly.
+- Component accounting distinguishes an approximately 125B backbone / approximately 6B activated, approximately 51B n-gram tables, and approximately 4B multi-token-prediction component. Do not call 125B the total of all components.
+- The sparse-attention description includes a budget of 512 microblocks / 2048 tokens with compression factor 4; implement or quote only after confirming exactly what each term means in the report.
+- A config label such as full_attention does not by itself prove that the implementation uses ordinary unrestricted full attention; check QSA implementation and model-card terminology.
+
+Explain, with separate diagrams:
+
+1. How Gated DeltaNet updates recurrent state; show the actual verified recurrence and gate meanings, or explicitly limit coverage to a structural overview if source detail is insufficient.
+2. How sparse attention selects/compresses context and differs from ordinary causal attention.
+3. How routed and shared experts contribute.
+4. What the gated residual branches change.
+5. Why static learned n-gram tables are parameters, while recurrent state and attention cache are input-dependent state.
+6. Which components belong to text inference, vision encoding, or auxiliary multi-token prediction; keep those boundaries visible.
+
+The hybrid model as a whole does not have constant memory with context simply because some blocks have fixed-size recurrent state. Model-specific attention components and other state still matter.
+
+Do not invent a numeric simulator of an unimplemented recurrence and label it real. The full ordinary Qwen3 labs remain available; newer profile panels must honestly indicate which are structural explanations and which computations are implemented. Add sources and unknowns rather than guessed details.
+
+======================================================================
+19. REQUIRED INTERACTIVE LABORATORIES
+======================================================================
+
+Implement these as connected views sharing selection state and explanatory vocabulary:
+
+1. Weight microscope: select a tensor/coordinate, inspect a scalar, edit a toy value, and see a computed downstream change.
+2. Unit microscope: dot-product products and sum, gate/up branches, SiLU, multiplication, and down-projection contribution.
+3. Matrix explorer: shape, dtype, parameter count, virtualized tiles, logical-to-checkpoint mapping, and provenance.
+4. Attention lab: Q/K/V, causal mask, scaled dot products, softmax, weighted values, head selection, and GQA mapping.
+5. RoPE lab: position/frequency controls with a rotation visualization linked to the equation.
+6. Dense/MoE comparison: actual-profile structural comparison plus a dimension-matched toy experiment.
+7. Router lab: logits, probabilities, top-k, renormalization, selected expert outputs, and weighted sum.
+8. Layer traversal: inspect every reference-model block, select a submodule, and return to the full stack.
+9. Prefill/decode lab: cache creation/growth, token stepping, absolute positions, and recomputation equivalence.
+10. Sampling lab: logits, temperature, filtering, seeded choice, and the next-token loop.
+11. Training lab: target, loss, gradient, weight update, and actual resulting loss.
+12. Memory lab: model/dtype/cache/context/batch controls and transparent formulas.
+
+All visible controls must either work or be deliberately disabled with an explanation. Avoid placeholder buttons, fake loading screens, arbitrary animated expert paths, and claims that a real large model is running in the browser when only a small simulator is running.
+
+Use a compact seeded toy architecture such as residual width 8, two query heads, one K/V head, head dimension 4, two blocks, FFN width 16, and four experts/top-two. Clearly name it “Toy simulator.” Its small expert count is not the official model's 128/top-eight. Separately test official routing-count and shape fixtures with 128/top-eight synthetic inputs.
+
+Keep simulator runs bounded and responsive. Allow a seed to be copied and shared. Changing a seed, architecture, weight, position setting, or prompt prefix must invalidate incompatible caches and update dependent activations and labels consistently. Keep inspection actions separate from state-changing simulation actions. Do not mix activations from different model states.
+
+======================================================================
+20. VISUAL DESIGN, ACCESSIBILITY, AND PERFORMANCE
+======================================================================
+
+Use a polished scientific visual language: clear hierarchy, restrained color, legible labels, crisp vector graphics, and uncluttered panels. The reference diagrams use navy backgrounds, cyan attention, purple FFN/weights, green activations/state, and yellow normalization/residuals; you may develop this into a coherent accessible theme. Provide light and dark modes if both can be maintained well.
+
+Make dense/MoE differences visually obvious without relying only on color. Use a consistent legend for learned parameters, runtime activations, cache/state, and stateless operations. Labels must remain readable as the graph changes semantic levels.
+
+Use mouse wheel/pan, touch pinch/pan, tap, keyboard navigation, and explicit zoom/fit buttons. Provide a searchable structured tree/table alternative to the canvas. A keyboard or mobile user must reach the same scalar inspector as a desktop mouse user. Restore focus when opening and closing panels. Support reduced motion, pauseable animation, adequate contrast, and meaningful descriptions for diagrams.
+
+Provide beginner explanations first, with expandable math, shapes, source code references, and implementation notes. Keep operational build details out of the educational flow; put them in project/developer documentation.
+
+Use responsive layouts around small-phone, tablet, and desktop sizes. Do not put the whole application in a fixed-width canvas that requires horizontal scrolling on a phone. Keep text selectable, equations readable, and key controls comfortably tappable.
+
+Virtualize large lists and matrices; lazy-load detailed modules and real samples; avoid large DOM graphs or full attention tensors at official dimensions. Set and document rendering limits. Draw a bounded representative tile with exact indices and an honest extent indicator. Never allocate billions of visual objects or a full checkpoint in browser memory.
+
+Measure and report representative startup and interaction behavior rather than inventing performance claims. The core explorer should load useful content without waiting for optional weight data or external model inference. Provide understandable error states and a reset path.
+
+======================================================================
+21. IMPLEMENTATION ARCHITECTURE
+======================================================================
+
+Prefer a static React + TypeScript + Vite application. Choose current stable compatible package versions from official documentation and pin the lockfile. Suitable options include React Flow for high-level graph navigation, custom SVG/Canvas for scalar/matrix mathematics, KaTeX for equations, and small client-side charts. Choose equivalent libraries when they fit better and explain material decisions in the README.
+
+Use WebGL only if there is a concrete rendering need. Do not introduce a large dependency or backend merely to display small numeric examples. No runtime Claude API call is required; Claude is building this application, not serving every educational interaction.
+
+Separate:
+
+- Model profiles and typed architecture metadata.
+- Source/claim provenance.
+- Shape inference and parameter-count calculations.
+- Pure numerical operations and the seeded toy engine.
+- Checkpoint catalog and optional extracted sample data.
+- View state and deep-link serialization.
+- Graph/layout/rendering components.
+- Educational content and glossary.
+- Test fixtures and deployment tooling.
+
+Generate diagrams, tables, counts, and inspectors from the same profile data. Avoid hard-coded copies of numerical claims in unrelated components. Add schema validation for profiles, sample provenance, and saved view state.
+
+Suggested project organization, adaptable as needed:
+
+src/models/          verified profiles and schema
+src/math/            pure numerical operators and toy execution
+src/evidence/        sources, claims, limitations, revisions
+src/explorer/        graph, semantic zoom, selection, inspectors
+src/labs/            interactive numerical laboratories
+src/content/         explanations, glossary, guided tours
+src/components/      reusable UI and accessible controls
+public/data/         compact verified metadata and bounded real samples
+scripts/             source validation, sample extraction, deployment
+tests/               numerical, structural, and browser tests
+docs/                architecture, scientific notes, decisions, verification
+
+Maintain BUILD_PROGRESS.md and docs/decisions.md so the work can continue across context limits. Include completed items, evidence, remaining work, current commands, and exact blockers. If a session must resume, continue from these files; do not restart from scratch or declare incomplete scope finished.
+
+======================================================================
+22. IMPLEMENTATION WORKFLOW
+======================================================================
+
+Work in useful, verifiable increments:
+
+A. Inspect environment, instructions, authentication, reference files, and available tools. Establish a clean project location. Record the actual model/runtime and build commands.
+B. Verify official sources and pin core profiles. Implement shared shape and parameter accounting with independent fixtures.
+C. Build the responsive explorer shell and a complete path from full stack to one toy scalar. Ensure navigation, model switching, provenance, and accessible alternatives already work.
+D. Implement the numerical operators and connect the attention, SwiGLU, MoE, cache, sampling, and training labs. Add focused tests while implementing concrete mathematical risks.
+E. Fill the complete structural catalog, sourced explanations, family map, and separately verified newer hybrid views. Attempt bounded real checkpoint samples.
+F. Complete visual polish, mobile/keyboard support, deep links, error states, exports, and source pages. Remove placeholders and repair contradictions.
+G. Run production build and the acceptance checks. Resolve failures. Inspect the actual rendered application, not only its source.
+H. Commit and push the correct source to GitHub, publish the production build to here.now, verify the live deployment, and deliver the real links and status.
+
+Use parallel research or implementation workers if supported, assigning non-overlapping files or tasks and integrating their work carefully. One owner must reconcile sources and profile data. Do not let independent diagrams drift into incompatible conventions.
+
+Provide concise progress updates describing findings, important decisions, and the next verification step. Continue until the requested product is complete or the only remaining work is genuinely blocked by unavailable access. A working first slice is a milestone, not permission to omit the rest of the brief.
+
+======================================================================
+23. ACCEPTANCE TESTS AND SCIENTIFIC REVIEW
+======================================================================
+
+Use meaningful automated tests for mathematical and state-management risks, plus real browser inspection. Do not replace functional validation with screenshots or test that a function merely repeats its own constants.
+
+Numerical and structural requirements:
+
+- Core profiles reproduce exact totals 8190735360 and 30532122624 using independent count fixtures.
+- Qwen3-30B-A3B correctly maps residual width 2048 to Q width 4096 and back to residual width 2048.
+- Both block norms and Q/K norms are counted correctly; there are no projection biases; input/output embeddings are untied.
+- Dense and expert FFN shapes and 3*d*f counts agree with graph labels and catalog entries.
+- When physical checkpoint tensors pack several logical expert matrices, verify the mapping, axis order, and gate/up ranges, and count the underlying scalars once. Logical aliases and packed storage must not both contribute to parameter totals.
+- RMSNorm and SwiGLU match independent small numerical reference fixtures.
+- Stable attention softmax produces valid normalized rows and zero probability for future positions.
+- Changing a future toy token does not alter earlier-position logits.
+- Cached toy decoding matches full-prefix recomputation within an explicit tolerance, including RoPE offsets and GQA cache shapes.
+- Model-state or earlier-prefix edits invalidate incompatible caches; decoding after an edit still matches full-prefix recomputation. Inspection-only selection does not change weights, sampling RNG state, or optimizer step count.
+- Query heads sharing K/V still produce separate head outputs.
+- Official-size router fixtures select eight unique experts and selected coefficients sum to one; toy top-two behavior is tested separately.
+- Changing an unselected expert's weights leaves the selected token's output unchanged when router input and choice are fixed.
+- The training demo's gradients pass independent finite-difference checks away from discontinuities.
+- KV formulas reproduce 144 KiB/token and 96 KiB/token and the stated 32768-token values.
+- Any real sample passes provenance/schema/checksum checks; illustrative values never receive a real-data badge.
+
+Interaction and production requirements:
+
+- Every model, block, head, expert, matrix, and coordinate selection has a correct effect and breadcrumb path.
+- Switching models clears or translates incompatible selections and never displays old activations under a new model name.
+- Semantic zoom demonstrably reveals deeper information; viewport scaling alone is insufficient.
+- All laboratories recompute actual toy values; seed/reset/replay are deterministic.
+- Invalid input, absent real samples, unavailable external links, and oversized requests have useful states.
+- No control is an unexplained placeholder and no visible explanatory page is empty.
+- Deep links serialize model, level, selected element, and appropriate seed/state; reload restores a valid view.
+- Exported views/data retain source model, coordinates, dtype, and provenance labels.
+- Desktop, phone, keyboard-only, and reduced-motion interactions reach essential content.
+- Matrix/catalog rendering stays within the documented bounded allocation limits.
+- Production build succeeds, type checks pass, and relevant tests pass with actual results recorded.
+- The deployed site has no uncaught application errors or missing required assets, and deep-link refresh works on the actual host.
+- The deployed build identifier corresponds to the source commit returned to the user.
+
+Perform a final scientific audit separately from visual QA: check model-family separation, neuron/parameter distinction, attention versus learned weights, router coefficient semantics, biases, matrix transposes, head dimensions, context terminology, actual versus toy labels, and “active” count conventions. Correct any issue before claiming completion.
+
+======================================================================
+24. GITHUB SOURCE DELIVERY
+======================================================================
+
+Use the user-specified repository if one exists. Otherwise create a new private qwen-architecture-explorer repository in the active authenticated personal account, choosing a distinct name if necessary. Confirm the active account and intended directory before creating/pushing. An appropriate authentication check is gh auth status --active --hostname github.com; never request or print token values as routine output.
+
+If using GitHub CLI, read its current help/docs and use a command such as gh repo create with --private, --source, and --push only after establishing the correct project and identity. Preserve existing repository visibility and permissions. Do not change a private repository to public to make deployment easier.
+
+Commit application source, lockfile, model/evidence registry, content, tests, compact permitted sample data, build instructions, and deployment instructions. Include licensing/attribution information, a clear independent-project notice, and a reproducible setup procedure.
+
+Exclude credentials, environment files with secrets, local claim tokens, unrelated user files, full model checkpoints, node_modules, caches, and generated private state. Always exclude .herenow/state.json and credential files from source control and deployed assets. Keep any shareable, non-secret deployment report in a separate explicitly sanitized file. Add the relevant entries to .gitignore before the first commit. Provide a non-secret .env.example only if needed.
+
+Use normal commits and pushes. Never force-push or replace an existing remote to avoid a conflict. If working in an existing project, preserve uncommitted changes and use an appropriate branch/PR where required by its instructions.
+
+Embed a source commit/build identifier in the compiled site. Arrange the build/commit process so this identifier corresponds to the exact committed application source without a self-referential commit-hash loop. Keep deployment records separate from the source commit if needed.
+
+Verify the actual remote repository URL, branch, and commit. A local git commit alone is not proof that GitHub received the project.
+
+======================================================================
+25. HERE.NOW DEPLOYMENT AND LIVE VERIFICATION
+======================================================================
+
+The primary target is https://here.now/ . Read its current official docs and helper instructions before publishing. Use the provider's supported helper or API. Do not silently substitute Heroku or another service.
+
+The official project-local skill installation at preparation time is:
+
+npx skills add heredotnow/skill --skill here-now
+
+Do not install globally by default. Locate the actual installed helper path. A supported invocation shape at preparation time is:
+
+/actual/path/to/here-now/scripts/publish.sh ./dist --spa --client claude-code
+
+Recheck flags in the installed version. For a project-owned existing site, use its real slug and supported stale-version protection. Do not use an overwrite option to bypass a conflict. Preserve the provider's site identity between this project's deployments.
+
+Publish only the production static output with index.html at its root and the needed SPA fallback. Do not upload the repository, development dependencies, checkpoint shards, credentials, or unrelated files. Avoid unnecessary third-party runtime dependencies so the deployed educational site works reliably.
+
+Prefer existing HERENOW_API_KEY authentication or the provider's supported credential file. Keep secrets in the execution environment and never print them, embed them in client assets, commit them, or place them in a public link. Always exclude .herenow/state.json and credential files from source control and deployed assets, including for authenticated deployments. Store any shareable deployment report separately with only explicitly selected non-secret fields.
+
+Authenticated publishing can be persistent. Anonymous publication expires after 24 hours according to the current provider documentation. If credentials are missing, finish and test the whole product first. You may produce an anonymous preview, clearly reporting its actual expiration, then ask only for the missing sign-in/credential step needed for a persistent deployment. Save returned claim information in untracked private state and give the user the exact claimUrl privately, copied without truncation or modification. Never put claim/management links inside the public site, repository, or public deployment report.
+
+The provider API follows create -> upload -> finalize. Check the finalization result and authoritative publishStatus, persistence/expiry, and warnings. A successful create/upload step alone is not proof that the site is live. Use the primaryUrl/siteUrl actually returned by the provider; do not construct or guess one. Permit network access to the documented provider endpoints and the actual returned upload host as needed. If implementing the API flow directly, send the documented X-HereNow-Client attribution header on provider create/update/finalize requests, use the returned upload URLs and required upload headers, and never forward the here.now bearer credential to the storage host.
+
+After publication, use a fresh browser view of the real URL. Exercise representative desktop and mobile flows, bottom-up and top-down drill-down, model switching, matrix selection, at least one numeric lab, source links, deep-link reload, and reset. Check console errors and failed network requests. Confirm the visible build identifier matches the delivered source commit.
+
+If here.now is genuinely unavailable, finish and deliver the source/build anyway and report the specific blocker. GitHub Pages may be an explicitly labeled fallback or optional mirror when the repository's existing visibility, account plan, and permissions permit it. Do not claim the requested here.now deployment succeeded when only a fallback is live.
+
+For a Vite GitHub Pages mirror under /REPOSITORY/, use the correct asset base or a separate host-specific build; here.now normally serves from /. Hash-based shareable view state can simplify static-host compatibility. Use current official GitHub Pages Actions documentation rather than hard-coding stale action versions. Never make a private repository public without explicit authorization.
+
+======================================================================
+26. REQUIRED PROJECT DOCUMENTS AND FINAL RESPONSE
+======================================================================
+
+Deliver the application and:
+
+- README with setup, development, production build, test, deployment, and continuation instructions.
+- Scientific architecture notes with equations, profile conventions, parameter accounting, and known limitations.
+- Primary-source/claim registry with pinned revisions and retrieval dates.
+- Model profiles and reusable numerical/shape calculations.
+- A verification report recording actual tests, browser/device coverage, failures fixed, and remaining limitations.
+- Documentation for optional checkpoint sample extraction, including budget and provenance.
+- Build/deployment metadata identifying the source commit and real published version.
+- Accessible short guided tours: “Where are the weights?”, “What is a neuron here?”, “How does one token move?”, and “What changes in MoE?”
+
+Your final response must lead with the actual live site URL and GitHub URL when available, then state:
+
+1. What was built and how to begin exploring it.
+2. Which exact models and which depth of coverage are implemented.
+3. Whether hosting is persistent or temporary, with the real expiry if temporary.
+4. Which data is verified architecture, derived math, simulated, or actual sampled weights/traces.
+5. The source commit, production verification, and relevant test results.
+6. Any specific remaining limitation or missing access step.
+
+If publication or GitHub push is blocked, give the completed local/build artifacts and exact remaining action. Do not call the whole task completed if a required external result has not been achieved. Conversely, do not hold finished work hostage to an optional data sample or an unrelated enhancement.
+
+======================================================================
+27. PRIMARY SOURCE STARTING POINTS
+======================================================================
+
+Use these as starting points; open them, verify them, and pin suitable revisions. They are not permission to copy copyrighted explanatory prose wholesale. Write original explanations and cite the claim-supporting source near the relevant content.
+
+CORE MODELS
+https://huggingface.co/Qwen/Qwen3-8B
+https://huggingface.co/Qwen/Qwen3-8B/raw/main/config.json
+https://huggingface.co/Qwen/Qwen3-30B-A3B
+https://huggingface.co/Qwen/Qwen3-30B-A3B/raw/main/config.json
+https://arxiv.org/html/2505.09388v1
+https://github.com/QwenLM/Qwen3
+https://raw.githubusercontent.com/huggingface/transformers/main/src/transformers/models/qwen3/modeling_qwen3.py
+https://raw.githubusercontent.com/huggingface/transformers/main/src/transformers/models/qwen3_moe/modeling_qwen3_moe.py
+
+NEWER HYBRID REFERENCE
+https://huggingface.co/Qwen/Qwen3.8-Flash-Next
+https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/config.json
+https://arxiv.org/html/2608.30320v1
+https://github.com/QwenLM/Qwen3.8-Flash-Next
+Find and verify the official model cards and reports for other named hybrid families before adding their specific claims.
+
+UNDERLYING OPERATIONS AND STORAGE
+https://arxiv.org/abs/1706.03762
+https://arxiv.org/abs/1910.07467
+https://arxiv.org/abs/2002.05202
+https://arxiv.org/abs/2104.09864
+https://arxiv.org/abs/2305.13245
+https://huggingface.co/docs/transformers/cache_explanation
+https://huggingface.co/docs/safetensors/index
+https://github.com/huggingface/safetensors
+https://docs.pytorch.org/docs/stable/generated/torch.nn.Linear.html
+https://docs.pytorch.org/docs/stable/generated/torch.nn.SiLU.html
+
+BUILD AND DEPLOYMENT
+https://vite.dev/guide/
+https://vite.dev/guide/static-deploy.html
+https://reactflow.dev/learn
+https://playwright.dev/docs/intro
+https://here.now/docs
+https://here.now/openapi.json
+https://github.com/heredotnow/skill
+https://raw.githubusercontent.com/heredotnow/skill/main/here-now/SKILL.md
+https://cli.github.com/manual/gh_auth_status
+https://cli.github.com/manual/gh_repo_create
+https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages
+https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
+
+CLAUDE EXECUTION ENVIRONMENT
+https://platform.claude.com/docs/en/models/overview
+https://code.claude.com/docs/en/model-config
+https://code.claude.com/docs/en/overview
+https://code.claude.com/docs/en/claude-code-on-the-web
+
+BEGIN EXECUTION
+Inspect the environment and supplied files, verify the core sources and current service instructions, then build Qwen Atlas through the full acceptance and deployment process above. Keep working until the complete authorized result is delivered or only an explicitly identified external-access blocker remains.

@@ -1,0 +1,22 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+.vite/
+*.log
+# generated at build time from git (never committed, avoids hash self-reference)
+src/generated/build-info.json
+# here.now private state and credentials: NEVER commit or deploy
+.herenow/
+**/.herenow/state.json
+.herenow-credentials
+credentials
+# local secrets
+.env
+.env.*
+!.env.example
+# local Claude Code settings
+.claude/settings.local.json
+# private deployment state (claim tokens etc.)
+deploy/private/

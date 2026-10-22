@@ -1,0 +1,461 @@
+{
+ "model": "Qwen/Qwen3-8B",
+ "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+ "retrieved": "2026-10-22",
+ "method": "HTTP Range reads of safetensors length prefix + JSON header only",
+ "shards": [
+  {
+   "file": "model-00001-of-00005.safetensors",
+   "headerBytes": 9328,
+   "metadata": {
+    "format": "pt"
+   },
+   "tensors": 81
+  },
+  {
+   "file": "model-00002-of-00005.safetensors",
+   "headerBytes": 13144,
+   "metadata": {
+    "format": "pt"
+   },
+   "tensors": 114
+  },
+  {
+   "file": "model-00003-of-00005.safetensors",
+   "headerBytes": 12824,
+   "metadata": {
+    "format": "pt"
+   },
+   "tensors": 111
+  },
+  {
+   "file": "model-00004-of-00005.safetensors",
+   "headerBytes": 10600,
+   "metadata": {
+    "format": "pt"
+   },
+   "tensors": 92
+  },
+  {
+   "file": "model-00005-of-00005.safetensors",
+   "headerBytes": 120,
+   "metadata": {
+    "format": "pt"
+   },
+   "tensors": 1
+  }
+ ],
+ "tensorCount": 399,
+ "indexTensorCount": 399,
+ "indexTotalSize": 16381470720,
+ "headerTotalTensorBytes": 16381470720,
+ "headerTotalElements": 8190735360,
+ "indexMissingFromHeaders": [],
+ "indexShardMismatches": [],
+ "families": [
+  {
+   "family": "lm_head.weight",
+   "count": 1,
+   "dtype": [
+    "BF16"
+   ],
+   "shapes": [
+    [
+     151936,
+     4096
+    ]
+   ],
+   "elements": 622329856,
+   "shards": [
+    "model-00005-of-00005.safetensors"
+   ]
+  },
+  {
+   "family": "model.embed_tokens.weight",
+   "count": 1,
+   "dtype": [
+    "BF16"
+   ],
+   "shapes": [
+    [
+     151936,
+     4096
+    ]
+   ],
+   "elements": 622329856,
+   "shards": [
+    "model-00001-of-00005.safetensors"
+   ]
+  },
+  {
+   "family": "model.layers.{i}.input_layernorm.weight",
+   "count": 36,
+   "dtype": [
+    "BF16"
+   ],
+   "shapes": [
+    [
+     4096
+    ]
+   ],
+   "elements": 147456,
+   "shards": [
+    "model-00001-of-00005.safetensors",
+    "model-00002-of-00005.safetensors",
+    "model-00003-of-00005.safetensors",
+    "model-00004-of-00005.safetensors"
+   ]
+  },
+  {
+   "family": "model.layers.{i}.mlp.down_proj.weight",
+   "count": 36,
+   "dtype": [
+    "BF16"
+   ],
+   "shapes": [
+    [
+     4096,
+     12288
+    ]
+   ],
+   "elements": 1811939328,
+   "shards": [
+    "model-00001-of-00005.safetensors",
+    "model-00002-of-00005.safetensors",
+    "model-00003-of-00005.safetensors",
+    "model-00004-of-00005.safetensors"
+   ]
+  },
+  {
+   "family": "model.layers.{i}.mlp.gate_proj.weight",
+   "count": 36,
+   "dtype": [
+    "BF16"
+   ],
+   "shapes": [
+    [
+     12288,
+     4096
+    ]
+   ],
+   "elements": 1811939328,
+   "shards": [
+    "model-00001-of-00005.safetensors",
+    "model-00002-of-00005.safetensors",
+    "model-00003-of-00005.safetensors",
+    "model-00004-of-00005.safetensors"
+   ]
+  },
+  {
+   "family": "model.layers.{i}.mlp.up_proj.weight",
+   "count": 36,
+   "dtype": [
+    "BF16"
+   ],
+   "shapes": [
+    [
+     12288,
+     4096
+    ]
+   ],
+   "elements": 1811939328,
+   "shards": [
+    "model-00001-of-00005.safetensors",
+    "model-00002-of-00005.safetensors",
+    "model-00003-of-00005.safetensors",
+    "model-00004-of-00005.safetensors"
+   ]
+  },
+  {
+   "family": "model.layers.{i}.post_attention_layernorm.weight",
+   "count": 36,
+   "dtype": [
+    "BF16"
+   ],
+   "shapes": [
+    [
+     4096
+    ]
+   ],
+   "elements": 147456,
+   "shards": [
+    "model-00001-of-00005.safetensors",
+    "model-00002-of-00005.safetensors",
+    "model-00003-of-00005.safetensors",
+    "model-00004-of-00005.safetensors"
+   ]
+  },
+  {
+   "family": "model.layers.{i}.self_attn.k_norm.weight",
+   "count": 36,
+   "dtype": [
+    "BF16"
+   ],
+   "shapes": [
+    [
+     128
+    ]
+   ],
+   "elements": 4608,
+   "shards": [
+    "model-00001-of-00005.safetensors",
+    "model-00002-of-00005.safetensors",
+    "model-00003-of-00005.safetensors",
+    "model-00004-of-00005.safetensors"
+   ]
+  },
+  {
+   "family": "model.layers.{i}.self_attn.k_proj.weight",
+   "count": 36,
+   "dtype": [
+    "BF16"
+   ],
+   "shapes": [
+    [
+     1024,
+     4096
+    ]
+   ],
+   "elements": 150994944,
+   "shards": [
+    "model-00001-of-00005.safetensors",
+    "model-00002-of-00005.safetensors",
+    "model-00003-of-00005.safetensors",
+    "model-00004-of-00005.safetensors"
+   ]
+  },
+  {
+   "family": "model.layers.{i}.self_attn.o_proj.weight",
+   "count": 36,
+   "dtype": [
+    "BF16"
+   ],
+   "shapes": [
+    [
+     4096,
+     4096
+    ]
+   ],
+   "elements": 603979776,
+   "shards": [
+    "model-00001-of-00005.safetensors",
+    "model-00002-of-00005.safetensors",
+    "model-00003-of-00005.safetensors",
+    "model-00004-of-00005.safetensors"
+   ]
+  },
+  {
+   "family": "model.layers.{i}.self_attn.q_norm.weight",
+   "count": 36,
+   "dtype": [
+    "BF16"
+   ],
+   "shapes": [
+    [
+     128
+    ]
+   ],
+   "elements": 4608,
+   "shards": [
+    "model-00001-of-00005.safetensors",
+    "model-00002-of-00005.safetensors",
+    "model-00003-of-00005.safetensors",
+    "model-00004-of-00005.safetensors"
+   ]
+  },
+  {
+   "family": "model.layers.{i}.self_attn.q_proj.weight",
+   "count": 36,
+   "dtype": [
+    "BF16"
+   ],
+   "shapes": [
+    [
+     4096,
+     4096
+    ]
+   ],
+   "elements": 603979776,
+   "shards": [
+    "model-00001-of-00005.safetensors",
+    "model-00002-of-00005.safetensors",
+    "model-00003-of-00005.safetensors",
+    "model-00004-of-00005.safetensors"
+   ]
+  },
+  {
+   "family": "model.layers.{i}.self_attn.v_proj.weight",
+   "count": 36,
+   "dtype": [
+    "BF16"
+   ],
+   "shapes": [
+    [
+     1024,
+     4096
+    ]
+   ],
+   "elements": 150994944,
+   "shards": [
+    "model-00001-of-00005.safetensors",
+    "model-00002-of-00005.safetensors",
+    "model-00003-of-00005.safetensors",
+    "model-00004-of-00005.safetensors"
+   ]
+  },
+  {
+   "family": "model.norm.weight",
+   "count": 1,
+   "dtype": [
+    "BF16"
+   ],
+   "shapes": [
+    [
+     4096
+    ]
+   ],
+   "elements": 4096,
+   "shards": [
+    "model-00004-of-00005.safetensors"
+   ]
+  }
+ ],
+ "layerShards": {
+  "0": [
+   1
+  ],
+  "1": [
+   1
+  ],
+  "2": [
+   1
+  ],
+  "3": [
+   1
+  ],
+  "4": [
+   1
+  ],
+  "5": [
+   1
+  ],
+  "6": [
+   1
+  ],
+  "7": [
+   1,
+   2
+  ],
+  "8": [
+   2
+  ],
+  "9": [
+   2
+  ],
+  "10": [
+   2
+  ],
+  "11": [
+   2
+  ],
+  "12": [
+   2
+  ],
+  "13": [
+   2
+  ],
+  "14": [
+   2
+  ],
+  "15": [
+   2
+  ],
+  "16": [
+   2
+  ],
+  "17": [
+   2,
+   3
+  ],
+  "18": [
+   3
+  ],
+  "19": [
+   3
+  ],
+  "20": [
+   3
+  ],
+  "21": [
+   3
+  ],
+  "22": [
+   3
+  ],
+  "23": [
+   3
+  ],
+  "24": [
+   3
+  ],
+  "25": [
+   3
+  ],
+  "26": [
+   3
+  ],
+  "27": [
+   3,
+   4
+  ],
+  "28": [
+   4
+  ],
+  "29": [
+   4
+  ],
+  "30": [
+   4
+  ],
+  "31": [
+   4
+  ],
+  "32": [
+   4
+  ],
+  "33": [
+   4
+  ],
+  "34": [
+   4
+  ],
+  "35": [
+   4
+  ]
+ },
+ "nonLayerTensors": {
+  "model.embed_tokens.weight": {
+   "shard": "model-00001-of-00005.safetensors",
+   "dtype": "BF16",
+   "shape": [
+    151936,
+    4096
+   ]
+  },
+  "model.norm.weight": {
+   "shard": "model-00004-of-00005.safetensors",
+   "dtype": "BF16",
+   "shape": [
+    4096
+   ]
+  },
+  "lm_head.weight": {
+   "shard": "model-00005-of-00005.safetensors",
+   "dtype": "BF16",
+   "shape": [
+    151936,
+    4096
+   ]
+  }
+ }
+}
