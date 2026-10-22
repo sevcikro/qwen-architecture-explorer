@@ -7,7 +7,7 @@
 | TypeScript `tsc --noEmit` (strict) | 0 errors |
 | Unit tests (`npx vitest run`) | 57 / 57 passed |
 | Browser tests (`npx playwright test`, Chromium; desktop 1366×860 and Pixel 7) against the production build | 33 passed, 3 skipped (device-specific by design) |
-| Same browser suite against the live here.now URL | see `deploy/DEPLOYMENT.md` |
+| Same browser suite against the live here.now URL (https://happy-bamboo-w7dk.here.now/) | 33 passed, 3 skipped |
 
 ### What the unit tests establish
 

@@ -15,7 +15,7 @@ Execution environment: Claude Code (desktop, Windows 11), model Claude Opus 5.5 
 | E. Catalog, sourced explanations, family map, hybrid profiles, real samples | done |
 | F. Polish, mobile/keyboard, exports, error states | done |
 | G. Production build + acceptance checks | done (see docs/verification.md) |
-| H. GitHub push, here.now deploy, live verification | in progress — see deploy/DEPLOYMENT.md |
+| H. GitHub push, here.now deploy, live verification | done — see deploy/DEPLOYMENT.md |
 
 ## Verification (latest local run)
 
@@ -42,9 +42,16 @@ Execution environment: Claude Code (desktop, Windows 11), model Claude Opus 5.5 
 - Extraction script rounded 1-D sample values to 8 decimals despite claiming exact widening → fixed and re-extracted (hashes unchanged).
 - Phone explorer toolbar consumed half the screen → single scrollable row.
 
-## Remaining
+## Delivery
 
-- Push to GitHub, publish to here.now, run the e2e suite against the live URL, record results.
+- GitHub (private): https://github.com/sevcikro/qwen-architecture-explorer, branch `main`.
+- Live site (permanent): https://happy-bamboo-w7dk.here.now/ , built from commit 8bd039119331.
+- Live e2e: 33 passed, 3 skipped by design.
+
+## Remaining / optional
+
+- Optional: real samples for more tensors or blocks (re-run the extraction script with more `SAMPLE_TILES`).
+- Optional: header-level parameter breakdowns for Qwen3-Next and Qwen3.5.
 
 ## Blockers
 
