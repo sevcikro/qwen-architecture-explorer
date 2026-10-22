@@ -5,10 +5,14 @@
 | Host | here.now (authenticated publish, personal account) |
 | Live URL | https://happy-bamboo-w7dk.here.now/ |
 | Persistence | permanent (provider: `persistence=permanent`, `expiresAt: null`, status `active`) |
-| Live version id | 01M5J4TWC77M9HKBAQJAC48VMD (release 1.1.0; earlier versions 01M5HSKMM7EH3H6PFAK7ES10T2, 01M5HS1AS4170MV2CMMVDW15ZG) |
-| Deployed source commit | 4b8088861b9e0bba56e8f1483b1e0c81bebb4f2e — release v1.1.0 (embedded in the bundle, clean tree) |
-| Published directory | `dist/` only (80 files), SPA routing enabled |
+| Live version id | 01M5JRPDPQXV5JW1EBN4NHYTZM (release 1.2.0; earlier versions 01M5J4TWC77M9HKBAQJAC48VMD = 1.1.0, 01M5HSKMM7EH3H6PFAK7ES10T2, 01M5HS1AS4170MV2CMMVDW15ZG) |
+| Deployed source commit | 851ede1bf2ad4c31a97f23f8749be18bead86681 — release v1.2.0 (embedded in the bundle, clean tree) |
+| Published directory | `dist/` only, SPA routing enabled |
 | Published | 2026-10-22 |
+
+Live checks for v1.2.0 (2026-10-22): `E2E_BASE_URL=https://happy-bamboo-w7dk.here.now npx playwright test` → 53 passed, 5 skipped by design
+(desktop + Pixel 7: all 27 chapters, course extras, Slovak mode, the site-wide QA sweep in both languages and the axe accessibility audit);
+the live bundle contains commit 851ede1bf2ad; `/.herenow/state.json` returns 404; an SPA deep path and `/data/journey-qwen3-0.6b.json` return 200.
 
 Live checks for v1.1.0 (2026-10-22): `E2E_BASE_URL=https://happy-bamboo-w7dk.here.now npx playwright test` → 41 passed, 3 skipped by design (incl. all 14 chapters and Slovak mode);
 `/`, a deep path (SPA fallback) and `/data/*.json` return 200; `/.herenow/state.json` returns 404; the live JS bundle contains
