@@ -2,6 +2,7 @@ import katex from 'katex';
 import { useId, useMemo, type ReactNode } from 'react';
 import { EVIDENCE_META, type EvidenceClass } from '../evidence/types';
 import { sourceById } from '../evidence/sources';
+import { useLang } from '../i18n/i18n';
 
 // ---------- number formatting ----------
 export const fmtInt = (n: number) => n.toLocaleString('en-US');
@@ -18,41 +19,45 @@ export const shapeStr = (s: number[]) => `[${s.map(fmtInt).join(', ')}]`;
 // ---------- evidence ----------
 export function Evidence({ kind, title }: { kind: EvidenceClass; title?: string }) {
   const m = EVIDENCE_META[kind];
+  const { t, lang } = useLang();
   return (
-    <span className={`ev ev-${kind}`} title={title ?? m.description} data-evidence={kind}>
+    <span className={`ev ev-${kind}`} title={title && lang === 'en' ? title : t(`evd_${kind}`)} data-evidence={kind}>
       <span className="g" aria-hidden="true">{m.glyph}</span>
-      {m.short}
+      {t(`ev_${kind}`)}
     </span>
   );
 }
 
 export function SimBanner({ children }: { children?: ReactNode }) {
+  const { t } = useLang();
   return (
     <div className="banner-sim" role="note">
       <Evidence kind="simulation" />
-      <span><strong>Illustrative simulation.</strong> {children ?? 'Toy simulator with seeded synthetic weights. Not an observed Qwen run.'}</span>
+      <span><strong>{t('sim_banner')}</strong> {children ?? t('sim_default')}</span>
     </div>
   );
 }
 
 export function EvidenceLegend() {
+  const { t } = useLang();
   return (
     <div className="legend" aria-label="Evidence classes">
       {(Object.keys(EVIDENCE_META) as EvidenceClass[]).map((k) => (
-        <span key={k}><Evidence kind={k} /> <span className="sr-only">{EVIDENCE_META[k].description}</span></span>
+        <span key={k}><Evidence kind={k} /> <span className="sr-only">{t(`evd_${k}`)}</span></span>
       ))}
     </div>
   );
 }
 
 export function RoleLegend() {
+  const { t } = useLang();
   return (
     <div className="legend" aria-label="Diagram legend">
-      <span><i className="sw param" aria-hidden="true" /> Learned parameters (stored weights)</span>
-      <span><i className="sw norm" aria-hidden="true" /> Normalization (learned gain)</span>
-      <span><i className="sw act" aria-hidden="true" /> Runtime activations</span>
-      <span><i className="sw state" aria-hidden="true" /> Cache / recurrent state</span>
-      <span><i className="sw op" aria-hidden="true" /> Stateless operation (no weights)</span>
+      <span><i className="sw param" aria-hidden="true" /> {t('lg_param')}</span>
+      <span><i className="sw norm" aria-hidden="true" /> {t('lg_norm')}</span>
+      <span><i className="sw act" aria-hidden="true" /> {t('lg_act')}</span>
+      <span><i className="sw state" aria-hidden="true" /> {t('lg_state')}</span>
+      <span><i className="sw op" aria-hidden="true" /> {t('lg_op')}</span>
     </div>
   );
 }

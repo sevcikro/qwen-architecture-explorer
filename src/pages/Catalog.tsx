@@ -5,6 +5,7 @@ import { Evidence, Section, Select, fmtInt, shapeStr } from '../components/ui';
 import { fileOffset, useCatalog, useOffsets } from '../data/data';
 import { explorerHref, type Route } from '../state/route';
 import { QWEN3_8_FLASH_NEXT } from '../models/hybrid';
+import { EnglishOnlyNotice } from '../i18n/i18n';
 
 interface Row { f: TensorFamily; layer?: number; expert?: number; name: string }
 
@@ -56,6 +57,7 @@ export default function Catalog({ route }: { route: Route }) {
   return (
     <div className="page wide">
       <h1>Tensor catalog</h1>
+      <EnglishOnlyNotice />
       <p className="muted">Every learned tensor of the two reference checkpoints, expanded over all block and expert indices (virtualized: only the visible rows are rendered). Names, shapes and dtypes come from the pinned safetensors headers; file byte offsets are computed from them.</p>
       <div className="row">
         <Select label="Model" value={p.id} onChange={(id) => { setP(CORE_PROFILES.find((x) => x.id === id)!); setFam('all'); setLayer(null); setTop(0); box.current?.scrollTo(0, 0); }} options={CORE_PROFILES.map((x) => ({ value: x.id, label: x.name }))} />

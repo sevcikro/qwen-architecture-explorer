@@ -3,6 +3,7 @@ import { CORE_PROFILES, type CoreProfile } from '../models/profiles';
 import { accounting, familyParams, tensorFamilies, type TensorFamily } from '../models/shapes';
 import { Cite, Evidence, ExportButton, Section, Select, fmtB, fmtInt, shapeStr } from '../components/ui';
 import { explorerHref, type Route } from '../state/route';
+import { EnglishOnlyNotice, useLang } from '../i18n/i18n';
 
 interface Seg { id: string; label: string; value: number; color: string; fams: TensorFamily[]; formula: string }
 
@@ -73,14 +74,17 @@ export default function Parameters({ route }: { route: Route }) {
   const segs = segments(p);
   const [sel, setSel] = useState<string>(segs[0].id);
   const S = segs.find((x) => x.id === sel) ?? segs[0];
+  const { lang } = useLang();
+  const T = (en: string, sk: string) => (lang === 'sk' ? sk : en);
   const rects = squarify(segs.map((s) => s.value), 0, 0, 100, 100);
   const a = accounting(p);
   return (
     <div className="page">
-      <h1>Where are the parameters?</h1>
+      <h1>{T('Where are the parameters?', 'Kde sú parametre?')}</h1>
+      <EnglishOnlyNotice />
       <div className="callout answer">
-        The learned parameters are the stored numbers in these matrices and vectors. The changing highlighted values flowing between modules are activations.{' '}
-        <a href={explorerHref({ m: p.id, lv: 0, b: 0, t: 'q_proj', r: 0, c: 0 })}>Show me one actual parameter →</a>
+        {T('The learned parameters are the stored numbers in these matrices and vectors. The changing highlighted values flowing between modules are activations.', 'Naučené parametre sú uložené čísla v týchto maticiach a vektoroch. Meniace sa zvýraznené hodnoty, ktoré tečú medzi modulmi, sú aktivácie.')}{' '}
+        <a href={explorerHref({ m: p.id, lv: 0, b: 0, t: 'q_proj', r: 0, c: 0 })}>{T('Show me one actual parameter →', 'Ukážte mi jeden skutočný parameter →')}</a>
       </div>
       <Select label="Model" value={p.id} onChange={(id) => { const n = CORE_PROFILES.find((x) => x.id === id)!; setP(n); setSel(segments(n)[0].id); }} options={CORE_PROFILES.map((x) => ({ value: x.id, label: x.name }))} />
       <div className="grid2" style={{ marginTop: 12 }}>

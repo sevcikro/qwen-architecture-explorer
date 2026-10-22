@@ -28,6 +28,8 @@ EXAMPLES = [
     {"id": "raw-capital", "kind": "raw", "text": "The capital of France is"},
     {"id": "raw-weights", "kind": "raw", "text": "Where are the weights stored?"},
     {"id": "raw-czech", "kind": "raw", "text": "Kde jsou uloženy váhy modelu?"},
+    {"id": "raw-slovak", "kind": "raw", "text": "Kde sú uložené váhy modelu?"},
+    {"id": "raw-slovak-2", "kind": "raw", "text": "Jazykový model predpovedá ďalší token."},
     {
         "id": "chat-nothink",
         "kind": "chat",
@@ -86,6 +88,7 @@ def main() -> int:
                 "ids": enc.ids,
                 "tokens": enc.tokens,
                 "decodedPieces": pieces,
+                "offsets": [list(o) for o in enc.offsets],
                 "special": [i in added for i in enc.ids],
             }
         )

@@ -36,6 +36,7 @@ export const TokExampleSchema = z.object({
   ids: z.array(z.number().int()),
   tokens: z.array(z.string()),
   decodedPieces: z.array(z.string()),
+  offsets: z.array(z.tuple([z.number().int(), z.number().int()])).optional(),
   special: z.array(z.boolean()),
 });
 export const TokFileSchema = z.object({

@@ -3,6 +3,7 @@ import { SOURCES } from '../evidence/sources';
 import { CLAIMS } from '../evidence/claims';
 import { EVIDENCE_META } from '../evidence/types';
 import { Evidence, EvidenceLegend, ExportButton } from '../components/ui';
+import { EnglishOnlyNotice } from '../i18n/i18n';
 
 export default function Sources() {
   const [q, setQ] = useState('');
@@ -11,6 +12,7 @@ export default function Sources() {
   return (
     <div className="page wide">
       <h1>Sources and evidence</h1>
+      <EnglishOnlyNotice />
       <p className="muted">Every factual statement on this site is backed by one of the primary sources below, pinned to an immutable revision where the host provides one (retrieved 2026-10-22). Secondary articles were not used as evidence.</p>
       <EvidenceLegend />
       <ul style={{ paddingLeft: 18, fontSize: '0.9rem' }}>

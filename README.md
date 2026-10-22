@@ -6,6 +6,9 @@ An independent, source-backed, zoomable guide to how **Qwen3-8B** (dense) and **
 
 ## What is in it
 
+- **Learn** (new in 1.1): 14 chapters for complete beginners, from one weight and one neuron to the whole model, generation, training and hardware. Each chapter has a plain explanation, an everyday comparison, a small interactive experiment (14 in total), the real Qwen3 numbers and a quick check. Progress is remembered in the browser.
+- **English and Slovak** (new in 1.1): switch with the EN / SK buttons in the header, or share a link with `?lang=sk` (e.g. `#/learn/neuron?lang=sk`). The chapters, home page, navigation, tours, glossary, explorer controls, inspector headings, lab overview and evidence labels are fully translated; the detailed technical bodies of the labs, catalog and sources pages are English and say so in Slovak mode.
+
 - **Explorer** with semantic levels 0–6: scalar → unit / gated channel → matrix tile → module → decoder block → full model → execution & learning. Viewport zoom (wheel, pinch, buttons, `+`/`-`/`0`) reveals more detail; opening a deeper level is a separate action (double-click / Enter / inspector links). Breadcrumbs, "back to containing level", outline/search tree, deep links, view export.
 - **12 laboratories** sharing one seeded toy simulator: weight, unit, matrix, attention, RoPE, dense-vs-MoE, router, layer traversal, prefill/decode/cache, sampling, training, memory.
 - **Parameter inventory** (treemap + exact accounting), **tensor catalog** (all 399 / 18,867 tensors, virtualized, with shard and file byte offset), **real tokenizer outputs**, **family map**, **hybrid profiles**, **4 guided tours**, **sources & claim registry**, **glossary**.
@@ -21,10 +24,10 @@ npm run dev            # http://localhost:5173
 ## Tests and build
 
 ```bash
-npx vitest run         # 57 unit tests: accounting, operators, toy engine, cache equivalence, gradients, data provenance
+npx vitest run         # 63 unit tests: accounting, operators, toy engine, cache equivalence, gradients, data provenance, translation completeness
 npm run build          # writes src/generated/build-info.json from git, type-checks, builds dist/
 npx playwright install chromium
-npm run test:e2e       # Playwright (desktop + Pixel 7) against `vite preview` of dist/
+npm run test:e2e       # 41 Playwright tests (desktop + Pixel 7) against `vite preview` of dist/, incl. every chapter and Slovak mode
 E2E_BASE_URL=https://<live-site> npx playwright test   # same suite against a deployed site
 ```
 
@@ -50,7 +53,9 @@ src/evidence/   source registry, claim registry, evidence classes
 src/explorer/   semantic-zoom canvas, graph builders, deep views, inspector, outline
 src/labs/       the 12 laboratories
 src/pages/      parameters, catalog, pipeline, family, hybrid, tours, sources, glossary, about
-src/content/    tours and glossary
+src/content/    chapters (bilingual course), tours and glossary
+src/learn/      the 14 chapter experiments
+src/i18n/       language provider, interface dictionary (EN + SK, type-checked)
 src/state/      hash routing + validated deep links, shared toy-simulator store
 src/data/       lazy, schema-validated loaders for public/data
 scripts/        extraction, tokenization, build-info

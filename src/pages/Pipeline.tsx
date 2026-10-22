@@ -6,6 +6,7 @@ import { useToy } from '../state/toyStore';
 import { stableSoftmax } from '../math/ops';
 import { TOY_VOCAB } from '../math/toy';
 import { explorerHref } from '../state/route';
+import { EnglishOnlyNotice } from '../i18n/i18n';
 
 export default function Pipeline() {
   const tok = useTokenizerExamples();
@@ -19,6 +20,7 @@ export default function Pipeline() {
   return (
     <div className="page">
       <h1>Tokens, the forward pass and generation</h1>
+      <EnglishOnlyNotice />
       <ol className="muted" style={{ paddingLeft: 20 }}>
         <li>messages → model-specific chat template → text</li>
         <li>text → tokenizer → token ids</li>
@@ -58,7 +60,7 @@ export default function Pipeline() {
                 <dt>kind</dt><dd>{e.special[i] ? 'added token (control / template token)' : 'regular vocabulary token'}</dd>
                 <dt>embedding row</dt><dd><a href={explorerHref({ m: 'qwen3-8b', lv: 1, t: 'embed_tokens', r: e.ids[i] })}>model.embed_tokens.weight[{e.ids[i]}, :]</a> (4,096 learned numbers; values not loaded)</dd>
               </dl>
-              {e.id === 'raw-czech' && <p className="faint" style={{ fontSize: '0.85rem' }}>Byte-level BPE can split a multi-byte character such as “ž” or “á” across pieces; a piece decoded alone may then show a replacement character. Tokens are not words or characters.</p>}
+              {e.decodedPieces.some((x) => x.includes('�')) && <p className="faint" style={{ fontSize: '0.85rem' }}>Byte-level BPE can split one multi-byte character across tokens: here “ď” (2 bytes in UTF-8) becomes two tokens, and each of them decoded alone shows a replacement character (shown as “�”). Tokens are not words or characters.</p>}
               <h3>Vocabulary facts</h3>
               <ul style={{ paddingLeft: 18 }}>
                 <li>{fmtInt(d.baseVocabSize)} regular tokens + {d.addedTokens.length} added tokens (ids {d.addedTokens[0].id}–{d.addedTokens[d.addedTokens.length - 1].id}) = <strong>{fmtInt(d.vocabWithAddedTokens)}</strong>, matching the report's 151,669.<Cite ids={['q8-tokenizer', 'qwen3-report']} /></li>

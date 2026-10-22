@@ -1,7 +1,7 @@
 {
   "name": "qwen-architecture-explorer",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Qwen Atlas: an independent, source-backed, zoomable guide to Qwen dense and MoE language models.",
   "type": "module",
   "license": "MIT",

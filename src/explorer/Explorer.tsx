@@ -9,7 +9,7 @@ import { blockGraph, moduleGraph, modelGraph, type NodeSpec } from './graph';
 import { ExecutionView, MatrixView, ScalarView, UnitView } from './DeepViews';
 import { Inspector } from './Inspector';
 import { Outline } from './Outline';
-import { COVERAGE_LABEL } from '../models/hybrid';
+import { EnglishOnlyNotice, useLang } from '../i18n/i18n';
 
 const MOD_LABEL: Record<string, string> = { embedding: 'Embedding', attn_norm: 'RMSNorm (attn)', attention: 'Attention', residual1: 'Residual +', ffn_norm: 'RMSNorm (FFN)', ffn: 'SwiGLU FFN', moe: 'MoE', residual2: 'Residual +', final_norm: 'Final norm', lm_head: 'LM head', sampling: 'Sampling' };
 
@@ -21,6 +21,7 @@ export function Explorer({ route, nav }: { route: Route; nav: (href: string, rep
   const [outline, setOutline] = useState(false);
   const [sheet, setSheet] = useState(false);
   const [notice, setNotice] = useState<string[]>([]);
+  const { t } = useLang();
 
   useEffect(() => setFocus(undefined), [s.lv, s.m, s.b, s.mod]);
   useEffect(() => {
@@ -39,7 +40,8 @@ export function Explorer({ route, nav }: { route: Route; nav: (href: string, rep
   const openNode = (n: NodeSpec) => n.open && (setNotice([]), nav(explorerHref({ ...n.open, m: p.id })));
   const switchModel = (m: string) => {
     const { state, warnings: w } = normalizeExplorer({ ...s, m });
-    setNotice(w.length ? [`Switched to ${ALL_CORE.find((x) => x.id === m)?.name}. Selection translated:`, ...w] : [`Switched to ${ALL_CORE.find((x) => x.id === m)?.name}; selection kept where it exists in the new model. Values and activations shown belong to the new model only.`]);
+    const nm = ALL_CORE.find((x) => x.id === m)?.name;
+    setNotice(w.length ? [`${t('ex_switched')} ${nm}. ${t('ex_translated')}`, ...w] : [`${t('ex_switched')} ${nm}; ${t('ex_switched_kept')}`]);
     nav(explorerHref(state));
   };
 
@@ -85,14 +87,14 @@ export function Explorer({ route, nav }: { route: Route; nav: (href: string, rep
   return (
     <div className="explorer">
       <div className="ex-bar">
-        <Select inline label="Model" value={p.id} onChange={switchModel} options={ALL_CORE.map((x) => ({ value: x.id, label: x.status === 'toy' ? `${x.name}` : `${x.name} (verified structure)` }))} />
-        <span className="coverage" title="Coverage">{p.status === 'toy' ? 'Toy simulator · every value computed' : COVERAGE_LABEL['full-toy']}</span>
-        <div className="levels" role="toolbar" aria-label="Semantic level">
+        <Select inline label={t('ex_model')} value={p.id} onChange={switchModel} options={ALL_CORE.map((x) => ({ value: x.id, label: x.status === 'toy' ? `${x.name}` : `${x.name} (${t('ex_verified_structure')})` }))} />
+        <span className="coverage">{p.status === 'toy' ? t('ex_cov_toy') : t('ex_cov_full')}</span>
+        <div className="levels" role="toolbar" aria-label={t('ex_level_bar')}>
           {[...LEVELS].reverse().map((L) => (
-            <button key={L.lv} className="small" aria-pressed={s.lv === L.lv} disabled={!levelAvailable(L.lv)} title={levelAvailable(L.lv) ? L.long : `${L.long}: select a tensor first`} onClick={() => toLevel(L.lv)}>{L.lv} {L.name}</button>
+            <button key={L.lv} className="small" aria-pressed={s.lv === L.lv} disabled={!levelAvailable(L.lv)} title={levelAvailable(L.lv) ? L.long : `${L.long}: ${t('ex_need_tensor')}`} onClick={() => toLevel(L.lv)}>{L.lv} {t(`lv${L.lv}` as 'lv0')}</button>
           ))}
         </div>
-        <nav className="crumbs" aria-label="Breadcrumb">
+        <nav className="crumbs" aria-label={t('ex_breadcrumb')}>
           {crumbs.map((c, i) => (
             <span key={i} className="row" style={{ gap: 2 }}>
               {i > 0 && <span className="sep" aria-hidden="true">›</span>}
@@ -101,21 +103,21 @@ export function Explorer({ route, nav }: { route: Route; nav: (href: string, rep
           ))}
         </nav>
         <span className="spacer" style={{ flex: 1 }} />
-        {parent && <button className="small" onClick={() => go(parent.to)} title="Back to containing module">↑ Back to containing level</button>}
-        {s.lv === 5 && <button className="small" aria-pressed={compressed} onClick={() => setCompressed(!compressed)}>{compressed ? 'Show all blocks' : 'Compress repeated blocks'}</button>}
-        <button className="small" aria-pressed={outline} onClick={() => setOutline(!outline)}>☰ Outline / search</button>
-        <button className="small" onClick={() => { navigator.clipboard?.writeText(window.location.href).then(() => setNotice(['Link to this exact view copied.']), () => setNotice([`Copy this link: ${window.location.href}`])); }}>🔗 Share view</button>
-        <ExportButton filename={`qwen-atlas-view-${p.id}.json`} label="Export view" data={() => ({
+        {parent && <button className="small" onClick={() => go(parent.to)}>{t('ex_back')}</button>}
+        {s.lv === 5 && <button className="small" aria-pressed={compressed} onClick={() => setCompressed(!compressed)}>{compressed ? t('ex_show_all') : t('ex_compress')}</button>}
+        <button className="small" aria-pressed={outline} onClick={() => setOutline(!outline)}>{t('ex_outline')}</button>
+        <button className="small" onClick={() => { navigator.clipboard?.writeText(window.location.href).then(() => setNotice([t('ex_copied')]), () => setNotice([`${t('ex_copy_this')} ${window.location.href}`])); }}>{t('ex_share')}</button>
+        <ExportButton filename={`qwen-atlas-view-${p.id}.json`} label={t('ex_export')} data={() => ({
           view: s, model: p.repo ?? p.name, revision: p.revision ?? null, status: p.status, tensor: fam ? tensorName(fam, s.b ?? 0, s.e ?? 0) : null, shape: fam?.shape ?? null,
           dtype: p.status === 'official' ? p.dtype : 'float64 (toy)', inspector: { title: info.title, evidence: info.evidence, params: info.params, sources: info.sources },
         })} />
-        <button className="small" onClick={() => { setCompressed(false); nav(explorerHref({ m: p.id, lv: 5 })); }} title="Reset to the full model">⟲ Reset</button>
+        <button className="small" onClick={() => { setCompressed(false); nav(explorerHref({ m: p.id, lv: 5 })); }} title={t('ex_reset_title')}>{t('ex_reset')}</button>
       </div>
       <div className="ex-stage">
         {notice.length > 0 && (
           <div className="callout warn" role="status" style={{ margin: 8 }}>
             {notice.map((n, i) => <div key={i}>{n}</div>)}
-            <button className="small ghost" onClick={() => setNotice([])}>dismiss</button>
+            <button className="small ghost" onClick={() => setNotice([])}>{t('ex_dismiss')}</button>
           </div>
         )}
         {outline && <Outline p={p} s={s} onClose={() => setOutline(false)} />}
@@ -127,6 +129,7 @@ export function Explorer({ route, nav }: { route: Route; nav: (href: string, rep
         )}
         {!graph && (
           <div className="ex-scroll">
+            <div className="page" style={{ paddingBottom: 0 }}><EnglishOnlyNotice /></div>
             {s.lv === 6 && <ExecutionView p={p} />}
             {fam && s.lv === 2 && <MatrixView key={`${p.id}${s.t}${s.b}${s.e}`} p={p} f={fam} s={s} go={go} />}
             {fam && s.lv === 1 && <UnitView p={p} f={fam} s={s} go={go} />}

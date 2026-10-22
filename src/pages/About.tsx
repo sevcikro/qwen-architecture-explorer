@@ -1,10 +1,12 @@
 import buildInfo from '../generated/build-info.json';
 import { Evidence } from '../components/ui';
+import { EnglishOnlyNotice } from '../i18n/i18n';
 
 export default function About() {
   return (
     <div className="page">
       <h1>About Qwen Atlas</h1>
+      <EnglishOnlyNotice />
       <div className="callout">Qwen Atlas is an <strong>independent</strong> educational project. It is not affiliated with, sponsored by or endorsed by Alibaba Cloud or the Qwen team. “Qwen” is used only to identify the models described. Model weights are not redistributed, apart from seven tiny tiles (16 × 16 values or fewer) of the Apache-2.0-licensed Qwen3-8B and Qwen3-30B-A3B checkpoints, shown with attribution and provenance.</div>
       <h2>What runs in your browser</h2>
       <ul style={{ paddingLeft: 18 }}>

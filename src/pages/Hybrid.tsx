@@ -4,6 +4,7 @@ import { Cite, Evidence, Section, SimBanner, Slider, Tex, VectorView, fmtB, fmtI
 import { gatedDeltaRule, gdnGate, gatedResidualToy, qsaSelect, toyGdnInputs } from '../math/hybridToy';
 import { sigmoid } from '../math/ops';
 import { deriveSeed, makeRng, nextNormal } from '../math/rng';
+import { EnglishOnlyNotice } from '../i18n/i18n';
 
 function LayerStrip({ h }: { h: HybridProfile }) {
   const w = 16;
@@ -130,6 +131,7 @@ export default function Hybrid({ id }: { id?: string }) {
     <div className="page">
       <nav className="row" style={{ marginBottom: 6 }}><a href="#/family">← Family map</a>{HYBRIDS.map((x) => <a key={x.id} href={`#/hybrid/${x.id}`} aria-current={x.id === h.id ? 'page' : undefined}>{x.name}</a>)}</nav>
       <h1>{h.name}</h1>
+      <EnglishOnlyNotice />
       <div className="badge-row" style={{ marginBottom: 8 }}>
         <span className="coverage">{COVERAGE_LABEL[h.coverage]}</span>
         {h.extraToys.length > 0 && <span className="coverage">+ toy analogues: {h.extraToys.join(', ')}</span>}

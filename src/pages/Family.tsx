@@ -1,10 +1,12 @@
 import { FAMILY, HYBRIDS, COVERAGE_LABEL } from '../models/hybrid';
 import { Cite, Evidence, Section } from '../components/ui';
+import { EnglishOnlyNotice } from '../i18n/i18n';
 
 export default function Family() {
   return (
     <div className="page">
       <h1>The Qwen family and newer hybrid architectures</h1>
+      <EnglishOnlyNotice />
       <p className="muted">Dates are the creation dates of the named Hugging Face repositories (Hub API), used as a consistent, checkable proxy for release order. Different model versions are kept separate: properties of the hybrid lines are never imported into the Qwen3 reference presets.<Cite ids={['hf-api']} /></p>
       <Section title="Timeline" badges={<Evidence kind="verified" />}>
         <svg viewBox="0 0 900 150" style={{ width: '100%', height: 'auto' }} role="img" aria-label="Timeline from Qwen 2023 to Qwen3.8-Flash-Next 2026, branching into ordinary decoders and hybrid models">

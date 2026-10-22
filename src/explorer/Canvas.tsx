@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react';
 import type { GraphSpec, NodeSpec } from './graph';
+import { useLang } from '../i18n/i18n';
 
 interface Xf { k: number; x: number; y: number }
 
@@ -14,6 +15,7 @@ export function GraphCanvas({ spec, selected, onSelect, onOpen, fitKey }: { spec
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const drag = useRef<{ x: number; y: number; moved: boolean; pinch?: number } | null>(null);
   const nodeRefs = useRef(new Map<string, SVGGElement>());
+  const { t } = useLang();
 
   const fit = useCallback(() => {
     const k = Math.min(size.w / spec.width, size.h / spec.height) * 0.96;
@@ -135,13 +137,13 @@ export function GraphCanvas({ spec, selected, onSelect, onOpen, fitKey }: { spec
           ))}
         </g>
       </svg>
-      <div className="zoom-ctl" role="toolbar" aria-label="Viewport zoom (does not change semantic level)">
-        <button aria-label="Zoom in" title="Zoom in (+)" onClick={() => zoomAt(1.3, size.w / 2, size.h / 2)}>+</button>
-        <button aria-label="Zoom out" title="Zoom out (−)" onClick={() => zoomAt(1 / 1.3, size.w / 2, size.h / 2)}>−</button>
-        <button aria-label="Fit view" title="Fit (0)" onClick={fit}>⤢</button>
+      <div className="zoom-ctl" role="toolbar" aria-label={t('zoom_bar')}>
+        <button aria-label={t('zoom_in')} title={`${t('zoom_in')} (+)`} onClick={() => zoomAt(1.3, size.w / 2, size.h / 2)}>+</button>
+        <button aria-label={t('zoom_out')} title={`${t('zoom_out')} (−)`} onClick={() => zoomAt(1 / 1.3, size.w / 2, size.h / 2)}>−</button>
+        <button aria-label={t('zoom_fit')} title={`${t('zoom_fit')} (0)`} onClick={fit}>⤢</button>
       </div>
       <div className="lod-hint" aria-live="polite">
-        Viewport {Math.round(k * 100)}% · {lodLines === 0 ? 'zoom in to reveal shapes and parameter counts' : lodLines === 1 ? 'showing shapes; zoom further for parameter counts' : lodLines === 2 ? 'showing counts; zoom further for checkpoint names' : 'full detail'} · double-click / Enter opens a deeper level
+        {t('viewport')} {Math.round(k * 100)}% · {t(`lod${lodLines}` as 'lod0')} · {t('lod_open')}
       </div>
     </div>
   );

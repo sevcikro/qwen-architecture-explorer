@@ -42,6 +42,12 @@ Execution environment: Claude Code (desktop, Windows 11), model Claude Opus 5.5 
 - Extraction script rounded 1-D sample values to 8 decimals despite claiming exact widening → fixed and re-extracted (hashes unchanged).
 - Phone explorer toolbar consumed half the screen → single scrollable row.
 
+## Release 1.1.0 (learning chapters + Slovak)
+
+- Done: 14 bilingual chapters with 14 experiments (`src/content/chapters.ts`, `src/learn/widgets.tsx`, `src/pages/Learn.tsx`), i18n system (`src/i18n/`), Slovak translation of chrome, home, tours, glossary, explorer controls, inspector headings, labs overview, evidence labels; English-only notice on detailed technical pages.
+- Verified locally: tsc 0 errors; 63/63 unit tests; 41 passed + 3 skipped (by design) browser tests; screenshots reviewed (desktop dark / phone light, both languages).
+- Not translated (explicitly flagged in Slovak mode): the detailed body text of the 12 labs, inspector descriptions, catalog, pipeline, family/hybrid, sources and about pages.
+
 ## Delivery
 
 - GitHub (private): https://github.com/sevcikro/qwen-architecture-explorer, branch `main`.
