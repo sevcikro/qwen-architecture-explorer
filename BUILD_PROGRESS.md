@@ -69,8 +69,9 @@ Execution environment: Claude Code (desktop, Windows 11), model Claude Opus 5.5 
 ## Delivery
 
 - GitHub (public since 1.2.0): https://github.com/sevcikro/qwen-architecture-explorer, branch `main`.
-- Live site (permanent): https://happy-bamboo-w7dk.here.now/ , release v1.2.0 built from commit 851ede1bf2ad (v1.1.0 was 4b8088861b9e).
+- Live site (permanent): https://happy-bamboo-w7dk.here.now/ , release v1.3.0 built from commit 26f3e500decd (v1.2.0: 851ede1bf2ad, v1.1.0: 4b8088861b9e).
 - Verification for 1.2.0: tsc 0 errors; 89/89 unit tests; 53 passed + 5 skipped by design browser tests locally and against the live site (incl. site-wide QA sweep and axe audit in both languages and themes).
+- Verification for 1.3.0: tsc 0 errors; 91/91 unit tests; 66 passed + 6 skipped by design browser tests locally and against the live site; live model exercised end to end on the live site (WebAssembly).
 
 ## Remaining / optional
 
