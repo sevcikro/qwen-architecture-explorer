@@ -20,3 +20,4 @@ credentials
 .claude/settings.local.json
 # private deployment state (claim tokens etc.)
 deploy/private/
+*.tmp.mjs
