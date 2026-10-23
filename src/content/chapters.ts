@@ -7,6 +7,8 @@ import type { WidgetId2 } from '../learn/widgets2';
 import type { FigureId } from '../learn/figures';
 import type { CodeId } from './code';
 import { EXTRA, NEW_CHAPTERS, PARTS } from './course';
+import { EXAM_CHAPTER, EXERCISES } from './exercises';
+import { CONTEXT, NETWORKS } from './course2';
 
 // ---------------------------------------------------------------------------
 // The "Learn" course: from one weight and one neuron to the whole model.
@@ -29,7 +31,12 @@ export type Block =
   | { k: 'quiz'; q: L10n; options: L10n[]; correct: number; explain: L10n }
   | { k: 'links'; items: { href: string; label: L10n }[] }
   | { k: 'figure'; f: FigureId; cap?: L10n }
-  | { k: 'code'; c: CodeId; t?: L10n };
+  | { k: 'code'; c: CodeId; t?: L10n }
+  | { k: 'exercise'; task: L10n; hint?: L10n; solution: L10n }
+  | { k: 'exam'; questions: ExamQuestion[] }
+  | { k: 'table'; head: L10n[]; rows: L10n[][]; cap?: L10n };
+
+export interface ExamQuestion { q: L10n; options: L10n[]; correct: number; explain: L10n; chapter: string }
 
 export interface Chapter { id: string; n: number; part?: number; title: L10n; summary: L10n; minutes: number; blocks: Block[] }
 
@@ -259,11 +266,11 @@ const BASE: Chapter[] = [
 
 // The course order: original chapters plus the v1.2 chapters, grouped into parts. Chapter numbers follow this order;
 // extra diagrams, experiments and code are inserted into the original chapters just before their quick check.
-const BY_ID = new Map<string, Chapter>([...BASE, ...NEW_CHAPTERS.map((c) => ({ ...c, n: 0 }))].map((c) => [c.id, c]));
+const BY_ID = new Map<string, Chapter>([...BASE, ...[...NEW_CHAPTERS, NETWORKS, CONTEXT, EXAM_CHAPTER].map((c) => ({ ...c, n: 0 }))].map((c) => [c.id, c]));
 export const CHAPTERS: Chapter[] = PARTS.flatMap((p) => p.chapters.map((id) => ({ id, part: p.n }))).map(({ id, part }, i) => {
   const c = BY_ID.get(id);
   if (!c) throw new Error(`course: unknown chapter ${id}`);
-  const extra = EXTRA[id] ?? [];
+  const extra = [...(EXTRA[id] ?? []), ...(EXERCISES[id] ?? [])];
   const qi = c.blocks.findIndex((x) => x.k === 'quiz');
   const blocks = extra.length ? [...c.blocks.slice(0, qi < 0 ? c.blocks.length : qi), ...extra, ...(qi < 0 ? [] : c.blocks.slice(qi))] : c.blocks;
   return { ...c, n: i + 1, part, blocks };

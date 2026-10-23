@@ -21,11 +21,11 @@ const KV30 = kvBytesPerToken(QWEN3_30B_A3B);
 export interface Part { n: number; title: L10n; summary: L10n; chapters: string[] }
 
 export const PARTS: Part[] = [
-  { n: 1, title: b('Foundations', 'Základy'), summary: b('Numbers, neurons, vectors and probabilities: everything a transformer is built from.', 'Čísla, neuróny, vektory a pravdepodobnosti: všetko, z čoho je transformer postavený.'), chapters: ['what', 'weight', 'neuron', 'matrix', 'vectors', 'probability'] },
+  { n: 1, title: b('Foundations', 'Základy'), summary: b('Numbers, neurons, vectors and probabilities: everything a transformer is built from.', 'Čísla, neuróny, vektory a pravdepodobnosti: všetko, z čoho je transformer postavený.'), chapters: ['what', 'weight', 'neuron', 'matrix', 'vectors', 'probability', 'networks'] },
   { n: 2, title: b('The building blocks of a transformer', 'Stavebné kamene transformera'), summary: b('Tokens, the residual stream, attention, positions, feed-forward networks and experts.', 'Tokeny, reziduálny prúd, pozornosť, pozície, dopredné siete a experti.'), chapters: ['tokens', 'residual', 'attention', 'heads', 'rope', 'ffn', 'moe', 'block'] },
-  { n: 3, title: b('The model in action', 'Model v akcii'), summary: b('Build a tiny transformer, generate text, use the K/V cache, and follow a chat message end to end.', 'Postavte malý transformer, generujte text, použite cache K/V a sledujte správu v chate od začiatku do konca.'), chapters: ['forward', 'generate', 'kvcache', 'journey', 'hf'] },
+  { n: 3, title: b('The model in action', 'Model v akcii'), summary: b('Build a tiny transformer, generate text, use the K/V cache, and follow a chat message end to end.', 'Postavte malý transformer, generujte text, použite cache K/V a sledujte správu v chate od začiatku do konca.'), chapters: ['forward', 'generate', 'kvcache', 'context', 'journey', 'hf'] },
   { n: 4, title: b('Learning', 'Učenie'), summary: b('Loss, gradients, backpropagation and how large language models are really trained.', 'Chyba, gradienty, spätné šírenie a ako sa veľké jazykové modely naozaj trénujú.'), chapters: ['learning', 'backprop', 'training-llm'] },
-  { n: 5, title: b('Practice and scale', 'Prax a škálovanie'), summary: b('Memory, hardware, serving many users, quantization, checkpoint files, newer designs and a one-page summary.', 'Pamäť, hardvér, obsluha mnohých používateľov, kvantizácia, súbory checkpointov, novšie návrhy a zhrnutie na jednej strane.'), chapters: ['hardware', 'serving', 'files', 'beyond', 'summary'] },
+  { n: 5, title: b('Practice and scale', 'Prax a škálovanie'), summary: b('Memory, hardware, serving many users, quantization, checkpoint files, newer designs and a one-page summary.', 'Pamäť, hardvér, obsluha mnohých používateľov, kvantizácia, súbory checkpointov, novšie návrhy a zhrnutie na jednej strane.'), chapters: ['hardware', 'serving', 'files', 'beyond', 'summary', 'exam'] },
 ];
 
 /** Extra diagrams, experiments and code inserted into the original chapters (before their quick check). */
@@ -227,7 +227,7 @@ export const NEW_CHAPTERS: Omit<Chapter, 'n'>[] = [
       ] },
       { k: 'key', t: b('A real model is the architecture of this course plus trained numbers. You can open it, print its pieces, and measure every intermediate value.', 'Skutočný model je architektúra z tohto kurzu plus natrénované čísla. Môžete ho otvoriť, vypísať jeho časti a zmerať každú medzihodnotu.') },
       { k: 'quiz', q: b('Qwen3-0.6B’s k_proj has shape [1024 × 1024] while q_proj is [2048 × 1024]. Why?', 'k_proj v Qwen3-0.6B má tvar [1024 × 1024], kým q_proj [2048 × 1024]. Prečo?'), options: [b('Keys are less important', 'Kľúče sú menej dôležité'), b('GQA: 8 K/V heads × 128 versus 16 query heads × 128', 'GQA: 8 hláv K/V × 128 oproti 16 hlavám dopytov × 128'), b('A bug in the checkpoint', 'Chyba v checkpointe')], correct: 1, explain: b('Two query heads share each K/V head, so K and V projections have half the outputs of Q.', 'Každú hlavu K/V zdieľajú dve hlavy dopytov, preto majú projekcie K a V polovicu výstupov oproti Q.') },
-      { k: 'links', items: [{ href: '#/trace', label: b('Interactive real run of Qwen3-0.6B', 'Interaktívny skutočný beh Qwen3-0.6B') }] },
+      { k: 'links', items: [{ href: '#/trace', label: b('Interactive real run of Qwen3-0.6B', 'Interaktívny skutočný beh Qwen3-0.6B') }, { href: '#/live', label: b('Run Qwen3-0.6B live in your browser', 'Spustiť Qwen3-0.6B naživo v prehliadači') }] },
     ],
   },
   {

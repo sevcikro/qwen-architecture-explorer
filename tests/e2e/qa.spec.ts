@@ -7,7 +7,7 @@ import { CHAPTERS } from '../../src/content/chapters';
 const LABS = ['weight', 'unit', 'matrix', 'attention', 'rope', 'compare', 'router', 'layers', 'cache', 'sampling', 'training', 'memory'];
 const ROUTES = [
   '/', '/#/learn', '/#/tours', '/#/labs', '/#/parameters', '/#/parameters?m=qwen3-30b-a3b', '/#/catalog', '/#/catalog?m=qwen3-30b-a3b', '/#/pipeline', '/#/trace',
-  '/#/family', '/#/hybrid/qwen3-next-80b-a3b', '/#/hybrid/qwen3.5-35b-a3b', '/#/hybrid/qwen3.8-flash-next', '/#/glossary', '/#/sources', '/#/about',
+  '/#/family', '/#/hybrid/qwen3-next-80b-a3b', '/#/hybrid/qwen3.5-35b-a3b', '/#/hybrid/qwen3.8-flash-next', '/#/glossary', '/#/sources', '/#/about', '/#/live', '/#/search?q=attention',
   ...[5, 4, 3, 2, 1, 0, 6].map((lv) => `/#/explore?m=qwen3-8b&lv=${lv}&b=0&t=q_proj&mod=attention&r=0&c=0`),
   '/#/explore?m=qwen3-30b-a3b&lv=3&b=0&mod=moe', '/#/explore?m=qwen3-30b-a3b&lv=2&b=0&t=expert_gate_proj&e=0',
   ...LABS.map((l) => `/#/labs/${l}`),
@@ -17,7 +17,8 @@ const ROUTES = [
 function watch(page: Page) {
   const problems: string[] = [];
   page.on('pageerror', (e) => problems.push(`pageerror: ${e.message}`));
-  page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') problems.push(`console ${m.type()}: ${m.text()}`); });
+  // "No available adapters." is Chrome reporting that the WebGPU probe of the live-model page found no GPU (expected in CI).
+  page.on('console', (m) => { if ((m.type() === 'error' || m.type() === 'warning') && m.text() !== 'No available adapters.') problems.push(`console ${m.type()}: ${m.text()}`); });
   page.on('response', (r) => { if (r.status() >= 400) problems.push(`http ${r.status()}: ${r.url()}`); });
   return problems;
 }
@@ -31,7 +32,7 @@ for (const lang of ['en', 'sk'] as const) {
     for (const r of ROUTES) {
       await page.goto(r);
       await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(120);
+      await page.waitForTimeout(r.includes('live') ? 600 : 120);
       const res = await page.evaluate(() => {
         const out: string[] = [];
         const over = document.documentElement.scrollWidth - window.innerWidth;

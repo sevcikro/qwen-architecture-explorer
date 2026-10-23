@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Fragment, createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { UI, type UiKey } from './ui';
 import { GB, GiB, fmtBytes } from '../math/memory';
 
@@ -95,16 +95,36 @@ export function useLang(): LangApi {
  * Minimal inline markup for translated prose: **bold**, *italic*, `code`, [label](href).
  * No HTML is ever injected.
  */
-export function Rich({ text }: { text: string }) {
+export interface GlossOptions { terms: string[]; find: (text: string, terms: string[]) => { term: string; start: number; end: number }[]; render: (term: string, text: string, key: string) => ReactNode }
+
+/** Plain text with the first mention of each wanted glossary term turned into a tooltip trigger. */
+function glossed(text: string, g: GlossOptions | undefined, left: Set<string>, key: string): ReactNode {
+  if (!g || left.size === 0) return text;
+  const hits = g.find(text, [...left]);
+  if (!hits.length) return text;
+  const out: ReactNode[] = [];
+  let last = 0;
+  hits.forEach((h, i) => {
+    if (h.start > last) out.push(text.slice(last, h.start));
+    out.push(g.render(h.term, text.slice(h.start, h.end), `${key}-g${i}`));
+    left.delete(h.term);
+    last = h.end;
+  });
+  if (last < text.length) out.push(text.slice(last));
+  return out;
+}
+
+export function Rich({ text, gloss }: { text: string; gloss?: GlossOptions }) {
+  const left = new Set(gloss?.terms ?? []);
   const out: ReactNode[] = [];
   const re = /(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g;
   let last = 0;
   let m: RegExpExecArray | null;
   let i = 0;
   while ((m = re.exec(text))) {
-    if (m.index > last) out.push(text.slice(last, m.index));
+    if (m.index > last) out.push(<Fragment key={`t${i++}`}>{glossed(text.slice(last, m.index), gloss, left, `t${i}`)}</Fragment>);
     const s = m[0];
-    if (s.startsWith('**')) out.push(<strong key={i++}>{s.slice(2, -2)}</strong>);
+    if (s.startsWith('**')) out.push(<strong key={i++}>{glossed(s.slice(2, -2), gloss, left, `b${i}`)}</strong>);
     else if (s.startsWith('`')) out.push(<code key={i++}>{s.slice(1, -1)}</code>);
     else if (s.startsWith('[')) {
       const mm = s.match(/^\[([^\]]+)\]\(([^)]+)\)$/)!;
@@ -112,7 +132,7 @@ export function Rich({ text }: { text: string }) {
     } else out.push(<em key={i++}>{s.slice(1, -1)}</em>);
     last = m.index + s.length;
   }
-  if (last < text.length) out.push(text.slice(last));
+  if (last < text.length) out.push(<Fragment key={`t${i++}`}>{glossed(text.slice(last), gloss, left, `e${i}`)}</Fragment>);
   return <>{out}</>;
 }
 

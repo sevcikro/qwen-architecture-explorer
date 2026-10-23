@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { GLOSSARY } from '../content/glossary';
 import { useLang } from '../i18n/i18n';
 
-export default function Glossary() {
+export default function Glossary({ q0 = '' }: { q0?: string }) {
   const { t, tr, lang } = useLang();
-  const [q, setQ] = useState('');
+  const [q, setQ] = useState(q0);
   const items = GLOSSARY.filter((g) => !q || `${tr(g.term)} ${tr(g.def)} ${g.term.en}`.toLowerCase().includes(q.toLowerCase())).sort((a, b) => tr(a.term).localeCompare(tr(b.term), lang));
   return (
     <div className="page">

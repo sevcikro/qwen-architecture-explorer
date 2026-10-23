@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.3.0 — 2026-10-23
+
+- **Run a real Qwen in your browser** (new *Live model* page): Qwen3-0.6B (ONNX conversion `onnx-community/Qwen3-0.6B-ONNX` at a pinned revision) runs on the visitor’s device with Transformers.js 4.3.1 in a Web Worker: WebGPU with 4-bit weights when available, otherwise WebAssembly. Chat with streaming, a stop button and token statistics, plus a next-token mode with real probabilities. Nothing is downloaded before an explicit click; the ONNX runtime is served by this site, only model files come from huggingface.co. The default WebAssembly format is 4-bit (q4) because the 8-bit file distorted probabilities badly in our test (“ Paris”: 0.657 in PyTorch, 0.517 with q4, 0.016 with q8).
+- **Two new chapters**: *Kinds of neural networks, and why transformers won* (MLP, CNN, RNN/LSTM, transformer, linear attention; encoder/decoder variants; scaling) and *The context window: input and output limits* (Qwen3’s 32,768 / 131,072 / 40,960 numbers from the model card, input vs output limits, what happens at the limit, cost of long contexts), with two diagrams, a context-budget simulation and a comparison table.
+- **Exercises and a final test**: 18 hands-on exercises with hints and worked solutions (every number recomputed in Python) and a 20-question final test with score, explanations and links back to the chapters. The course has 30 chapters.
+- **Glossary inside the text**: the first mention of a glossary term in each chapter opens its definition (hover, tap or keyboard); two new terms (context window, transformer).
+- **Search** across chapters, labs, glossary, tours and pages, in both languages, ignoring diacritics (header icon, or the menu on phones).
+- **Notebooks**: all 16 Python examples as Jupyter notebooks with recorded output and an *Open in Colab* button; 15 were executed with nbclient to check them.
+- **Works offline and installs as an app**: web-app manifest, icons and a service worker that precaches the app (network-first for pages, so new releases show at once).
+- **Sharing and feedback**: Open Graph / Twitter preview image and tags; a *Report a mistake* link (pre-filled GitHub issue) in every footer and chapter.
+- **Faster first load**: KaTeX and the explorer load on demand; the main bundle shrank from 656 kB to 277 kB (89 kB gzipped).
+- **Fixes**: glossary matching for Slovak inflections; heatmap text contrast on the Real run page in both themes.
+
 ## 1.2.0 — 2026-10-22
 
 - **The course became an interactive book**: 27 chapters in five parts (was 14). New chapters: vectors and dot products; probabilities, softmax and cross-entropy; multi-head attention and GQA; RoPE; build a tiny transformer yourself; prefill, decode and the K/V cache; **from your message to the answer** (a recorded chat turn of Qwen3-0.6B replayed step by step); running and inspecting a real Qwen model; backpropagation step by step; how large language models are trained; serving many users (batching, paged K/V cache, speculative decoding, quantization); inside a checkpoint file; the whole transformer on one page.

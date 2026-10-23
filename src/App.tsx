@@ -3,11 +3,12 @@ import { useHashRoute } from './state/route';
 import { ToyProvider } from './state/toyStore';
 import { LangSwitch, useLang } from './i18n/i18n';
 import type { UiKey } from './i18n/ui';
-import { Explorer } from './explorer/Explorer';
 import { Home } from './pages/Home';
 import buildInfo from './generated/build-info.json';
 import { version as APP_VERSION } from '../package.json';
+import { ReportLink } from './components/Report';
 
+const Explorer = lazy(() => import('./explorer/Explorer').then((m) => ({ default: m.Explorer })));
 const Labs = lazy(() => import('./labs/Labs'));
 const Learn = lazy(() => import('./pages/Learn'));
 const Trace = lazy(() => import('./pages/Trace'));
@@ -20,6 +21,8 @@ const Tours = lazy(() => import('./pages/Tours'));
 const Sources = lazy(() => import('./pages/Sources'));
 const Glossary = lazy(() => import('./pages/Glossary'));
 const About = lazy(() => import('./pages/About'));
+const Search = lazy(() => import('./pages/Search'));
+const Live = lazy(() => import('./pages/Live'));
 
 const NAV: [string, UiKey][] = [
   ['', 'nav_home'],
@@ -27,6 +30,7 @@ const NAV: [string, UiKey][] = [
   ['explore', 'nav_explore'],
   ['labs', 'nav_labs'],
   ['trace', 'nav_trace'],
+  ['live', 'nav_live'],
   ['parameters', 'nav_parameters'],
   ['catalog', 'nav_catalog'],
   ['pipeline', 'nav_pipeline'],
@@ -80,7 +84,9 @@ export function App() {
     case 'hybrid': page = <Hybrid id={route.path[1]} />; break;
     case 'tours': page = <Tours id={route.path[1]} />; break;
     case 'sources': page = <Sources />; break;
-    case 'glossary': page = <Glossary />; break;
+    case 'glossary': page = <Glossary q0={route.query.get('q') ?? ''} />; break;
+    case 'live': page = <Live />; break;
+    case 'search': page = <Search q0={route.query.get('q') ?? ''} />; break;
     case 'about': page = <About />; break;
     default: page = (
       <div className="page"><h1>{t('not_found')}</h1><p>{t('not_found_text')} <code>{window.location.hash}</code></p><a className="btn primary" href="#/">{t('go_home')}</a></div>
@@ -98,10 +104,14 @@ export function App() {
           </a>
           <button className="menu-btn small" aria-expanded={menu} aria-controls="mainnav" onClick={() => setMenu(!menu)}>{t('menu')}</button>
           <nav id="mainnav" className={`nav${menu ? ' open' : ''}`} aria-label="Main">
+            <a className="nav-menu-only" href="#/search" aria-current={top === 'search' ? 'page' : undefined}>{t('search')}</a>
             {NAV.map(([k, label]) => (
               <a key={k} href={`#/${k}`} aria-current={activeTop === k ? 'page' : undefined}>{t(label)}</a>
             ))}
           </nav>
+          <a className="btn small search-btn" href="#/search" aria-label={t('search')} title={t('search')} aria-current={top === 'search' ? 'page' : undefined}>
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" strokeWidth="2.4" /><path d="M15.5 15.5 L21 21" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" /></svg>
+          </a>
           <LangSwitch />
           <label className="sr-only" htmlFor="theme">{t('theme')}</label>
           <select id="theme" value={theme} onChange={(e) => setTheme(e.target.value as typeof theme)} style={{ minHeight: 32 }}>
@@ -116,6 +126,7 @@ export function App() {
         {top !== 'explore' && (
           <footer className="foot">
             <span>{t('footer_independent')}</span>
+            <ReportLink />
             <span className="mono" data-testid="build-id">{t('footer_build')} {buildInfo.shortCommit}{buildInfo.dirty ? t('footer_dirty') : ''} · v{APP_VERSION}</span>
           </footer>
         )}

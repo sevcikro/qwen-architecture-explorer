@@ -7,15 +7,18 @@ import { TOURS } from '../../src/content/tours';
 import { UI } from '../../src/i18n/ui';
 import type { L10n } from '../../src/i18n/i18n';
 
-const ROUTES = ['', 'learn', 'trace', 'explore', 'labs', 'parameters', 'catalog', 'pipeline', 'family', 'hybrid', 'tours', 'sources', 'glossary', 'about'];
+const ROUTES = ['', 'learn', 'trace', 'live', 'search', 'explore', 'labs', 'parameters', 'catalog', 'pipeline', 'family', 'hybrid', 'tours', 'sources', 'glossary', 'about'];
 const LABS = ['weight', 'unit', 'matrix', 'attention', 'rope', 'compare', 'router', 'layers', 'cache', 'sampling', 'training', 'memory'];
-const WIDGETS = ['next-token', 'real-weight', 'neuron', 'silu', 'matvec', 'tokens', 'rms', 'attention', 'gated', 'router', 'stack', 'sampling', 'train1d', 'memory', 'dot2d', 'xent', 'rope2d', 'gqa', 'kvcost', 'journey', 'backprop', 'quant'];
+const WIDGETS = ['next-token', 'real-weight', 'neuron', 'silu', 'matvec', 'tokens', 'rms', 'attention', 'gated', 'router', 'stack', 'sampling', 'train1d', 'memory', 'dot2d', 'xent', 'rope2d', 'gqa', 'kvcost', 'journey', 'backprop', 'quant', 'context'];
 
 function texts(b: Block): L10n[] {
   switch (b.k) {
     case 'p': case 'h': case 'key': case 'analogy': case 'qwen': return [b.t];
     case 'figure': return b.cap ? [b.cap] : [];
     case 'code': return b.t ? [b.t] : [];
+    case 'exercise': return [b.task, b.solution, ...(b.hint ? [b.hint] : [])];
+    case 'table': return [...b.head, ...b.rows.flat()];
+    case 'exam': return b.questions.flatMap((q) => [q.q, ...q.options, q.explain]);
     case 'list': return b.items;
     case 'math': return b.t ? [b.t] : [];
     case 'quiz': return [b.q, ...b.options, b.explain];
@@ -53,17 +56,17 @@ describe('Slovak translation completeness', () => {
     expect(all).not.toMatch(/\d,\d{3},\d{3}/); // no English thousands separators leaked into Slovak
   });
 
-  it('course structure: 27 chapters in 5 parts, unique ids, every chapter has a visual or demo and a quick check, quiz answers valid', () => {
-    expect(CHAPTERS.length).toBe(27);
-    expect(new Set(CHAPTERS.map((c) => c.id)).size).toBe(27);
+  it('course structure: 30 chapters in 5 parts, unique ids, every chapter has a visual or demo and a quick check, quiz answers valid', () => {
+    expect(CHAPTERS.length).toBe(30);
+    expect(new Set(CHAPTERS.map((c) => c.id)).size).toBe(30);
     expect(PARTS.map((p) => p.n)).toEqual([1, 2, 3, 4, 5]);
     expect(PARTS.flatMap((p) => p.chapters)).toEqual(CHAPTERS.map((c) => c.id));
     expect(CHAPTERS[1].id).toBe('weight'); // the first steps keep their place
     CHAPTERS.forEach((c, i) => {
       expect(c.n).toBe(i + 1);
       expect(c.part).toBeGreaterThan(0);
-      expect(c.blocks.some((b) => b.k === 'widget' || b.k === 'figure' || b.k === 'code' || c.id === 'beyond')).toBe(true);
-      const quizzes = c.blocks.filter((b) => b.k === 'quiz');
+      expect(c.blocks.some((b) => b.k === 'widget' || b.k === 'figure' || b.k === 'code' || b.k === 'exam' || c.id === 'beyond')).toBe(true);
+      const quizzes = c.blocks.filter((b) => b.k === 'quiz' || b.k === 'exam');
       expect(quizzes.length).toBeGreaterThan(0);
       for (const q of quizzes) if (q.k === 'quiz') expect(q.correct).toBeLessThan(q.options.length);
     });
@@ -107,3 +110,35 @@ describe('Slovak translation completeness', () => {
     for (const t of TOURS) for (const s of t.steps) { expect(s.text.sk).not.toBe(s.text.en); expect(s.cta.sk).not.toBe(''); }
   });
 });
+
+describe('v1.3 additions', () => {
+  it('every exercise and exam question is bilingual and the exam is valid', () => {
+    const exams = CHAPTERS.flatMap((c) => c.blocks).filter((b) => b.k === 'exam');
+    expect(exams.length).toBe(1);
+    const qs = exams[0].k === 'exam' ? exams[0].questions : [];
+    expect(qs.length).toBe(20);
+    for (const q of qs) {
+      expect(q.correct).toBeLessThan(q.options.length);
+      expect(CHAPTERS.map((c) => c.id)).toContain(q.chapter);
+      expect(q.q.sk).not.toBe(q.q.en);
+    }
+    const ex = CHAPTERS.flatMap((c) => c.blocks).filter((b) => b.k === 'exercise');
+    expect(ex.length).toBeGreaterThanOrEqual(15);
+    for (const e of ex) if (e.k === 'exercise') { expect(e.solution.sk).not.toBe(e.solution.en); expect(e.task.sk.length).toBeGreaterThan(10); }
+  });
+  it('glossary terms are found in chapter text in both languages, with sensible inflections', async () => {
+    const { findTerms, mentions } = await import('../../src/content/glossary');
+    expect(mentions('the K/V cache grows', 'K/V cache', 'en')).toBe(true);
+    const { GLOSS_MATCH } = await import('../../src/content/glossary');
+    for (const term of Object.keys(GLOSS_MATCH)) for (const l of ['en', 'sk'] as const) expect(() => mentions('x', term, l), term + ' ' + l).not.toThrow();
+    expect(mentions('každá aktivácia neurónu', 'Activation', 'sk')).toBe(true);
+    expect(mentions('reziduálny prúd', 'Residual connection', 'sk')).toBe(true);
+    expect(mentions('tokenizér rozdelí text', 'Token', 'sk')).toBe(false);
+    expect(mentions('každý z tokenov', 'Token', 'sk')).toBe(true);
+    expect(mentions('pozornosť s maticou váh', 'Weight', 'sk')).toBe(true);
+    const hits = findTerms('Logits become probabilities; the logits of every token.', ['Logit', 'Token'], 'en');
+    expect(hits.map((h) => h.term)).toEqual(['Logit', 'Token']);
+    expect(hits[0].start).toBe(0);
+  });
+});
+

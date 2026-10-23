@@ -6,7 +6,8 @@ import { QWEN3_0_6B } from '../models/profiles';
 import { accounting } from '../models/shapes';
 
 /** Heat colour scale for values in [0, 1]; text is always shown too (colour is never the only cue). */
-const heat = (v: number) => `color-mix(in srgb, var(--attn) ${Math.round(Math.max(0, Math.min(1, v)) * 100)}%, var(--bg-2))`;
+// Intensity is capped per theme (--heat-cap) so the numbers printed on the cells keep at least 4.5:1 contrast.
+const heat = (v: number) => `color-mix(in srgb, var(--attn) calc(var(--heat-cap, 60%) * ${Math.max(0, Math.min(1, v)).toFixed(3)}), var(--bg-2))`;
 const signed = (v: number, m: number) => v >= 0 ? `color-mix(in srgb, var(--accent) ${Math.round(Math.min(1, v / m) * 90)}%, var(--bg-2))` : `color-mix(in srgb, var(--danger) ${Math.round(Math.min(1, -v / m) * 90)}%, var(--bg-2))`;
 
 const HOOKS_SK: Record<string, string> = {
@@ -88,7 +89,7 @@ export default function TracePage() {
             </div>
             {att.probs.map((row, i) => <div key={`r${i}`} role="row" style={{ display: 'contents' }}>{[
               <div key={`h${i}`} role="rowheader" style={{ display: 'contents' }}><button className={`cell hdr${i === q ? ' sel' : ''}`} onClick={() => setQpos(i)} style={{ cursor: 'pointer' }}>{piece(p.pieces[i]).slice(0, 6)}</button></div>,
-              ...row.map((v, j) => <div key={`${i}-${j}`} role="gridcell" className={`cell${j > i ? ' na' : ''}`} style={{ background: j > i ? undefined : heat(v), color: v > 0.55 ? '#04121a' : undefined }} title={`${v}`}>{j > i ? '×' : v < 0.005 ? '·' : num(v, 2)}</div>),
+              ...row.map((v, j) => <div key={`${i}-${j}`} role="gridcell" className={`cell${j > i ? ' na' : ''}`} style={{ background: j > i ? undefined : heat(v) }} title={`${v}`}>{j > i ? '×' : v < 0.005 ? '·' : num(v, 2)}</div>),
             ]}</div>)}
           </div>
         </div>

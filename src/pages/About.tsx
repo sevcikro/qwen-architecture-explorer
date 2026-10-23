@@ -2,6 +2,8 @@ import buildInfo from '../generated/build-info.json';
 import { Evidence } from '../components/ui';
 import { useLang } from '../i18n/i18n';
 import { useSamples } from '../data/data';
+import { OfflinePanel } from '../components/Offline';
+import { ReportLink } from '../components/Report';
 
 export default function About() {
   const { lang } = useLang();
@@ -19,7 +21,7 @@ export default function About() {
           <li>Malý hračkový simulátor s osivom, s operáciami a názvami tenzorov ako Qwen3 (d = 8, 2 bloky). Každé laboratórium s ním počíta skutočné čísla. <Evidence kind="simulation" /></li>
           <li>Štrukturálne údaje (tvary, názvy, počty, bajtové posuny) pre Qwen3-8B a Qwen3-30B-A3B z ich pripnutých konfigurácií a hlavičiek checkpointov. <Evidence kind="verified" /></li>
           <li>Vopred zaznamenané aktivácie menšieho modelu Qwen3-0.6B pre tri pevné zadania (stránka „Skutočný beh“). <Evidence kind="sample" /></li>
-          <li>Vo vašom prehliadači sa nespúšťa žiadny skutočný model Qwen a neodosiela sa žiadna požiadavka na službu umelej inteligencie.</li>
+          <li>Skutočný model Qwen sa vo vašom prehliadači spustí len vtedy, keď na stránke <a href="#/live">Živý model</a> stlačíte tlačidlo na stiahnutie; súbory modelu sa vtedy stiahnu z huggingface.co a výpočet prebehne na vašom zariadení. Inak sa nespúšťa žiadny model a nikdy sa neposiela žiadna požiadavka na službu umelej inteligencie.</li>
         </ul>
         <h2>Známe obmedzenia</h2>
         <ul style={{ paddingLeft: 18 }}>
@@ -35,8 +37,12 @@ export default function About() {
           <dt>Zdrojový commit</dt><dd className="mono" data-testid="build-commit">{buildInfo.commit}{buildInfo.dirty ? ' (zostavené s necommitnutými zmenami)' : ''}</dd>
           <dt>Zostavené</dt><dd className="mono">{buildInfo.builtAt}</dd>
         </dl>
+        <h2>Použitie offline a inštalácia</h2>
+        <OfflinePanel />
         <h2>Vaše údaje</h2>
-        <p>Stránka si v lokálnom úložisku tohto prehliadača pamätá len zvolenú farebnú tému a jazyk. Nenastavuje žiadne cookies a nenačítava žiadne skripty, písma ani analytiku tretích strán.</p>
+        <p>Stránka si v lokálnom úložisku tohto prehliadača pamätá len farebnú tému, jazyk, prečítané kapitoly a najlepšie skóre záverečného testu a v cache prehliadača uchováva svoju offline kópiu. Nenastavuje žiadne cookies a nenačítava žiadne skripty, písma ani analytiku tretích strán. Jedinou výnimkou je živý model: až po vašom kliknutí stiahne súbory modelu z huggingface.co.</p>
+        <h2>Našli ste chybu?</h2>
+        <p>Každá stránka má v pätičke odkaz <ReportLink />, ktorý otvorí vopred vyplnené hlásenie na GitHube (obsahuje len adresu stránky, jazyk a číslo zostavenia).</p>
       </div>
     );
   }
@@ -49,7 +55,7 @@ export default function About() {
         <li>A tiny, seeded toy simulator with the operations and tensor names of Qwen3 (d = 8, 2 blocks). Every lab computes real numbers with it. <Evidence kind="simulation" /></li>
         <li>Structural data (shapes, names, counts, byte offsets) for Qwen3-8B and Qwen3-30B-A3B from their pinned configs and checkpoint headers. <Evidence kind="verified" /></li>
         <li>Pre-recorded activations of the smaller Qwen3-0.6B for three fixed prompts (the “Real run” page). <Evidence kind="sample" /></li>
-        <li>No real Qwen model is executed in your browser, and no request is sent to any AI service.</li>
+        <li>A real Qwen model runs in your browser only if you press the download button on the <a href="#/live">Live model</a> page; the model files then come from huggingface.co and all computation happens on your device. Otherwise no model is executed, and no request is ever sent to any AI service.</li>
       </ul>
       <h2>Known limitations</h2>
       <ul style={{ paddingLeft: 18 }}>
@@ -65,8 +71,12 @@ export default function About() {
         <dt>Source commit</dt><dd className="mono" data-testid="build-commit">{buildInfo.commit}{buildInfo.dirty ? ' (built with uncommitted changes)' : ''}</dd>
         <dt>Built at</dt><dd className="mono">{buildInfo.builtAt}</dd>
       </dl>
+      <h2>Offline use and installing</h2>
+      <OfflinePanel />
       <h2>Your data</h2>
-      <p>The site stores only your color-theme and language choice in this browser’s local storage. It sets no cookies and loads no third-party scripts, fonts or analytics.</p>
+      <p>The site stores only your color theme, language, finished chapters and best final-test score in this browser’s local storage, and keeps its offline copy in the browser cache. It sets no cookies and loads no third-party scripts, fonts or analytics. The one exception is the live model: only after you click, it downloads the model files from huggingface.co.</p>
+      <h2>Found a mistake?</h2>
+      <p>Every page has a <ReportLink /> link in its footer that opens a pre-filled GitHub issue (containing only the page address, the language and the build id).</p>
     </div>
   );
 }

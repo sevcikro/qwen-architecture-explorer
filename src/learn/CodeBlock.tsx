@@ -47,6 +47,7 @@ export function CodeBlock({ id, t }: { id: CodeId; t?: string }) {
         <strong>🐍 {T('Python', 'Python')}: <span className="mono">{ex.file}</span></strong>
         <span className="code-actions">
           <button className="small" onClick={() => { navigator.clipboard?.writeText(ex.source).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1600); }, () => setCopied(false)); }}>{copied ? T('Copied', 'Skopírované') : T('Copy code', 'Kopírovať kód')}</button>
+          <a className="btn small" href={`https://colab.research.google.com/github/sevcikro/qwen-architecture-explorer/blob/main/notebooks/${ex.file.replace(/\.py$/, '.ipynb')}`} target="_blank" rel="noreferrer" title={T('Run this example in your browser with Google Colab (free Google account needed)', 'Spustiť tento príklad v prehliadači cez Google Colab (treba bezplatný účet Google)')}>{T('Open in Colab', 'Otvoriť v Colabe')}</a>
           <a className="btn small" href={`${REPO_URL}/blob/main/examples/python/${ex.file}`} target="_blank" rel="noreferrer">{T('On GitHub', 'Na GitHube')}</a>
         </span>
       </div>

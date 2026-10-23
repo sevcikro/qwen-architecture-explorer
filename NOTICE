@@ -14,6 +14,12 @@ public/data/trace-qwen3-0.6b.json, public/data/journey-qwen3-0.6b.json and src/c
 activations, probabilities and generated text computed by running Qwen/Qwen3-0.6B
 (revision c1899de289a04d12100db370d81485cdf75e47ca, Apache-2.0). No weights of Qwen3-0.6B are included.
 
+dist/ort/ contains the WebAssembly build of ONNX Runtime Web (onnxruntime-web 1.31.0-dev.20260914, MIT License,
+Copyright Microsoft Corporation), and the live-model worker bundles Transformers.js 4.3.1 (Apache License 2.0,
+Copyright Hugging Face). The live-model page downloads the model files of onnx-community/Qwen3-0.6B-ONNX
+(revision 58ca03a5e7b354b480b1a82b34bde8dc7b854cc0, an ONNX conversion of the Apache-2.0 Qwen/Qwen3-0.6B) directly
+from huggingface.co into the visitor's browser; they are not redistributed by this site.
+
 public/data/tokenizer-examples.json contains token ids produced with the tokenizer files of Qwen/Qwen3-8B
 (same revision, Apache-2.0).
 

@@ -29,7 +29,8 @@ test('every chapter renders its text, demo and quick check without errors', asyn
   for (const c of CHAPTERS) {
     await page.goto(`/#/learn/${c.id}`);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(c.title.en);
-    await expect(page.getByText('Quick check').first()).toBeVisible();
+    if (c.blocks.some((b) => b.k === 'exam')) await expect(page.getByRole('button', { name: /Check my answers/ })).toBeVisible();
+    else await expect(page.getByText('Quick check').first()).toBeVisible();
     if (c.blocks.some((b) => b.k === 'widget')) await expect(page.locator('figure.widget').first()).toBeVisible();
     const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(over, `overflow in ${c.id}`).toBeLessThanOrEqual(1);

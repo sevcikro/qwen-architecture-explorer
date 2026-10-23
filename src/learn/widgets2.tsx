@@ -8,7 +8,7 @@ import { toBf16Bits, fromBf16Bits } from '../math/bf16';
 // Course experiments added in v1.2 (vectors, cross-entropy, RoPE, GQA, K/V cache cost, the message journey,
 // backpropagation, quantization). Every label exists in English and Slovak.
 
-export type WidgetId2 = 'dot2d' | 'xent' | 'rope2d' | 'gqa' | 'kvcost' | 'journey' | 'backprop' | 'quant';
+export type WidgetId2 = 'dot2d' | 'xent' | 'rope2d' | 'gqa' | 'kvcost' | 'journey' | 'backprop' | 'quant' | 'context';
 
 const deg = (d: number) => (d * Math.PI) / 180;
 
@@ -299,6 +299,42 @@ function Quant() {
   );
 }
 
+// ---------------------------------------------------------------------------------------------
+function ContextBudget() {
+  const { lang, num, fnum } = useLang();
+  const T = (en: string, sk: string) => pick(lang, en, sk);
+  const [prompt, setPrompt] = useState(6000), [out, setOut] = useState(4000), [yarn, setYarn] = useState(false);
+  const win = yarn ? 131072 : 32768;
+  const total = prompt + out;
+  const over = total > win;
+  const kv = 2 * QWEN3_8B.layers * QWEN3_8B.hkv * QWEN3_8B.headDim * 2 * Math.min(total, win);
+  const W = 320;
+  const px = (n: number) => Math.min(W, (n / win) * W);
+  return (
+    <Frame title={T('fit a conversation into the window', 'vtesnajte rozhovor do okna')} ev={['derived']} note={T('Qwen3-8B numbers: native window 32,768 tokens, 131,072 with YaRN; K/V cache 147,456 bytes per token at BF16. Prompt and answer share the window.', 'Čísla Qwen3-8B: natívne okno 32 768 tokenov, 131 072 s YaRN; cache K/V 147 456 bajtov na token pri BF16. Zadanie a odpoveď sa delia o okno.')}>
+      <div className="row">
+        <Range label={T('prompt tokens (input)', 'tokeny zadania (vstup)')} value={prompt} min={0} max={140000} step={500} onChange={setPrompt} fmt={(v) => num(v)} />
+        <Range label={T('max output tokens', 'max. tokenov výstupu')} value={out} min={0} max={40000} step={256} onChange={setOut} fmt={(v) => num(v)} />
+      </div>
+      <label className="field inline"><input type="checkbox" checked={yarn} onChange={(e) => setYarn(e.target.checked)} /> {T('enable YaRN (factor 4)', 'zapnúť YaRN (faktor 4)')}</label>
+      <svg viewBox={`0 0 ${W} 46`} style={{ width: '100%', maxWidth: 520, marginTop: 8 }} role="img" aria-label={T(`window ${win} tokens: prompt ${prompt}, output ${out}`, `okno ${win} tokenov: zadanie ${prompt}, výstup ${out}`)}>
+        <rect x={0} y={6} width={W} height={24} rx={4} fill="var(--bg-2)" stroke="var(--line)" />
+        <rect x={0} y={6} width={px(prompt)} height={24} rx={4} fill="var(--attn)" />
+        <rect x={px(prompt)} y={6} width={Math.max(0, px(total) - px(prompt))} height={24} fill="var(--router)" />
+        <text x={2} y={44} fontSize={9} fill="var(--text-3)">0</text>
+        <text x={W - 2} y={44} fontSize={9} fill="var(--text-3)" textAnchor="end">{num(win)}</text>
+      </svg>
+      <p className="faint" style={{ fontSize: '0.82rem' }}><span style={{ color: 'var(--attn)' }}>■</span> {T('input', 'vstup')} · <span style={{ color: 'var(--router)' }}>■</span> {T('output', 'výstup')}</p>
+      <p className="mono" style={{ fontSize: '0.88rem' }} role="status">
+        {T('total', 'spolu')} {num(total)} / {num(win)} {T('tokens', 'tokenov')} ({fnum((total / win) * 100, 1)} %) · {T('room left for the answer', 'miesto na odpoveď')}: {num(Math.max(0, win - prompt))}<br />
+        {T('K/V cache at the end', 'cache K/V na konci')}: <strong>{fnum(kv / 2 ** 30, 2)} GiB</strong><br />
+        {over ? (prompt > win ? T('✗ The prompt alone does not fit: the request is rejected or old messages must be cut.', '✗ Samotné zadanie sa nezmestí: požiadavka sa odmietne alebo treba odrezať staré správy.') : T('⚠ The answer would be cut off when the window is full.', '⚠ Odpoveď by sa odsekla, keď sa okno zaplní.')) : yarn && total <= 32768 ? T('Fits even without YaRN; the card advises enabling YaRN only for long contexts.', 'Zmestí sa aj bez YaRN; karta odporúča zapínať YaRN len pri dlhých kontextoch.') : T('✓ Fits.', '✓ Zmestí sa.')}
+      </p>
+    </Frame>
+  );
+}
+
 export const REGISTRY2: Record<WidgetId2, () => ReactElement> = {
+  context: ContextBudget,
   dot2d: Dot2d, xent: Xent, rope2d: Rope2d, gqa: Gqa, kvcost: KvCost, journey: Journey, backprop: Backprop, quant: Quant,
 };

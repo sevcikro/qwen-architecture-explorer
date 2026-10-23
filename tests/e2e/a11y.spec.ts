@@ -6,7 +6,7 @@ import AxeBuilder from '@axe-core/playwright';
 const ROUTES = [
   '/', '/#/learn', '/#/learn/attention', '/#/learn/journey', '/#/learn/forward', '/#/learn/serving', '/#/tours', '/#/explore?m=qwen3-8b&lv=5', '/#/explore?m=qwen3-8b&lv=2&b=0&t=q_proj',
   '/#/explore?m=qwen3-30b-a3b&lv=3&b=0&mod=moe', '/#/labs', '/#/labs/attention', '/#/labs/router', '/#/labs/cache', '/#/labs/memory',
-  '/#/parameters', '/#/catalog', '/#/pipeline', '/#/trace', '/#/family', '/#/hybrid/qwen3.8-flash-next', '/#/glossary', '/#/sources', '/#/about',
+  '/#/parameters', '/#/catalog', '/#/pipeline', '/#/trace', '/#/family', '/#/hybrid/qwen3.8-flash-next', '/#/glossary', '/#/sources', '/#/about', '/#/live', '/#/search?q=attention', '/#/learn/exam', '/#/learn/context', '/#/learn/networks',
 ];
 
 for (const theme of ['light', 'dark'] as const) {

@@ -57,6 +57,15 @@ Execution environment: Claude Code (desktop, Windows 11), model Claude Opus 5.5 
 - Accessibility: `tests/e2e/a11y.spec.ts` (axe-core 4.13.0, WCAG 2.1 A/AA tags, 24 routes, both themes and languages); fixes in contrast tokens, ARIA structure and keyboard-scrollable regions.
 - Phone treemap fix (labels only where they fit, full segment list).
 
+## Release 1.3.0 (live model, notebooks, search, offline, exercises, two chapters)
+
+- Live model: `src/live/worker.ts` (Transformers.js 4.3.1 in a module worker), `src/pages/Live.tsx`, runtime files copied to `dist/ort/` by a Vite plugin (the worker's duplicate hashed copy is removed after the build). Verified in headless Chromium (WebAssembly path): model download and load, next-token probabilities, chat streaming to `<|im_end|>`, no failed requests or console errors. WebGPU path not testable here (no GPU in the test browser).
+- Measured fidelity for “The capital of France is” → “ Paris”: PyTorch float32 0.657, browser q4 0.517 (still ranked first), browser q8 0.016; q4 is the WebAssembly default.
+- Chapters `networks` and `context` (`src/content/course2.ts`), 18 exercises and the final test (`src/content/exercises.ts`), table block type, glossary tooltips (`src/learn/Gloss.tsx`, patterns in `src/content/glossary.ts`), search (`src/pages/Search.tsx`).
+- Notebooks: `scripts/make_notebooks.py` → `notebooks/`; executed with nbclient 0.11.0 (15 of 16; the API client needs a server); the Hub download path was exercised for the tokenizer at the pinned revision.
+- PWA: `public/manifest.webmanifest`, icons and `og.png` from `scripts/make_images.mjs`, service worker generated from `scripts/sw-template.js` (cache lookups ignore `Vary: Origin`, which the dev preview sends).
+- Code splitting: main bundle 277 kB (was 656 kB).
+
 ## Delivery
 
 - GitHub (public since 1.2.0): https://github.com/sevcikro/qwen-architecture-explorer, branch `main`.

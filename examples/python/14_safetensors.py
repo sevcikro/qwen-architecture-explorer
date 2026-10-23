@@ -2,13 +2,23 @@
 Then read one small tile of a weight matrix and compare with the safetensors library.
 
 Run:  python 14_safetensors.py PATH/TO/model.safetensors      (needs: numpy; safetensors optional)
+Without a path it uses $QWEN_MODEL_DIR/model.safetensors, or downloads Qwen3-0.6B's file (about 1.5 GB)
+from the Hugging Face Hub at a pinned revision (needs: huggingface_hub).
 """
 import json
+import os
 import struct
 import sys
 import numpy as np
 
-path = sys.argv[1] if len(sys.argv) > 1 else "model.safetensors"
+args = [a for a in sys.argv[1:] if a.endswith(".safetensors")]   # (Jupyter passes its own "-f ..." arguments)
+if args:
+    path = args[0]
+elif os.environ.get("QWEN_MODEL_DIR"):
+    path = os.path.join(os.environ["QWEN_MODEL_DIR"], "model.safetensors")
+else:
+    from huggingface_hub import hf_hub_download
+    path = hf_hub_download("Qwen/Qwen3-0.6B", "model.safetensors", revision="c1899de289a04d12100db370d81485cdf75e47ca")
 with open(path, "rb") as fh:
     n = struct.unpack("<Q", fh.read(8))[0]                 # little-endian unsigned 64-bit length
     header = json.loads(fh.read(n))

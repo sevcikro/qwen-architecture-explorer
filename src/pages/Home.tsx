@@ -76,6 +76,7 @@ export function Home() {
             <a className="btn" href={START_WEIGHT} data-testid="start-weight">{t('home_weight')}</a>
             <a className="btn" href={explorerHref({ m: 'qwen3-8b', lv: 5 })}>{t('home_model')}</a>
             <a className="btn" href="#/labs">{t('home_labs')}</a>
+            <a className="btn" href="#/live">{t('home_live')}</a>
           </div>
           <div className="callout answer">
             <strong>{t('home_short')}</strong> <Rich text={answer} />

@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import { CHAPTERS, PARTS, type Block } from '../content/chapters';
-import { Rich, useLang } from '../i18n/i18n';
+import { Rich, useLang, type GlossOptions, type Lang } from '../i18n/i18n';
+import { GLOSSARY, findTerms, mentions } from '../content/glossary';
+import { GlossTerm } from '../learn/Gloss';
 import { Tex } from '../components/ui';
 import { Widget } from '../learn/widgets';
 import { Figure } from '../learn/figures';
 import { CodeBlock } from '../learn/CodeBlock';
+import { Exam, Exercise } from '../learn/Exercises';
+import { ReportLink } from '../components/Report';
 
 const KEY = 'qa-learn-done';
 function loadDone(): string[] {
@@ -37,20 +41,53 @@ function Quiz({ b }: { b: Extract<Block, { k: 'quiz' }> }) {
   );
 }
 
-function BlockView({ b }: { b: Block }) {
-  const { t, tr } = useLang();
+const TERMS = GLOSSARY.map((g) => g.term.en);
+
+/** For one chapter: which glossary terms each text block links (only the first mention in the chapter). */
+function glossPlan(blocks: Block[], lang: Lang): Map<string, string[]> {
+  const plan = new Map<string, string[]>();
+  const seen = new Set<string>();
+  blocks.forEach((b, k) => {
+    const texts: [string, string][] = b.k === 'p' || b.k === 'key' || b.k === 'analogy' || b.k === 'qwen' ? [[`${k}`, b.t[lang]]] : b.k === 'list' ? b.items.map((x, j) => [`${k}:${j}`, x[lang]]) : [];
+    for (const [key, text] of texts) {
+      const plain = text.replace(/\[([^\]]+)\]\([^)]+\)|`[^`]+`/g, ' ');
+      const terms = TERMS.filter((tm) => !seen.has(tm) && mentions(plain, tm, lang));
+      terms.forEach((tm) => seen.add(tm));
+      if (terms.length) plan.set(key, terms);
+    }
+  });
+  return plan;
+}
+
+function BlockView({ b, k, plan, exN = 0 }: { b: Block; k: number; plan: Map<string, string[]>; exN?: number }) {
+  const { t, tr, lang } = useLang();
+  const gl = (key: string): GlossOptions | undefined => {
+    const terms = plan.get(key);
+    return terms ? { terms, find: (text, ts) => findTerms(text, ts, lang), render: (term, text, kk) => <GlossTerm key={kk} term={term} text={text} /> } : undefined;
+  };
   switch (b.k) {
-    case 'p': return <p style={{ fontSize: '1.03rem' }}><Rich text={tr(b.t)} /></p>;
+    case 'p': return <p style={{ fontSize: '1.03rem' }}><Rich text={tr(b.t)} gloss={gl(`${k}`)} /></p>;
     case 'h': return <h3 style={{ marginTop: 18 }}>{tr(b.t)}</h3>;
-    case 'key': return <div className="callout answer"><strong>💡 {t('learn_key')}:</strong> <Rich text={tr(b.t)} /></div>;
-    case 'analogy': return <div className="callout" style={{ borderLeftColor: 'var(--norm)' }}><strong>🔎 {t('learn_analogy')}:</strong> <Rich text={tr(b.t)} /></div>;
-    case 'qwen': return <div className="callout" style={{ borderLeftColor: 'var(--weight)' }}><strong>📐 {t('learn_qwen')}:</strong> <Rich text={tr(b.t)} /></div>;
-    case 'list': return <ul style={{ paddingLeft: 20 }}>{b.items.map((x, i) => <li key={i}><Rich text={tr(x)} /></li>)}</ul>;
+    case 'key': return <div className="callout answer"><strong>💡 {t('learn_key')}:</strong> <Rich text={tr(b.t)} gloss={gl(`${k}`)} /></div>;
+    case 'analogy': return <div className="callout" style={{ borderLeftColor: 'var(--norm)' }}><strong>🔎 {t('learn_analogy')}:</strong> <Rich text={tr(b.t)} gloss={gl(`${k}`)} /></div>;
+    case 'qwen': return <div className="callout" style={{ borderLeftColor: 'var(--weight)' }}><strong>📐 {t('learn_qwen')}:</strong> <Rich text={tr(b.t)} gloss={gl(`${k}`)} /></div>;
+    case 'list': return <ul style={{ paddingLeft: 20 }}>{b.items.map((x, i) => <li key={i}><Rich text={tr(x)} gloss={gl(`${k}:${i}`)} /></li>)}</ul>;
     case 'math': return <div style={{ margin: '8px 0' }}><Tex block>{b.tex}</Tex>{b.t && <div className="faint" style={{ fontSize: '0.85rem', textAlign: 'center' }}>{tr(b.t)}</div>}</div>;
     case 'widget': return <Widget id={b.w} />;
     case 'quiz': return <Quiz b={b} />;
     case 'figure': return <Figure id={b.f} caption={b.cap ? tr(b.cap) : undefined} />;
     case 'code': return <CodeBlock id={b.c} t={b.t ? tr(b.t) : undefined} />;
+    case 'exercise': return <Exercise b={b} n={exN} />;
+    case 'exam': return <Exam questions={b.questions} />;
+    case 'table': return (
+      <figure style={{ margin: '14px 0' }}>
+        <div className="table-wrap" tabIndex={0}><table className="t">
+          <thead><tr>{b.head.map((h, i) => <th key={i}>{tr(h)}</th>)}</tr></thead>
+          <tbody>{b.rows.map((r, i) => <tr key={i}>{r.map((c, j) => j === 0 ? <th key={j} scope="row" style={{ textAlign: 'left' }}><Rich text={tr(c)} /></th> : <td key={j}><Rich text={tr(c)} /></td>)}</tr>)}</tbody>
+        </table></div>
+        {b.cap && <figcaption className="faint" style={{ fontSize: '0.84rem', marginTop: 6 }}>{tr(b.cap)}</figcaption>}
+      </figure>
+    );
     case 'links': return (
       <div style={{ marginTop: 14 }}>
         <strong>{t('learn_deeper')}:</strong>
@@ -105,6 +142,7 @@ export default function Learn({ id }: { id?: string }) {
   const i = CHAPTERS.indexOf(ch);
   const prev = CHAPTERS[i - 1], next = CHAPTERS[i + 1];
   const isDone = done.includes(ch.id);
+  const plan = glossPlan(ch.blocks, lang);
   return (
     <div className="page learn-layout" lang={lang}>
       <aside className="learn-toc" aria-label={t('learn_toc')}>
@@ -123,13 +161,14 @@ export default function Learn({ id }: { id?: string }) {
         <h1 style={{ marginTop: 4 }}>{tr(ch.title)}</h1>
         <p className="muted" style={{ fontSize: '1.08rem' }}>{tr(ch.summary)}</p>
         <div className="progress" aria-hidden="true"><span style={{ width: `${((i + 1) / CHAPTERS.length) * 100}%` }} /></div>
-        {ch.blocks.map((b, k) => <BlockView key={`${ch.id}-${k}`} b={b} />)}
+        {ch.blocks.map((b, k) => <BlockView key={`${ch.id}-${k}`} b={b} k={k} plan={plan} exN={ch.blocks.slice(0, k + 1).filter((x) => x.k === 'exercise').length} />)}
         <div className="row" style={{ marginTop: 22, justifyContent: 'space-between' }}>
           {prev ? <a className="btn" href={`#/learn/${prev.id}`}>{t('learn_prev')}</a> : <span />}
           <button aria-pressed={isDone} onClick={() => setDone(isDone ? done.filter((x) => x !== ch.id) : [...done, ch.id])}>{isDone ? t('learn_undone') : t('learn_done')}</button>
           {next ? <a className="btn primary" href={`#/learn/${next.id}`} onClick={() => !isDone && setDone([...done, ch.id])}>{t('learn_next')} {next.n}. {tr(next.title)}</a> : <a className="btn primary" href="#/explore?m=qwen3-8b&lv=5">{t('nav_explore')} →</a>}
         </div>
         {!next && <p className="callout answer" style={{ marginTop: 12 }}>{t('learn_finished')}</p>}
+        <p className="faint" style={{ fontSize: '0.84rem', marginTop: 14 }}>{lang === 'sk' ? 'Našli ste v tejto kapitole chybu alebo nejasnosť? ' : 'Found a mistake or something unclear in this chapter? '}<ReportLink /></p>
       </article>
     </div>
   );

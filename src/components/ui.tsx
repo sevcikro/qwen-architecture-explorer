@@ -1,5 +1,5 @@
-import katex from 'katex';
-import { useId, useMemo, type ReactNode } from 'react';
+import { useEffect, useId, useMemo, useState, type ReactNode } from 'react';
+import type katexType from 'katex';
 import { EVIDENCE_META, type EvidenceClass } from '../evidence/types';
 import { sourceById } from '../evidence/sources';
 import { useLang } from '../i18n/i18n';
@@ -82,14 +82,22 @@ export function Cite({ ids }: { ids: string[] }) {
 }
 
 // ---------- math ----------
+let katexLib: typeof katexType | null = null;
+let katexLoading: Promise<typeof katexType> | null = null;
+const loadKatex = () => (katexLoading ??= import('./katexLoader').then((m) => (katexLib = m.default)));
+
 export function Tex({ children, block = false }: { children: string; block?: boolean }) {
+  const [ready, setReady] = useState(katexLib !== null);
+  useEffect(() => { if (!ready) loadKatex().then(() => setReady(true), () => { /* keep the plain-text fallback */ }); }, [ready]);
   const html = useMemo(() => {
+    if (!ready || !katexLib) return null;
     try {
-      return katex.renderToString(children, { displayMode: block, throwOnError: false, strict: 'ignore', output: 'htmlAndMathml' });
+      return katexLib.renderToString(children, { displayMode: block, throwOnError: false, strict: 'ignore', output: 'htmlAndMathml' });
     } catch {
-      return children;
+      return null;
     }
-  }, [children, block]);
+  }, [children, block, ready]);
+  if (html === null) return block ? <div className="eq mono" tabIndex={0}>{children}</div> : <span className="mono">{children}</span>;
   return block ? <div className="eq" tabIndex={0} dangerouslySetInnerHTML={{ __html: html }} /> : <span dangerouslySetInnerHTML={{ __html: html }} />;
 }
 

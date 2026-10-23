@@ -10,7 +10,7 @@
   --text-2: #aebbd6;
   --text-3: #8394b6;
   --accent: #46d4e6; /* attention / cyan */
-  --attn: #46d4e6;
+  --attn: #46d4e6; --heat-cap: 42%;
   --ffn: #b18cff; /* FFN & learned weights / purple */
   --weight: #b18cff;
   --act: #5fdc8f; /* activations & state / green */
@@ -30,14 +30,14 @@
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
     --bg: #f5f7fc; --bg-2: #eef2fa; --panel: #ffffff; --panel-2: #f0f4fb; --line: #c9d3e6; --line-soft: #dde4f1;
-    --text: #0f1a33; --text-2: #3c4b6b; --text-3: #5a6a8c; --accent: #086a79; --attn: #086a79; --ffn: #6b3fd1; --weight: #6b3fd1; --on-accent: #ffffff; --on-router: #ffffff;
+    --text: #0f1a33; --text-2: #3c4b6b; --text-3: #5a6a8c; --accent: #086a79; --attn: #086a79; --ffn: #6b3fd1; --weight: #6b3fd1; --on-accent: #ffffff; --on-router: #ffffff; --heat-cap: 70%;
     --act: #11703f; --state: #0f7a64; --norm: #745400; --resid: #745400; --router: #b2501b; --danger: #b3263a; --ok: #11703f; --focus: #b07d00;
     --shadow: 0 4px 18px rgba(15, 26, 51, 0.12); color-scheme: light;
   }
 }
 :root[data-theme='light'] {
   --bg: #f5f7fc; --bg-2: #eef2fa; --panel: #ffffff; --panel-2: #f0f4fb; --line: #c9d3e6; --line-soft: #dde4f1;
-  --text: #0f1a33; --text-2: #3c4b6b; --text-3: #5a6a8c; --accent: #086a79; --attn: #086a79; --ffn: #6b3fd1; --weight: #6b3fd1; --on-accent: #ffffff; --on-router: #ffffff;
+  --text: #0f1a33; --text-2: #3c4b6b; --text-3: #5a6a8c; --accent: #086a79; --attn: #086a79; --ffn: #6b3fd1; --weight: #6b3fd1; --on-accent: #ffffff; --on-router: #ffffff; --heat-cap: 70%;
   --act: #11703f; --state: #0f7a64; --norm: #745400; --resid: #745400; --router: #b2501b; --danger: #b3263a; --ok: #11703f; --focus: #b07d00;
   --shadow: 0 4px 18px rgba(15, 26, 51, 0.12); color-scheme: light;
 }
@@ -322,3 +322,35 @@ pre.code code { background: none; border: 0; padding: 0; border-radius: 0; font-
 .cursor { color: var(--accent); animation: blink 1s steps(2, start) infinite; }
 @keyframes blink { to { visibility: hidden; } }
 @media (prefers-reduced-motion: reduce) { .cursor { animation: none; } }
+
+/* ---------- glossary terms in chapter text ---------- */
+.gloss { position: relative; }
+.gloss-term { all: unset; cursor: help; text-decoration: underline dotted var(--accent); text-decoration-thickness: 1.5px; text-underline-offset: 3px; border-radius: 3px; }
+.gloss-term:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.gloss-pop { position: fixed; z-index: 60; display: flex; flex-direction: column; gap: 4px; width: min(320px, calc(100vw - 24px)); padding: 10px 12px; background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); font-size: 0.86rem; line-height: 1.45; font-weight: 400; font-style: normal; }
+.gloss-pop .gloss-def { color: var(--text-2); }
+
+/* ---------- exercises and the final test ---------- */
+.exercise { border-left: 4px solid var(--act); }
+.exercise details { margin-top: 6px; }
+.exercise summary { cursor: pointer; color: var(--accent); font-weight: 600; }
+.exam fieldset { border: 1px solid var(--line); }
+.exam legend { padding: 0 4px; font-size: 1rem; }
+.exam-opt { display: flex; gap: 8px; align-items: flex-start; padding: 6px 8px; border: 1px solid var(--line-soft); border-radius: 8px; cursor: pointer; }
+.exam-opt.right { border-color: var(--ok); }
+.exam-opt.wrong { border-color: var(--danger); }
+.exam-opt input { margin-top: 4px; }
+
+/* ---------- live model demo ---------- */
+.live-chat { display: grid; gap: 8px; }
+.bubble { padding: 8px 12px; border-radius: 10px; border: 1px solid var(--line-soft); white-space: pre-wrap; overflow-wrap: anywhere; }
+.bubble.user { background: color-mix(in srgb, var(--accent) 10%, var(--panel)); }
+.bubble.assistant { background: var(--panel); }
+.bubble > .faint { display: block; font-size: 0.78rem; }
+textarea { font: inherit; width: 100%; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg-2); color: var(--text); resize: vertical; }
+
+/* search: icon in the header on wider screens, a menu entry on phones */
+.search-btn { display: inline-flex; align-items: center; padding: 4px 8px; }
+.nav-menu-only { display: none; }
+@media (max-width: 1100px) { .nav.open .nav-menu-only { display: block; } }
+@media (max-width: 560px) { .search-btn { display: none; } }

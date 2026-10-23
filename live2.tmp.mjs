@@ -1,0 +1,25 @@
+import { chromium } from 'playwright';
+const dir = process.argv[2];
+const ctx = await chromium.launchPersistentContext(dir, { viewport: { width: 1200, height: 900 } });
+const p = ctx.pages()[0] ?? await ctx.newPage();
+const problems = [];
+p.on('console', (m) => { if (m.type() === 'error') problems.push('console: ' + m.text()); });
+p.on('pageerror', (e) => problems.push('pageerror: ' + e.message));
+p.on('response', (r) => { if (r.status() >= 400) problems.push(`http ${r.status()} ${r.url()}`); });
+p.on('requestfailed', (r) => problems.push(`failed ${r.url()} ${r.failure()?.errorText}`));
+const t0 = Date.now();
+await p.goto('http://localhost:4173/#/live?dtype=fp16');
+await p.getByTestId('live-start').click();
+await p.getByTestId('live-ready').waitFor({ timeout: 30 * 60_000 });
+console.log('ready after', ((Date.now() - t0) / 1000).toFixed(0), 's:', await p.getByTestId('live-ready').textContent());
+await p.getByRole('tab', { name: 'Next-token probabilities' }).click();
+await p.getByTestId('live-top').waitFor({ timeout: 10 * 60_000 });
+console.log('next-token:', (await p.getByTestId('live-top').innerText()).split('\n').slice(0, 15).join(' | '));
+if (process.argv[3] === 'next-only') { console.log('problems:', JSON.stringify(problems)); await ctx.close(); process.exit(0); }
+await p.getByRole('tab', { name: 'Chat' }).click();
+await p.getByTestId('live-send').click();
+await p.getByTestId('live-stats').filter({ hasText: /stopped|limit/ }).waitFor({ timeout: 20 * 60_000 });
+console.log('answer:', await p.locator('.bubble.assistant').last().innerText());
+console.log('stats:', await p.getByTestId('live-stats').textContent());
+console.log('problems:', JSON.stringify(problems.filter((x) => !x.includes('favicon'))));
+await ctx.close();

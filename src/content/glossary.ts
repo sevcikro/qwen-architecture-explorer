@@ -59,8 +59,76 @@ export const GLOSSARY: { term: L10n; def: L10n }[] = [
     'Hračkový simulátor', 'Malý model tejto stránky so štruktúrou Qwen3 (d = 8, 2 bloky) a váhami z osiva. Jeho hodnoty sú ilustračné simulácie, nikdy nie pozorované správanie modelu Qwen.'),
   g('Untied embeddings', 'The input embedding table and the output head are separate matrices (tie_word_embeddings = false for both reference models).',
     'Neviazané embeddingy', 'Vstupná tabuľka embeddingov a výstupná hlava sú samostatné matice (tie_word_embeddings = false pre oba referenčné modely).'),
+  g('Context window', 'The number of tokens a model can take into account at once: prompt and generated answer together. Qwen3: 32,768 natively, 131,072 with YaRN.',
+    'Kontextové okno', 'Počet tokenov, ktoré model dokáže naraz zohľadniť: zadanie aj vygenerovaná odpoveď spolu. Qwen3: 32 768 natívne, 131 072 s YaRN.'),
+  g('Transformer', 'A neural-network architecture built from attention and per-token feed-forward layers with residual connections. Qwen uses its decoder-only form.',
+    'Transformer', 'Architektúra neurónovej siete z vrstiev pozornosti a doprednej siete pre každý token, s reziduálnymi spojeniami. Qwen používa jej podobu iba s dekodérom.'),
   g('Weight', 'A learned number that multiplies an input inside the model; “weight” and “parameter” are used almost interchangeably.',
     'Váha', 'Naučené číslo, ktoré v modeli násobí vstup; „váha“ a „parameter“ sa používajú takmer zameniteľne.'),
   g('YaRN', 'A RoPE scaling method the model cards describe for extending context from 32,768 to 131,072 tokens (factor 4). Opt-in via rope_scaling; not enabled in the published config.',
     'YaRN', 'Metóda škálovania RoPE, ktorú karty modelov opisujú na rozšírenie kontextu z 32 768 na 131 072 tokenov (faktor 4). Zapína sa cez rope_scaling; v zverejnenej konfigurácii nie je zapnutá.'),
 ];
+
+// Word patterns used to link the first mention of a term in a chapter to its definition.
+// Unicode-aware; Slovak patterns cover the usual inflected forms.
+const W = (s: string) => s;
+export const GLOSS_MATCH: Record<string, { en: string; sk: string }> = {
+  'Activation': { en: W('activations?'), sk: W('aktivác\\p{L}*') },
+  'Attention weights (probabilities)': { en: W('attention weights'), sk: W('váh\\p{L}* pozornosti') },
+  'BF16': { en: 'BF16', sk: 'BF16' },
+  'Block (decoder block, “layer”)': { en: 'decoder blocks?', sk: 'blok\\p{L}* dekodéra' },
+  'Causal mask': { en: 'causal mask', sk: 'kauzáln\\p{L}* mask\\p{L}*' },
+  'Checkpoint / shard': { en: 'checkpoints?', sk: 'checkpoint\\p{L}*' },
+  'Embedding': { en: 'embeddings?', sk: 'embedding\\p{L}*' },
+  'Expert': { en: 'experts?', sk: 'expert(?:i|a|ov|om|mi|och|ovi)?' },
+  'FFN / MLP': { en: 'feed-forward network|FFN', sk: 'dopredn\\p{L}* sie[tť]\\p{L}*|FFN' },
+  'GQA (grouped-query attention)': { en: 'GQA|grouped-query attention', sk: 'GQA' },
+  'Gated DeltaNet': { en: 'Gated DeltaNet', sk: 'Gated DeltaNet' },
+  'Gradient': { en: 'gradients?', sk: 'gradient(?:y|ov|om|mi|u|e|och)?' },
+  'Head (attention head)': { en: 'attention heads?|query heads?', sk: 'hlav\\p{L}* pozornosti|hlav\\p{L}* dopytov' },
+  'K/V cache': { en: 'K/V cache', sk: 'cache K/V' },
+  'Logit': { en: 'logits?', sk: 'logit(?:y|ov|om|mi|u|e|och)?' },
+  'Loss': { en: 'loss', sk: 'chyb\\p{L}* pri trénovaní' },
+  'MoE (mixture of experts)': { en: 'MoE|mixture of experts', sk: 'MoE|zmes\\p{L}* expertov' },
+  'Neuron / unit / channel': { en: 'neurons?', sk: 'neur[oó]n(?:y|ov|om|mi|u|e|och|a)?' },
+  'Parameter': { en: 'parameters?', sk: 'parametr(?:y|ov|om|mi|u|e|och|a)|parameter' },
+  'Prefill / decode': { en: 'prefill', sk: 'predvyplnen\\p{L}*' },
+  'Residual connection': { en: 'residual (?:connection|stream|add(?:ition)?s?)', sk: 'reziduáln\\p{L}* (?:spojen\\p{L}*|prúd\\p{L}*|sčítan\\p{L}*)' },
+  'RMSNorm': { en: 'RMSNorm', sk: 'RMSNorm' },
+  'RoPE': { en: 'RoPE', sk: 'RoPE' },
+  'Router / routing weights': { en: 'routers?', sk: 'smerovač(?:a|e|om|i|ov|mi)?' },
+  'Sampling': { en: 'sampling', sk: 'vzorkovan\\p{L}*' },
+  'Token': { en: 'tokens?', sk: 'token(?:y|ov|om|mi|u|e|och|a)?' },
+  'Toy simulator': { en: 'toy simulator', sk: 'hračkov\\p{L}* simulátor\\p{L}*' },
+  'Untied embeddings': { en: 'untied', sk: 'neprepojen\\p{L}*|neviazan\\p{L}*' },
+  'Weight': { en: 'weights?', sk: 'váh(?:a|y|u|ou|ami|ách)?' },
+  'Context window': { en: 'context window', sk: 'kontextov\\p{L}* okn\\p{L}*' },
+  'Transformer': { en: 'transformers?', sk: 'transformer(?:y|a|ov|om|mi|i|och|e)?' },
+  'YaRN': { en: 'YaRN', sk: 'YaRN' },
+};
+
+export interface GlossHit { term: string; start: number; end: number }
+
+const compiled = new Map<string, RegExp>();
+const rx = (term: string, lang: 'en' | 'sk') => {
+  const k = `${term}|${lang}`;
+  let r = compiled.get(k);
+  if (!r) { r = new RegExp(String.raw`(?<![\p{L}\p{N}_/-])(?:` + GLOSS_MATCH[term][lang] + String.raw`)(?![\p{L}\p{N}_/-])`, 'iu'); compiled.set(k, r); }
+  return r;
+};
+
+/** First match of each wanted term in a plain text, as non-overlapping ranges (earliest first). */
+export function findTerms(text: string, terms: string[], lang: 'en' | 'sk'): GlossHit[] {
+  const hits: GlossHit[] = [];
+  for (const t of terms) {
+    const m = rx(t, lang).exec(text);
+    if (m) hits.push({ term: t, start: m.index, end: m.index + m[0].length });
+  }
+  hits.sort((a, b) => a.start - b.start);
+  const out: GlossHit[] = [];
+  for (const h of hits) if (!out.length || h.start >= out[out.length - 1].end) out.push(h);
+  return out;
+}
+
+/** Does this text mention the term? (used to assign each term to its first block in a chapter) */
+export const mentions = (text: string, term: string, lang: 'en' | 'sk') => rx(term, lang).test(text);

@@ -7,7 +7,7 @@ import { useLang } from '../i18n/i18n';
 export type FigureId =
   | 'loop' | 'neuron' | 'matvec' | 'vectors' | 'softmax' | 'tokenize' | 'embedding' | 'residual' | 'rmsnorm'
   | 'qkv' | 'mask' | 'gqa' | 'rope' | 'swiglu' | 'moe' | 'block' | 'model' | 'decode' | 'journey'
-  | 'train-loop' | 'graph' | 'pipeline' | 'serving' | 'quant' | 'safetensors' | 'overview';
+  | 'train-loop' | 'graph' | 'pipeline' | 'serving' | 'quant' | 'safetensors' | 'overview' | 'nets' | 'context';
 
 type TT = (en: string, sk: string) => string;
 const C = { w: 'var(--weight)', a: 'var(--attn)', f: 'var(--ffn)', act: 'var(--act)', n: 'var(--norm)', r: 'var(--router)', s: 'var(--state)', t: 'var(--text)', t2: 'var(--text-2)', t3: 'var(--text-3)', line: 'var(--line)', p: 'var(--panel)', p2: 'var(--panel-2)', bg: 'var(--bg-2)' };
@@ -510,6 +510,69 @@ const FIGS: Record<FigureId, (T: TT) => { h: number; label: string; body: (mk: s
       <Txt x={180} y={166} cls="fx-small">{T('element [r, c] lives at 8 + n + start + 2·(r·cols + c)', 'prvok [r, c] je na 8 + n + start + 2·(r·stĺpce + c)')}</Txt>
     </>),
   }),
+  nets: (T) => ({
+    h: 380, label: T('Four ways to wire neurons: fully connected (MLP), a sliding filter (CNN), a recurrent chain with a hidden state (RNN), and attention connecting every token with every earlier one (transformer).', 'Štyri spôsoby zapojenia neurónov: úplne prepojené (MLP), posúvaný filter (CNN), rekurentný reťazec so skrytým stavom (RNN) a pozornosť, ktorá spája každý token s každým skorším (transformer).'),
+    body: (mk) => {
+      const panel = (x: number, y: number, title: string, sub: string) => (<><rect x={x} y={y} width={172} height={182} rx={8} fill={C.p} stroke={C.line} /><Txt x={x + 86} y={y + 18} cls="fx-label">{title}</Txt><Txt x={x + 86} y={y + 172} cls="fx-small">{sub}</Txt></>);
+      const mlpL = [[0, 1, 2, 3], [0, 1, 2], [0, 1]];
+      const ny = (layer: number[], n: number) => 56 + n * 28 + (4 - layer.length) * 14;
+      return (<>
+        {panel(6, 4, 'MLP', T('every input to every neuron', 'každý vstup do každého neurónu'))}
+        {mlpL.map((layer, li) => layer.map((n) => (
+          <g key={`${li}${n}`}>
+            {li < 2 && mlpL[li + 1].map((m) => <line key={m} x1={44 + li * 50} y1={ny(layer, n)} x2={44 + (li + 1) * 50} y2={ny(mlpL[li + 1], m)} stroke={C.w} strokeWidth={0.8} opacity={0.6} />)}
+            <circle cx={44 + li * 50} cy={ny(layer, n)} r={7} fill={fillOf(C.w, 40)} stroke={C.w} />
+          </g>
+        )))}
+        {panel(182, 4, 'CNN', T('one filter slides over the input', 'jeden filter sa posúva po vstupe'))}
+        {Array.from({ length: 5 }, (_, r) => Array.from({ length: 5 }, (_, c) => <rect key={`${r}${c}`} x={200 + c * 22} y={34 + r * 22} width={20} height={20} fill={r >= 1 && r <= 3 && c >= 1 && c <= 3 ? fillOf(C.a, 45) : fillOf(C.t3, 10)} stroke={C.line} strokeWidth={0.6} />))}
+        <rect x={221} y={55} width={64} height={64} fill="none" stroke={C.a} strokeWidth={2} />
+        <Arr x1={312} y1={87} x2={330} y2={87} mk={mk} c={C.a} />
+        <rect x={332} y={78} width={14} height={18} fill={fillOf(C.a, 60)} stroke={C.a} />
+        {panel(6, 192, 'RNN / LSTM', T('one token at a time, state carried', 'token po tokene, stav sa prenáša'))}
+        {[0, 1, 2, 3].map((i) => (
+          <g key={i}>
+            <Box x={20 + i * 40} y={226} w={30} h={28} c={C.s} label="h" fs={11} r={5} />
+            <Arr x1={35 + i * 40} y1={292} x2={35 + i * 40} y2={256} mk={mk} />
+            <text x={35 + i * 40} y={306} textAnchor="middle" className="fx-small">{`x${i + 1}`}</text>
+            {i < 3 && <Arr x1={50 + i * 40} y1={240} x2={58 + i * 40} y2={240} mk={mk} c={C.s} />}
+          </g>
+        ))}
+        <Txt x={92} y={334} cls="fx-small">{T('step t waits for step t − 1', 'krok t čaká na krok t − 1')}</Txt>
+        {panel(182, 192, 'Transformer', T('each token reads all earlier ones', 'každý token číta všetky skoršie'))}
+        {[0, 1, 2, 3].map((i) => (
+          <g key={i}>
+            {Array.from({ length: i }, (_, j) => <path key={j} d={`M${208 + j * 40},${288} Q${208 + ((i + j) / 2) * 40},${246 - (i - j) * 10} ${208 + i * 40},${288}`} fill="none" stroke={C.a} strokeWidth={1.3} />)}
+            <circle cx={208 + i * 40} cy={300} r={11} fill={fillOf(C.act, 40)} stroke={C.act} />
+            <text x={208 + i * 40} y={304} textAnchor="middle" className="fx-small">{`x${i + 1}`}</text>
+          </g>
+        ))}
+        <Txt x={268} y={334} cls="fx-small">{T('all positions in parallel', 'všetky pozície paralelne')}</Txt>
+      </>);
+    },
+  }),
+  context: (T) => ({
+    h: 226, label: T('The context window holds the prompt and the answer together; Qwen3 supports 32,768 tokens natively and 131,072 with YaRN.', 'Kontextové okno obsahuje zadanie aj odpoveď spolu; Qwen3 podporuje 32 768 tokenov natívne a 131 072 s YaRN.'),
+    body: () => (<>
+      <Txt x={8} y={18} cls="fx-label" a="start">{T('one window, shared by input and output', 'jedno okno pre vstup aj výstup')}</Txt>
+      <rect x={8} y={30} width={344} height={34} rx={6} fill={C.bg} stroke={C.line} />
+      <rect x={8} y={30} width={56} height={34} rx={6} fill={fillOf(C.t3, 40)} stroke={C.t3} /><Txt x={36} y={51} cls="fx-small">{T('system', 'systém')}</Txt>
+      <rect x={64} y={30} width={112} height={34} fill={fillOf(C.a, 45)} stroke={C.a} /><Txt x={120} y={51} cls="fx-small">{T('earlier messages', 'skoršie správy')}</Txt>
+      <rect x={176} y={30} width={58} height={34} fill={fillOf(C.a, 30)} stroke={C.a} strokeWidth={2} /><Txt x={205} y={51} cls="fx-small">{T('question', 'otázka')}</Txt>
+      <rect x={234} y={30} width={78} height={34} fill={fillOf(C.r, 50)} stroke={C.r} /><Txt x={273} y={51} cls="fx-small">{T('answer', 'odpoveď')}</Txt>
+      <Txt x={332} y={51} cls="fx-small">{T('free', 'voľné')}</Txt>
+      <Txt x={120} y={82} cls="fx-small">{T('input (prompt)', 'vstup (zadanie)')}</Txt>
+      <Txt x={273} y={82} cls="fx-small">{T('output, token by token', 'výstup po tokenoch')}</Txt>
+      <line x1={8} y1={106} x2={352} y2={106} stroke={C.line} />
+      {([[8, '0', 'start'], [94, '32,768', 'end'], [116, '40,960', 'start'], [352, '131,072', 'end']] as const).map(([x, l, a], i) => (
+        <g key={i}><line x1={x} y1={100} x2={x} y2={112} stroke={C.t2} /><text x={x} y={126} textAnchor={a} className="fx-small">{tickLabel(l, T)}</text></g>
+      ))}
+      <rect x={8} y={138} width={86} height={14} fill={fillOf(C.act, 50)} stroke={C.act} /><Txt x={100} y={149} cls="fx-small" a="start">{T('native context: 32,768', 'natívny kontext: 32 768')}</Txt>
+      <rect x={8} y={160} width={108} height={14} fill={fillOf(C.n, 40)} stroke={C.n} /><Txt x={122} y={171} cls="fx-small" a="start">{T('config: 32,768 out + 8,192 in', 'konfigurácia: 32 768 výst. + 8 192 vst.')}</Txt>
+      <rect x={8} y={182} width={344} height={14} fill={fillOf(C.w, 25)} stroke={C.w} /><Txt x={180} y={193} cls="fx-small">{T('with YaRN, factor 4: 131,072', 's YaRN, faktor 4: 131 072')}</Txt>
+      <Txt x={180} y={218} cls="fx-small">{T('positions on a linear axis (Qwen3 model card and config)', 'pozície na lineárnej osi (karta modelu a konfigurácia Qwen3)')}</Txt>
+    </>),
+  }),
   overview: (T) => ({
     h: 300, label: T('The whole transformer on one page: tokens, embedding, repeated blocks of attention and feed-forward with residual adds, final norm, output head, sampling.', 'Celý transformer na jednej strane: tokeny, embedding, opakované bloky pozornosti a doprednej siete s reziduálnymi sčítaniami, záverečná normalizácia, výstupná hlava, vzorkovanie.'),
     body: (mk) => {
@@ -527,6 +590,8 @@ const FIGS: Record<FigureId, (T: TT) => { h: number; label: string; body: (mk: s
     },
   }),
 };
+
+const tickLabel = (l: string, T: TT) => (T('en', 'sk') === 'sk' ? l.replace(/,/g, ' ') : l);
 
 export const FIGURE_IDS = Object.keys(FIGS) as FigureId[];
 
